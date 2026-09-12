@@ -887,12 +887,11 @@
   .voice-ring.stop{ animation:none; }
 
   /* ===== 3D Body Viewer ===== */
-  .body3d-wrap{ position:relative; width:100%; height:440px; overflow:hidden;
-    background:radial-gradient(ellipse 70% 85% at 50% 28%, #041e3a 0%, #021428 55%, #020c1a 100%); }
-  .body3d-canvas{ width:100%; height:100%; display:block; touch-action:none; }
+  .body3d-wrap{ position:relative; width:100%; height:480px; overflow:hidden; background:#111418; }
+  .body3d-frame{ width:100%; height:100%; border:none; display:block; }
   .body3d-label{ position:absolute; pointer-events:none; z-index:5; opacity:0; transition:opacity .6s ease; }
   .body3d-label.vis{ opacity:1; }
-  .body3d-pill{ background:rgba(255,255,255,.1); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px);
+  .body3d-pill{ background:rgba(0,0,0,.45); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px);
     border:0.5px solid rgba(255,255,255,.18); border-radius:20px; padding:5px 11px;
     display:flex; align-items:center; gap:7px; white-space:nowrap; }
   .body3d-dot{ width:7px; height:7px; border-radius:50%; flex-shrink:0; }
@@ -1044,22 +1043,28 @@
               </div>
             </div>
 
-            <!-- 3D Body Viewer (Three.js procedural mannequin) -->
+            <!-- 3D Body Viewer (Sketchfab embed) -->
             <div class="body3d-wrap" id="body3dWrap">
-              <canvas class="body3d-canvas" id="body3dCanvas"></canvas>
-              <div class="body3d-label" id="lbl-thyroid">
+              <iframe
+                id="body3dFrame"
+                class="body3d-frame"
+                src="https://sketchfab.com/models/0c51abd24b4342c292e891730a907459/embed?autostart=1&ui_controls=0&ui_infos=0&ui_inspector=0&ui_settings=0&ui_ar=0&ui_fullscreen=0&ui_annotations=0&dnt=1&preload=1&transparent=1"
+                allow="autoplay; fullscreen; xr-spatial-tracking"
+                title="3D Body Model">
+              </iframe>
+              <div class="body3d-label vis" id="lbl-thyroid" style="left:62%;top:22%">
                 <div class="body3d-pill">
                   <div class="body3d-dot" style="background:#FF9500;box-shadow:0 0 6px 2px rgba(255,149,0,.6)"></div>
                   <div><div class="body3d-pname">Elevated T3</div><div class="body3d-psub">Thyroid</div></div>
                 </div>
               </div>
-              <div class="body3d-label" id="lbl-heart">
+              <div class="body3d-label vis" id="lbl-heart" style="left:14%;top:33%">
                 <div class="body3d-pill">
                   <div class="body3d-dot" style="background:#FF3B30;box-shadow:0 0 6px 2px rgba(255,59,48,.6)"></div>
                   <div><div class="body3d-pname">12% Health</div><div class="body3d-psub">Heart</div></div>
                 </div>
               </div>
-              <div class="body3d-label" id="lbl-liver">
+              <div class="body3d-label vis" id="lbl-liver" style="left:62%;top:47%">
                 <div class="body3d-pill">
                   <div class="body3d-dot" style="background:#FF9500;box-shadow:0 0 6px 2px rgba(255,149,0,.6)"></div>
                   <div><div class="body3d-pname">High Fat Risk</div><div class="body3d-psub">Liver</div></div>
@@ -2573,150 +2578,6 @@
   <button class="pwa-close" id="pwaDismiss">✕</button>
 </div>
 
-<!-- importmap: tells the browser how to resolve bare 'three' imports inside OrbitControls -->
-<script type="importmap">
-{
-  "imports": {
-    "three": "https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js",
-    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"
-  }
-}
-</script>
-<script type="module">
-import * as THREE from 'three';
-import { OrbitControls }  from 'three/addons/controls/OrbitControls.js';
-import { GLTFLoader }     from 'three/addons/loaders/GLTFLoader.js';
-import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
-import { RenderPass }     from 'three/addons/postprocessing/RenderPass.js';
-import { UnrealBloomPass} from 'three/addons/postprocessing/UnrealBloomPass.js';
-import { OutputPass }     from 'three/addons/postprocessing/OutputPass.js';
-import HolographicMaterial from './HolographicMaterial.js';
-
-const wrap   = document.getElementById('body3dWrap');
-const canvas = document.getElementById('body3dCanvas');
-
-function init() {
-  const W = wrap.clientWidth, H = wrap.clientHeight;
-  if (W === 0 || H === 0) { requestAnimationFrame(init); return; }
-
-  /* Scene */
-  const scene = new THREE.Scene();
-  scene.background = new THREE.Color(0x020c1a);
-
-  /* Camera — framed from upper thigh to above head */
-  const camera = new THREE.PerspectiveCamera(42, W / H, 0.01, 100);
-  camera.position.set(0.2, 1.1, 2.6);
-  camera.lookAt(0, 1.05, 0);
-
-  /* Renderer */
-  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
-  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
-  renderer.setSize(W, H);
-  renderer.toneMapping = THREE.ReinhardToneMapping;
-  renderer.toneMappingExposure = 1.2;
-  renderer.outputColorSpace = THREE.SRGBColorSpace;
-
-  /* Controls */
-  const controls = new OrbitControls(camera, canvas);
-  controls.target.set(0, 1.05, 0);
-  controls.enablePan  = false;
-  controls.enableZoom = false;
-  controls.minPolarAngle = Math.PI * 0.1;
-  controls.maxPolarAngle = Math.PI * 0.9;
-  controls.autoRotate      = true;
-  controls.autoRotateSpeed = 0.6;
-  controls.update();
-
-  /* Holographic material — dark interior, glowing edges only */
-  const mat = new HolographicMaterial({
-    hologramColor:      '#3388ff',
-    scanlineSize:       0,
-    fresnelAmount:      0.78,
-    fresnelOpacity:     0.88,
-    hologramBrightness: 0.05,
-    enableBlinking:     false,
-    blinkFresnelOnly:   false,
-    hologramOpacity:    1.0,
-    side:               THREE.DoubleSide,
-  });
-
-  /* Very subtle bloom — only the brightest edge highlights bloom */
-  const composer = new EffectComposer(renderer);
-  composer.addPass(new RenderPass(scene, camera));
-  const bloom = new UnrealBloomPass(new THREE.Vector2(W, H), 0.35, 0.5, 0.38);
-  composer.addPass(bloom);
-  composer.addPass(new OutputPass());
-
-  /* Annotations */
-  const annots = [
-    { id:'lbl-thyroid', pos: new THREE.Vector3( 0.07, 1.55, 0.12), ox:  64, oy: -28 },
-    { id:'lbl-heart',   pos: new THREE.Vector3(-0.14, 1.28, 0.15), ox: -74, oy:  -8 },
-    { id:'lbl-liver',   pos: new THREE.Vector3( 0.14, 1.06, 0.14), ox:  68, oy:   0 },
-  ];
-  const vp = new THREE.Vector3();
-  function updateAnnotations() {
-    const CW = wrap.clientWidth, CH = wrap.clientHeight;
-    annots.forEach(a => {
-      const el = document.getElementById(a.id);
-      if (!el) return;
-      vp.copy(a.pos).project(camera);
-      el.style.left = ((vp.x * 0.5 + 0.5) * CW + a.ox) + 'px';
-      el.style.top  = ((-vp.y * 0.5 + 0.5) * CH + a.oy) + 'px';
-    });
-  }
-
-  /* Load human body model */
-  new GLTFLoader().load('./body.glb', gltf => {
-    const model = gltf.scene;
-
-    /* Place feet at y=0 */
-    const box = new THREE.Box3().setFromObject(model);
-    model.position.x -= (box.min.x + box.max.x) / 2;
-    model.position.z -= (box.min.z + box.max.z) / 2;
-    model.position.y -= box.min.y;
-
-    /* Bring arms down from T-pose → natural A-pose */
-    model.traverse(child => {
-      if (child.name === 'mixamorig:LeftArm')  child.rotation.z += 0.92;
-      if (child.name === 'mixamorig:RightArm') child.rotation.z -= 0.92;
-    });
-
-    /* Apply holographic material to every mesh */
-    model.traverse(child => {
-      if (child.isMesh) child.material = mat;
-    });
-
-    scene.add(model);
-
-    /* Show annotations after model loads */
-    setTimeout(() => annots.forEach(a => {
-      const el = document.getElementById(a.id);
-      if (el) el.classList.add('vis');
-    }), 800);
-  });
-
-  /* Render loop */
-  (function tick() {
-    requestAnimationFrame(tick);
-    controls.update();
-    mat.update();
-    composer.render();
-    updateAnnotations();
-  })();
-
-  /* Resize */
-  new ResizeObserver(() => {
-    const rw = wrap.clientWidth, rh = wrap.clientHeight;
-    camera.aspect = rw / rh;
-    camera.updateProjectionMatrix();
-    renderer.setSize(rw, rh);
-    composer.setSize(rw, rh);
-    bloom.resolution.set(rw, rh);
-  }).observe(wrap);
-}
-
-requestAnimationFrame(init);
-</script>
 
 <script>
   // Service worker
