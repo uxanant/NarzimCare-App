@@ -887,11 +887,8 @@
   .voice-ring.stop{ animation:none; }
 
   /* ===== anatomy direct embed ===== */
-  .anat-embed-wrap{ position:relative; width:100%; height:480px; overflow:hidden; background:#efefee; }
-  .anat-embed-inner{ position:absolute; top:0; left:0; width:1000px; height:1400px; transform:scale(0.54) translate(-220px,-120px); transform-origin:top left; }
-  .anat-embed-frame{ width:1000px; height:1400px; border:none; display:block; }
-  .anat-edge-l{ position:absolute; top:0; left:0; width:18px; height:100%; background:#efefee; z-index:10; pointer-events:auto; }
-  .anat-edge-r{ position:absolute; top:0; right:0; width:18px; height:100%; background:#efefee; z-index:10; pointer-events:auto; }
+  .anat-embed-wrap{ position:relative; width:100%; background:#fff; display:flex; align-items:center; justify-content:center; }
+  .anat-body-img{ width:100%; display:block; object-fit:contain; }
   .anat-embed-bar{ position:absolute; bottom:0; left:0; right:0; display:flex; align-items:center; justify-content:space-between; padding:10px 14px 12px; background:linear-gradient(to top,rgba(20,20,24,.85) 0%,transparent 100%); }
   .anat-embed-hint{ font-size:11.5px; color:rgba(255,255,255,.65); }
   .anat-embed-badge{ position:absolute; top:10px; left:12px; background:rgba(0,0,0,.5); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); padding:4px 10px; border-radius:20px; font-size:11px; font-weight:600; color:#fff; letter-spacing:.01em; }
@@ -1042,19 +1039,9 @@
               </div>
             </div>
 
-            <!-- Anatomy — full width hero -->
+            <!-- Anatomy — full width illustration -->
             <div class="anat-embed-wrap">
-              <div class="anat-embed-inner">
-                <iframe
-                  id="anatomy-home-frame"
-                  class="anat-embed-frame"
-                  src="https://human-atlas-seven.vercel.app/"
-                  title="Human Anatomy Atlas"
-                  allow="fullscreen">
-                </iframe>
-              </div>
-              <div class="anat-edge-l"></div>
-              <div class="anat-edge-r"></div>
+              <img src="/assets/anatomy-body.png" class="anat-body-img" alt="Human Anatomy" />
             </div>
 
             <div class="pad">
