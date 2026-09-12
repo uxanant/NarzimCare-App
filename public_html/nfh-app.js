@@ -706,17 +706,6 @@
   updateClock();
   setInterval(updateClock, 30000);
 
-  /* ─── Full-screen anatomy iframe — lazy load on first open ─── */
-  const anatObs = new MutationObserver(() => {
-    const pane = panes['anatomy'];
-    if (pane && pane.classList.contains('active')) {
-      const iframe = document.getElementById('anatomy-full-frame');
-      if (iframe && iframe.src !== iframe.dataset.src) {
-        iframe.src = iframe.dataset.src;
-      }
-    }
-  });
-  if (panes['anatomy']) anatObs.observe(panes['anatomy'], { attributeFilter: ['class'] });
 
   /* ─── Init ─── */
   initSplash();

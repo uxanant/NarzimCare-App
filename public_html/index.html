@@ -882,12 +882,14 @@
   .voice-ring.stop{ animation:none; }
 
   /* ===== anatomy direct embed ===== */
-  .anat-embed-wrap{ position:relative; width:100%; height:270px; overflow:hidden; }
-  .anat-embed-inner{ position:absolute; top:0; left:0; width:1000px; height:780px; transform:scale(0.35); transform-origin:top left; }
-  .anat-embed-frame{ width:1000px; height:780px; border:none; display:block; }
-  .anat-embed-bar{ display:flex; align-items:center; justify-content:space-between; padding:9px 14px; border-top:0.5px solid var(--hair-2); }
-  .anat-embed-hint{ font-size:11.5px; color:var(--muted); }
-  .anat-fs-btn{ height:28px; padding:0 11px; border-radius:8px; background:rgba(1,96,102,.08); border:none; color:var(--brand); font-size:12px; font-weight:600; font-family:inherit; display:inline-flex; align-items:center; gap:5px; cursor:pointer; }
+  .anat-embed-wrap{ position:relative; width:100%; height:460px; overflow:hidden; background:#f0f0ef; }
+  .anat-embed-inner{ position:absolute; top:-48px; left:0; width:1000px; height:1430px; transform:scale(0.39); transform-origin:top left; }
+  .anat-embed-frame{ width:1000px; height:1430px; border:none; display:block; }
+  .anat-rpanel-mask{ position:absolute; top:0; right:0; width:26px; height:100%; background:linear-gradient(to left,#f0f0ef 50%,transparent); z-index:5; pointer-events:auto; }
+  .anat-embed-bar{ position:absolute; bottom:0; left:0; right:0; display:flex; align-items:center; justify-content:space-between; padding:10px 14px 12px; background:linear-gradient(to top,rgba(20,20,24,.85) 0%,transparent 100%); }
+  .anat-embed-hint{ font-size:11.5px; color:rgba(255,255,255,.65); }
+  .anat-embed-badge{ position:absolute; top:10px; left:12px; background:rgba(0,0,0,.5); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); padding:4px 10px; border-radius:20px; font-size:11px; font-weight:600; color:#fff; letter-spacing:.01em; }
+  .anat-fs-btn{ height:30px; padding:0 13px; border-radius:20px; background:rgba(255,255,255,.18); border:1px solid rgba(255,255,255,.25); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); color:#fff; font-size:12px; font-weight:600; font-family:inherit; display:inline-flex; align-items:center; gap:5px; cursor:pointer; }
   /* anatomy full-screen viewer */
   .anat-viewer-pane{ background:#1a1a1e; }
   .anat-viewer-pane .body{ overflow:hidden; }
@@ -992,21 +994,40 @@
 
         <!-- ============ HOME ============ -->
         <section class="pane active mc-home" data-screen="home" data-screen-label="Dashboard">
-          <div class="body"><div class="pad">
+          <div class="body">
 
-            <div class="hm-nav">
-              <div style="flex:1;min-width:0;">
-                <div class="hm-eyebrow">Friday, 13 June</div>
-                <div class="hm-title">Good morning</div>
+            <!-- Header -->
+            <div class="pad" style="padding-bottom:0;">
+              <div class="hm-nav">
+                <div style="flex:1;min-width:0;">
+                  <div class="hm-eyebrow">Friday, 13 June</div>
+                  <div class="hm-title">Good morning</div>
+                </div>
+                <button class="hm-iconbtn" data-go="notifications" aria-label="Notifications">
+                  <svg><use href="#i-bell"/></svg><span class="notif-badge">3</span>
+                </button>
+                <button class="hm-member" data-homefilter>
+                  <span class="pdot" data-hf-dot></span><span data-hf-name>Mateo</span>
+                  <svg><use href="#i-chevron"/></svg>
+                </button>
               </div>
-              <button class="hm-iconbtn" data-go="notifications" aria-label="Notifications">
-                <svg><use href="#i-bell"/></svg><span class="notif-badge">3</span>
-              </button>
-              <button class="hm-member" data-homefilter>
-                <span class="pdot" data-hf-dot></span><span data-hf-name>Mateo</span>
-                <svg><use href="#i-chevron"/></svg>
-              </button>
             </div>
+
+            <!-- Anatomy — full width hero -->
+            <div class="anat-embed-wrap">
+              <div class="anat-embed-inner">
+                <iframe
+                  id="anatomy-home-frame"
+                  class="anat-embed-frame"
+                  src="https://human-atlas-seven.vercel.app/"
+                  title="Human Anatomy Atlas"
+                  allow="fullscreen">
+                </iframe>
+              </div>
+              <div class="anat-rpanel-mask"></div>
+            </div>
+
+            <div class="pad">
 
             <div class="hm-group">
               <div class="hm-card">
@@ -1019,34 +1040,6 @@
                     <button class="hm-mood" data-mood="Okay"><span class="fc"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.2"/><path d="M8.6 14.6h6.8"/><path d="M9 9.4h.01M15 9.4h.01"/></svg></span>Okay</button>
                     <button class="hm-mood" data-mood="Low"><span class="fc"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.2"/><path d="M8.4 15.6a4.4 4.4 0 0 1 7.2 0"/><path d="M9 9.4h.01M15 9.4h.01"/></svg></span>Low</button>
                   </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Anatomy -->
-            <div class="hm-group">
-              <div class="hm-glabel" style="display:flex;align-items:center;justify-content:space-between;">
-                Anatomy
-                <span style="font-size:11px;font-weight:500;color:var(--muted);">BodyParts3D · 2,234 structures</span>
-              </div>
-              <div class="hm-card" style="padding:0;">
-                <div class="anat-embed-wrap">
-                  <div class="anat-embed-inner">
-                    <iframe
-                      id="anatomy-home-frame"
-                      class="anat-embed-frame"
-                      src="https://human-atlas-seven.vercel.app/"
-                      title="Human Anatomy Atlas"
-                      allow="fullscreen">
-                    </iframe>
-                  </div>
-                </div>
-                <div class="anat-embed-bar">
-                  <span class="anat-embed-hint">Drag to rotate · Pinch to zoom</span>
-                  <button class="anat-fs-btn" data-go="anatomy">
-                    Full screen
-                    <svg style="width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"><use href="#i-chevron"/></svg>
-                  </button>
                 </div>
               </div>
             </div>
