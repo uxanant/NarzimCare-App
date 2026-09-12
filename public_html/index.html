@@ -2627,23 +2627,23 @@ function init() {
   controls.autoRotateSpeed = 0.6;
   controls.update();
 
-  /* Holographic material — no scan lines, moderate Fresnel glow */
+  /* Holographic material — dark interior, glowing edges only */
   const mat = new HolographicMaterial({
     hologramColor:      '#3388ff',
     scanlineSize:       0,
-    fresnelAmount:      0.85,
-    fresnelOpacity:     0.9,
-    hologramBrightness: 0.12,
+    fresnelAmount:      0.78,
+    fresnelOpacity:     0.88,
+    hologramBrightness: 0.05,
     enableBlinking:     false,
     blinkFresnelOnly:   false,
     hologramOpacity:    1.0,
     side:               THREE.DoubleSide,
   });
 
-  /* Bloom — moderate, only blooms the bright holographic edges */
+  /* Very subtle bloom — only the brightest edge highlights bloom */
   const composer = new EffectComposer(renderer);
   composer.addPass(new RenderPass(scene, camera));
-  const bloom = new UnrealBloomPass(new THREE.Vector2(W, H), 1.0, 0.6, 0.22);
+  const bloom = new UnrealBloomPass(new THREE.Vector2(W, H), 0.35, 0.5, 0.38);
   composer.addPass(bloom);
   composer.addPass(new OutputPass());
 
@@ -2674,6 +2674,12 @@ function init() {
     model.position.x -= (box.min.x + box.max.x) / 2;
     model.position.z -= (box.min.z + box.max.z) / 2;
     model.position.y -= box.min.y;
+
+    /* Bring arms down from T-pose → natural A-pose */
+    model.traverse(child => {
+      if (child.name === 'mixamorig:LeftArm')  child.rotation.z += 0.92;
+      if (child.name === 'mixamorig:RightArm') child.rotation.z -= 0.92;
+    });
 
     /* Apply holographic material to every mesh */
     model.traverse(child => {
