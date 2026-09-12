@@ -7,6 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#016066">
+<link rel="manifest" href="/manifest.json">
 <title>Narzim · Family Health</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -899,6 +900,17 @@
   .anat-viewer-pane .body{ overflow:hidden; }
   .anat-full-frame{ width:100%; height:100%; border:none; display:block; }
   .anat-back{ position:absolute; top:10px; left:12px; z-index:100; width:36px; height:36px; border-radius:50%; background:rgba(0,0,0,.45); border:none; cursor:pointer; display:grid; place-items:center; backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); }
+
+  /* ── PWA install banner ── */
+  .pwa-banner{ position:fixed; bottom:0; left:0; right:0; z-index:9999; padding:14px 16px calc(14px + env(safe-area-inset-bottom)); background:#fff; box-shadow:0 -1px 0 rgba(0,0,0,.08), 0 -8px 32px rgba(0,0,0,.12); display:flex; align-items:center; gap:12px; transform:translateY(110%); transition:transform .4s cubic-bezier(.32,.72,0,1); }
+  .pwa-banner.show{ transform:translateY(0); }
+  .pwa-icon{ width:48px; height:48px; border-radius:12px; background:var(--brand); flex-shrink:0; display:grid; place-items:center; }
+  .pwa-icon svg{ width:26px; height:26px; stroke:#fff; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+  .pwa-text{ flex:1; min-width:0; }
+  .pwa-title{ font-size:14px; font-weight:600; color:var(--text); }
+  .pwa-sub{ font-size:12px; color:var(--muted); margin-top:1px; }
+  .pwa-install{ height:36px; padding:0 16px; border-radius:20px; background:var(--brand); border:none; color:#fff; font-size:13px; font-weight:600; font-family:inherit; cursor:pointer; flex-shrink:0; }
+  .pwa-close{ width:28px; height:28px; border-radius:50%; background:rgba(120,120,128,.12); border:none; cursor:pointer; display:grid; place-items:center; flex-shrink:0; color:var(--muted); font-size:16px; line-height:1; }
 
   /* ── Real mobile device: fill full screen, hide fake frame ── */
   @media (max-width: 480px) {
@@ -2535,5 +2547,58 @@
 </div>
 
 <script src="nfh-app.js"></script>
+
+<!-- PWA install banner -->
+<div class="pwa-banner" id="pwaBanner">
+  <div class="pwa-icon">
+    <svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+  </div>
+  <div class="pwa-text">
+    <div class="pwa-title">Install Narzim</div>
+    <div class="pwa-sub">Add to home screen for quick access</div>
+  </div>
+  <button class="pwa-install" id="pwaInstall">Install</button>
+  <button class="pwa-close" id="pwaDismiss">✕</button>
+</div>
+
+<script>
+  // Service worker
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js');
+  }
+
+  // Install prompt
+  let deferredPrompt;
+  const banner = document.getElementById('pwaBanner');
+  const installBtn = document.getElementById('pwaInstall');
+  const dismissBtn = document.getElementById('pwaDismiss');
+
+  window.addEventListener('beforeinstallprompt', e => {
+    e.preventDefault();
+    deferredPrompt = e;
+    if (!localStorage.getItem('pwa-dismissed')) {
+      setTimeout(() => banner.classList.add('show'), 2000);
+    }
+  });
+
+  installBtn.addEventListener('click', async () => {
+    banner.classList.remove('show');
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      await deferredPrompt.userChoice;
+      deferredPrompt = null;
+    }
+  });
+
+  dismissBtn.addEventListener('click', () => {
+    banner.classList.remove('show');
+    localStorage.setItem('pwa-dismissed', '1');
+  });
+
+  window.addEventListener('appinstalled', () => {
+    banner.classList.remove('show');
+    deferredPrompt = null;
+  });
+</script>
 </body>
 </html>

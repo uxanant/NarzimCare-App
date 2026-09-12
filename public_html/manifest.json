@@ -1,0 +1,14 @@
+{
+  "name": "Narzim Care",
+  "short_name": "Narzim",
+  "description": "Your family health companion",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F6F7F7",
+  "theme_color": "#016066",
+  "orientation": "portrait-primary",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}
