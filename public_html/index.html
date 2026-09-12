@@ -1048,7 +1048,6 @@
               <iframe
                 id="body3dFrame"
                 class="body3d-frame"
-                src="https://sketchfab.com/models/0c51abd24b4342c292e891730a907459/embed?autostart=1&ui_controls=0&ui_infos=0&ui_inspector=0&ui_settings=0&ui_ar=0&ui_fullscreen=0&ui_annotations=0&dnt=1&preload=1&transparent=1"
                 allow="autoplay; fullscreen; xr-spatial-tracking"
                 title="3D Body Model">
               </iframe>
@@ -2617,6 +2616,62 @@
     banner.classList.remove('show');
     deferredPrompt = null;
   });
+</script>
+
+<!-- Sketchfab Viewer API — load male-only from 3-character model -->
+<script src="https://static.sketchfab.com/api/sketchfab-viewer-1.12.1.js"></script>
+<script>
+(function() {
+  var iframe = document.getElementById('body3dFrame');
+  var uid = '0c51abd24b4342c292e891730a907459';
+  var client = new Sketchfab(iframe);
+
+  client.init(uid, {
+    autostart: 1,
+    preload: 1,
+    ui_controls: 0,
+    ui_infos: 0,
+    ui_inspector: 0,
+    ui_settings: 0,
+    ui_ar: 0,
+    ui_fullscreen: 0,
+    ui_annotations: 0,
+    dnt: 1,
+    transparent: 0,
+
+    success: function(api) {
+      api.start();
+      api.addEventListener('viewerready', function() {
+
+        api.getNodeMap(function(err, nodes) {
+          if (err) return;
+
+          // Log all node names so we can identify male vs female vs child
+          console.log('[Sketchfab nodes]');
+          Object.keys(nodes).forEach(function(id) {
+            console.log(id, nodes[id].type, JSON.stringify(nodes[id].name));
+          });
+
+          // Keywords that suggest female or child — hide those nodes
+          var hideWords = ['female','woman','girl','child','kid','boy','enfant','fille','femme'];
+          Object.keys(nodes).forEach(function(id) {
+            var name = (nodes[id].name || '').toLowerCase();
+            var shouldHide = hideWords.some(function(w){ return name.indexOf(w) !== -1; });
+            if (shouldHide) {
+              api.hide(parseInt(id));
+              console.log('[hide]', id, nodes[id].name);
+            }
+          });
+        });
+
+      });
+    },
+
+    error: function() {
+      console.error('Sketchfab viewer failed to init');
+    }
+  });
+})();
 </script>
 </body>
 </html>
