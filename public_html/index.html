@@ -2627,23 +2627,23 @@ function init() {
   controls.autoRotateSpeed = 0.6;
   controls.update();
 
-  /* Holographic material — scan lines OFF, strong Fresnel edge glow */
+  /* Holographic material — no scan lines, moderate Fresnel glow */
   const mat = new HolographicMaterial({
-    hologramColor:      '#4499ff',
+    hologramColor:      '#3388ff',
     scanlineSize:       0,
-    fresnelAmount:      1.4,
-    fresnelOpacity:     1.0,
-    hologramBrightness: 0.28,
+    fresnelAmount:      0.85,
+    fresnelOpacity:     0.9,
+    hologramBrightness: 0.12,
     enableBlinking:     false,
     blinkFresnelOnly:   false,
     hologramOpacity:    1.0,
     side:               THREE.DoubleSide,
   });
 
-  /* Bloom post-processing — creates the soft inner glow */
+  /* Bloom — moderate, only blooms the bright holographic edges */
   const composer = new EffectComposer(renderer);
   composer.addPass(new RenderPass(scene, camera));
-  const bloom = new UnrealBloomPass(new THREE.Vector2(W, H), 2.0, 0.9, 0.0);
+  const bloom = new UnrealBloomPass(new THREE.Vector2(W, H), 1.0, 0.6, 0.22);
   composer.addPass(bloom);
   composer.addPass(new OutputPass());
 
