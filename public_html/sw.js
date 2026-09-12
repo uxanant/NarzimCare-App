@@ -1,5 +1,5 @@
-const CACHE = 'narzim-v2';
-const SHELL = ['/', '/index.html', '/nfh-app.js', '/manifest.json', '/icon-192.png', '/icon-512.png'];
+const CACHE = 'narzim-v3';
+const SHELL = ['/', '/index.html', '/nfh-app.js', '/manifest.json', '/icon-192.png', '/icon-512.png', '/HolographicMaterial.js', '/body.glb'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL)).then(() => self.skipWaiting()));

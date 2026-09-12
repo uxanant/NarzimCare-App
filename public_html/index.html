@@ -2584,11 +2584,16 @@
 </script>
 <script type="module">
 import * as THREE from 'three';
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { OrbitControls }  from 'three/addons/controls/OrbitControls.js';
+import { GLTFLoader }     from 'three/addons/loaders/GLTFLoader.js';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass }     from 'three/addons/postprocessing/RenderPass.js';
+import { UnrealBloomPass} from 'three/addons/postprocessing/UnrealBloomPass.js';
+import { OutputPass }     from 'three/addons/postprocessing/OutputPass.js';
+import HolographicMaterial from './HolographicMaterial.js';
 
 const wrap   = document.getElementById('body3dWrap');
 const canvas = document.getElementById('body3dCanvas');
-if (!wrap || !canvas) { console.error('body3d elements missing'); }
 
 function init() {
   const W = wrap.clientWidth, H = wrap.clientHeight;
@@ -2596,131 +2601,58 @@ function init() {
 
   /* Scene */
   const scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x020c1a);
 
-  /* Camera — framed head-to-hip */
-  const camera = new THREE.PerspectiveCamera(40, W / H, 0.01, 100);
-  camera.position.set(0.18, 0.08, 2.45);
-  camera.lookAt(0, 0.05, 0);
+  /* Camera — framed from upper thigh to above head */
+  const camera = new THREE.PerspectiveCamera(42, W / H, 0.01, 100);
+  camera.position.set(0.2, 1.1, 2.6);
+  camera.lookAt(0, 1.05, 0);
 
-  /* Renderer — alpha:true so CSS gradient behind canvas shows through */
-  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+  /* Renderer */
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
   renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
   renderer.setSize(W, H);
-  renderer.setClearColor(0x000000, 0);
+  renderer.toneMapping = THREE.ReinhardToneMapping;
+  renderer.toneMappingExposure = 1.2;
   renderer.outputColorSpace = THREE.SRGBColorSpace;
 
   /* Controls */
   const controls = new OrbitControls(camera, canvas);
-  controls.target.set(0, 0.05, 0);
+  controls.target.set(0, 1.05, 0);
   controls.enablePan  = false;
   controls.enableZoom = false;
-  controls.minPolarAngle = Math.PI * 0.12;
-  controls.maxPolarAngle = Math.PI * 0.88;
+  controls.minPolarAngle = Math.PI * 0.1;
+  controls.maxPolarAngle = Math.PI * 0.9;
   controls.autoRotate      = true;
-  controls.autoRotateSpeed = 0.5;
+  controls.autoRotateSpeed = 0.6;
   controls.update();
 
-  /* Lights */
-  scene.add(new THREE.AmbientLight(0x0a1a33, 3.0));
-  const key = new THREE.DirectionalLight(0x99ccee, 3.8);
-  key.position.set(1.5, 3, 2.5);
-  scene.add(key);
-  const rim = new THREE.DirectionalLight(0x00ccff, 3.2);
-  rim.position.set(-1.5, 1.5, -3);
-  scene.add(rim);
-  const fill = new THREE.DirectionalLight(0x003366, 1.4);
-  fill.position.set(0, -3, 1.5);
-  scene.add(fill);
-
-  /* Material */
-  const mat = new THREE.MeshStandardMaterial({
-    color: new THREE.Color(0x0a5f88),
-    emissive: new THREE.Color(0x011e3a),
-    emissiveIntensity: 0.45,
-    metalness: 0.12,
-    roughness: 0.20,
+  /* Holographic material — scan lines OFF, strong Fresnel edge glow */
+  const mat = new HolographicMaterial({
+    hologramColor:      '#4499ff',
+    scanlineSize:       0,
+    fresnelAmount:      1.4,
+    fresnelOpacity:     1.0,
+    hologramBrightness: 0.28,
+    enableBlinking:     false,
+    blinkFresnelOnly:   false,
+    hologramOpacity:    1.0,
+    side:               THREE.DoubleSide,
   });
 
-  function cyl(rt, rb, h, s = 14) { return new THREE.CylinderGeometry(rt, rb, h, s); }
-  function sph(r, ws = 18, hs = 14) { return new THREE.SphereGeometry(r, ws, hs); }
-  function mesh(geo, x, y, z) {
-    const m = new THREE.Mesh(geo, mat);
-    m.position.set(x, y, z);
-    return m;
-  }
-
-  const body = new THREE.Group();
-
-  /* Head */
-  const head = mesh(sph(0.124, 22, 16), 0, 0.81, 0);
-  head.scale.set(1, 1.1, 0.93);
-  body.add(head);
-
-  /* Neck */
-  body.add(mesh(cyl(0.049, 0.055, 0.115, 12), 0, 0.64, 0));
-
-  /* Torso — LatheGeometry = smooth shoulder→waist→hip curve */
-  const pts = [
-    new THREE.Vector2(0.07,  0.51),
-    new THREE.Vector2(0.16,  0.44),
-    new THREE.Vector2(0.175, 0.35),
-    new THREE.Vector2(0.162, 0.22),
-    new THREE.Vector2(0.132, 0.10),
-    new THREE.Vector2(0.142, 0.00),
-    new THREE.Vector2(0.160,-0.09),
-    new THREE.Vector2(0.154,-0.17),
-  ];
-  const torso = new THREE.Mesh(new THREE.LatheGeometry(pts, 30), mat);
-  torso.scale.set(1, 1, 0.64);
-  body.add(torso);
-
-  /* Arms + Shoulders */
-  [-1, 1].forEach(s => {
-    body.add(mesh(sph(0.082, 16, 12), s * 0.214, 0.43, 0));
-
-    const ua = mesh(cyl(0.052, 0.044, 0.26, 12), s * 0.286, 0.28, 0);
-    ua.rotation.z = s * 0.13;
-    body.add(ua);
-
-    body.add(mesh(sph(0.044, 12, 8), s * 0.31, 0.13, 0));
-
-    const fa = mesh(cyl(0.041, 0.034, 0.24, 12), s * 0.32, 0.00, 0);
-    fa.rotation.z = s * 0.06;
-    body.add(fa);
-
-    const hd = mesh(sph(0.037, 12, 8), s * 0.325, -0.125, 0);
-    hd.scale.set(1.25, 0.68, 0.85);
-    body.add(hd);
-  });
-
-  /* Pelvis */
-  body.add(mesh(cyl(0.152, 0.136, 0.09, 20), 0, -0.215, 0));
-
-  /* Legs */
-  [-1, 1].forEach(s => {
-    const ox = s * 0.094;
-    body.add(mesh(sph(0.08, 14, 10),            ox, -0.235, 0));
-    body.add(mesh(cyl(0.072, 0.056, 0.33, 14),  ox, -0.42,  0));
-    body.add(mesh(sph(0.056, 12, 8),             ox, -0.60,  0));
-    body.add(mesh(cyl(0.050, 0.038, 0.29, 12),  ox, -0.76,  0));
-    body.add(mesh(sph(0.036, 10, 8),             ox, -0.915, 0));
-    const ft = mesh(new THREE.BoxGeometry(0.092, 0.036, 0.165), ox, -0.935, 0.038);
-    body.add(ft);
-  });
-
-  scene.add(body);
+  /* Bloom post-processing — creates the soft inner glow */
+  const composer = new EffectComposer(renderer);
+  composer.addPass(new RenderPass(scene, camera));
+  const bloom = new UnrealBloomPass(new THREE.Vector2(W, H), 2.0, 0.9, 0.0);
+  composer.addPass(bloom);
+  composer.addPass(new OutputPass());
 
   /* Annotations */
   const annots = [
-    { id:'lbl-thyroid', pos: new THREE.Vector3( 0.06,  0.66, 0.11), ox:  62, oy: -28 },
-    { id:'lbl-heart',   pos: new THREE.Vector3(-0.13,  0.30, 0.16), ox: -72, oy:  -8 },
-    { id:'lbl-liver',   pos: new THREE.Vector3( 0.12,  0.05, 0.15), ox:  68, oy:   0 },
+    { id:'lbl-thyroid', pos: new THREE.Vector3( 0.07, 1.55, 0.12), ox:  64, oy: -28 },
+    { id:'lbl-heart',   pos: new THREE.Vector3(-0.14, 1.28, 0.15), ox: -74, oy:  -8 },
+    { id:'lbl-liver',   pos: new THREE.Vector3( 0.14, 1.06, 0.14), ox:  68, oy:   0 },
   ];
-  setTimeout(() => annots.forEach(a => {
-    const el = document.getElementById(a.id);
-    if (el) el.classList.add('vis');
-  }), 1200);
-
   const vp = new THREE.Vector3();
   function updateAnnotations() {
     const CW = wrap.clientWidth, CH = wrap.clientHeight;
@@ -2733,11 +2665,36 @@ function init() {
     });
   }
 
+  /* Load human body model */
+  new GLTFLoader().load('./body.glb', gltf => {
+    const model = gltf.scene;
+
+    /* Place feet at y=0 */
+    const box = new THREE.Box3().setFromObject(model);
+    model.position.x -= (box.min.x + box.max.x) / 2;
+    model.position.z -= (box.min.z + box.max.z) / 2;
+    model.position.y -= box.min.y;
+
+    /* Apply holographic material to every mesh */
+    model.traverse(child => {
+      if (child.isMesh) child.material = mat;
+    });
+
+    scene.add(model);
+
+    /* Show annotations after model loads */
+    setTimeout(() => annots.forEach(a => {
+      const el = document.getElementById(a.id);
+      if (el) el.classList.add('vis');
+    }), 800);
+  });
+
   /* Render loop */
   (function tick() {
     requestAnimationFrame(tick);
     controls.update();
-    renderer.render(scene, camera);
+    mat.update();
+    composer.render();
     updateAnnotations();
   })();
 
@@ -2747,6 +2704,8 @@ function init() {
     camera.aspect = rw / rh;
     camera.updateProjectionMatrix();
     renderer.setSize(rw, rh);
+    composer.setSize(rw, rh);
+    bloom.resolution.set(rw, rh);
   }).observe(wrap);
 }
 
