@@ -2573,197 +2573,184 @@
   <button class="pwa-close" id="pwaDismiss">✕</button>
 </div>
 
+<!-- importmap: tells the browser how to resolve bare 'three' imports inside OrbitControls -->
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"
+  }
+}
+</script>
 <script type="module">
-/* ── 3D Body Viewer ──────────────────────────────────── */
-import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.min.js';
-import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/controls/OrbitControls.js';
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
 const wrap   = document.getElementById('body3dWrap');
 const canvas = document.getElementById('body3dCanvas');
-if (!wrap || !canvas) throw new Error('body3d not found');
+if (!wrap || !canvas) { console.error('body3d elements missing'); }
 
-/* Scene */
-const scene = new THREE.Scene();
+function init() {
+  const W = wrap.clientWidth, H = wrap.clientHeight;
+  if (W === 0 || H === 0) { requestAnimationFrame(init); return; }
 
-/* Camera — framed to show head-to-hip */
-const aspect = wrap.clientWidth / wrap.clientHeight;
-const camera = new THREE.PerspectiveCamera(40, aspect, 0.01, 100);
-camera.position.set(0.18, 0.08, 2.45);
-camera.lookAt(0, 0.05, 0);
+  /* Scene */
+  const scene = new THREE.Scene();
 
-/* Renderer — transparent so CSS gradient shows through */
-const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
-renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
-renderer.setSize(wrap.clientWidth, wrap.clientHeight);
-renderer.setClearColor(0x000000, 0);
-renderer.outputColorSpace = THREE.SRGBColorSpace;
+  /* Camera — framed head-to-hip */
+  const camera = new THREE.PerspectiveCamera(40, W / H, 0.01, 100);
+  camera.position.set(0.18, 0.08, 2.45);
+  camera.lookAt(0, 0.05, 0);
 
-/* Orbit controls */
-const controls = new OrbitControls(camera, canvas);
-controls.target.set(0, 0.05, 0);
-controls.enablePan  = false;
-controls.enableZoom = false;
-controls.minPolarAngle = Math.PI * 0.12;
-controls.maxPolarAngle = Math.PI * 0.88;
-controls.autoRotate      = true;
-controls.autoRotateSpeed = 0.5;
-controls.update();
+  /* Renderer — alpha:true so CSS gradient behind canvas shows through */
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+  renderer.setSize(W, H);
+  renderer.setClearColor(0x000000, 0);
+  renderer.outputColorSpace = THREE.SRGBColorSpace;
 
-/* Lights — key + strong cyan rim from behind = holographic edge glow */
-scene.add(new THREE.AmbientLight(0x0a1a33, 3.0));
+  /* Controls */
+  const controls = new OrbitControls(camera, canvas);
+  controls.target.set(0, 0.05, 0);
+  controls.enablePan  = false;
+  controls.enableZoom = false;
+  controls.minPolarAngle = Math.PI * 0.12;
+  controls.maxPolarAngle = Math.PI * 0.88;
+  controls.autoRotate      = true;
+  controls.autoRotateSpeed = 0.5;
+  controls.update();
 
-const key = new THREE.DirectionalLight(0x99ccee, 3.8);
-key.position.set(1.5, 3, 2.5);
-scene.add(key);
+  /* Lights */
+  scene.add(new THREE.AmbientLight(0x0a1a33, 3.0));
+  const key = new THREE.DirectionalLight(0x99ccee, 3.8);
+  key.position.set(1.5, 3, 2.5);
+  scene.add(key);
+  const rim = new THREE.DirectionalLight(0x00ccff, 3.2);
+  rim.position.set(-1.5, 1.5, -3);
+  scene.add(rim);
+  const fill = new THREE.DirectionalLight(0x003366, 1.4);
+  fill.position.set(0, -3, 1.5);
+  scene.add(fill);
 
-const rim = new THREE.DirectionalLight(0x00ccff, 3.2);
-rim.position.set(-1.5, 1.5, -3);
-scene.add(rim);
+  /* Material */
+  const mat = new THREE.MeshStandardMaterial({
+    color: new THREE.Color(0x0a5f88),
+    emissive: new THREE.Color(0x011e3a),
+    emissiveIntensity: 0.45,
+    metalness: 0.12,
+    roughness: 0.20,
+  });
 
-const fill = new THREE.DirectionalLight(0x003366, 1.4);
-fill.position.set(0, -3, 1.5);
-scene.add(fill);
+  function cyl(rt, rb, h, s = 14) { return new THREE.CylinderGeometry(rt, rb, h, s); }
+  function sph(r, ws = 18, hs = 14) { return new THREE.SphereGeometry(r, ws, hs); }
+  function mesh(geo, x, y, z) {
+    const m = new THREE.Mesh(geo, mat);
+    m.position.set(x, y, z);
+    return m;
+  }
 
-/* Material — deep blue, slightly glossy */
-const mat = new THREE.MeshStandardMaterial({
-  color:             new THREE.Color(0x0a5f88),
-  emissive:          new THREE.Color(0x011e3a),
-  emissiveIntensity: 0.45,
-  metalness:         0.12,
-  roughness:         0.20,
-});
+  const body = new THREE.Group();
 
-/* ── Body mesh helpers ─────────────── */
-function cyl(rt, rb, h, s = 14) { return new THREE.CylinderGeometry(rt, rb, h, s); }
-function sph(r,  ws = 18, hs = 14) { return new THREE.SphereGeometry(r, ws, hs); }
+  /* Head */
+  const head = mesh(sph(0.124, 22, 16), 0, 0.81, 0);
+  head.scale.set(1, 1.1, 0.93);
+  body.add(head);
 
-const body = new THREE.Group();
+  /* Neck */
+  body.add(mesh(cyl(0.049, 0.055, 0.115, 12), 0, 0.64, 0));
 
-/* Head */
-const head = new THREE.Mesh(sph(0.124, 22, 16), mat);
-head.position.set(0, 0.81, 0);
-head.scale.set(1, 1.1, 0.93);
-body.add(head);
+  /* Torso — LatheGeometry = smooth shoulder→waist→hip curve */
+  const pts = [
+    new THREE.Vector2(0.07,  0.51),
+    new THREE.Vector2(0.16,  0.44),
+    new THREE.Vector2(0.175, 0.35),
+    new THREE.Vector2(0.162, 0.22),
+    new THREE.Vector2(0.132, 0.10),
+    new THREE.Vector2(0.142, 0.00),
+    new THREE.Vector2(0.160,-0.09),
+    new THREE.Vector2(0.154,-0.17),
+  ];
+  const torso = new THREE.Mesh(new THREE.LatheGeometry(pts, 30), mat);
+  torso.scale.set(1, 1, 0.64);
+  body.add(torso);
 
-/* Neck */
-body.add(Object.assign(new THREE.Mesh(cyl(0.049, 0.055, 0.115, 12), mat), { position: new THREE.Vector3(0, 0.64, 0) }));
+  /* Arms + Shoulders */
+  [-1, 1].forEach(s => {
+    body.add(mesh(sph(0.082, 16, 12), s * 0.214, 0.43, 0));
 
-/* Torso — LatheGeometry traces the body profile */
-const pts = [
-  new THREE.Vector2(0.07,  0.51),
-  new THREE.Vector2(0.16,  0.44),
-  new THREE.Vector2(0.175, 0.35),
-  new THREE.Vector2(0.162, 0.22),
-  new THREE.Vector2(0.132, 0.10),
-  new THREE.Vector2(0.142, 0.00),
-  new THREE.Vector2(0.160,-0.09),
-  new THREE.Vector2(0.154,-0.17),
-];
-const torso = new THREE.Mesh(new THREE.LatheGeometry(pts, 30), mat);
-torso.scale.set(1, 1, 0.64); /* flatten front-to-back like a real torso */
-body.add(torso);
+    const ua = mesh(cyl(0.052, 0.044, 0.26, 12), s * 0.286, 0.28, 0);
+    ua.rotation.z = s * 0.13;
+    body.add(ua);
 
-/* Arms + shoulders */
-[-1, 1].forEach(s => {
-  const sh = new THREE.Mesh(sph(0.082, 16, 12), mat);
-  sh.position.set(s * 0.214, 0.43, 0);
-  body.add(sh);
+    body.add(mesh(sph(0.044, 12, 8), s * 0.31, 0.13, 0));
 
-  const ua = new THREE.Mesh(cyl(0.052, 0.044, 0.26, 12), mat);
-  ua.position.set(s * 0.286, 0.28, 0);
-  ua.rotation.z = s * 0.13;
-  body.add(ua);
+    const fa = mesh(cyl(0.041, 0.034, 0.24, 12), s * 0.32, 0.00, 0);
+    fa.rotation.z = s * 0.06;
+    body.add(fa);
 
-  const el = new THREE.Mesh(sph(0.044, 12, 8), mat);
-  el.position.set(s * 0.31, 0.13, 0);
-  body.add(el);
+    const hd = mesh(sph(0.037, 12, 8), s * 0.325, -0.125, 0);
+    hd.scale.set(1.25, 0.68, 0.85);
+    body.add(hd);
+  });
 
-  const fa = new THREE.Mesh(cyl(0.041, 0.034, 0.24, 12), mat);
-  fa.position.set(s * 0.32, 0.00, 0);
-  fa.rotation.z = s * 0.06;
-  body.add(fa);
+  /* Pelvis */
+  body.add(mesh(cyl(0.152, 0.136, 0.09, 20), 0, -0.215, 0));
 
-  const hd = new THREE.Mesh(sph(0.037, 12, 8), mat);
-  hd.position.set(s * 0.325, -0.125, 0);
-  hd.scale.set(1.25, 0.68, 0.85);
-  body.add(hd);
-});
+  /* Legs */
+  [-1, 1].forEach(s => {
+    const ox = s * 0.094;
+    body.add(mesh(sph(0.08, 14, 10),            ox, -0.235, 0));
+    body.add(mesh(cyl(0.072, 0.056, 0.33, 14),  ox, -0.42,  0));
+    body.add(mesh(sph(0.056, 12, 8),             ox, -0.60,  0));
+    body.add(mesh(cyl(0.050, 0.038, 0.29, 12),  ox, -0.76,  0));
+    body.add(mesh(sph(0.036, 10, 8),             ox, -0.915, 0));
+    const ft = mesh(new THREE.BoxGeometry(0.092, 0.036, 0.165), ox, -0.935, 0.038);
+    body.add(ft);
+  });
 
-/* Pelvis */
-body.add(Object.assign(new THREE.Mesh(cyl(0.152, 0.136, 0.09, 20), mat), { position: new THREE.Vector3(0, -0.215, 0) }));
+  scene.add(body);
 
-/* Legs */
-[-1, 1].forEach(s => {
-  const ox = s * 0.094;
-
-  const hip = new THREE.Mesh(sph(0.08, 14, 10), mat);
-  hip.position.set(ox, -0.235, 0);
-  body.add(hip);
-
-  const th = new THREE.Mesh(cyl(0.072, 0.056, 0.33, 14), mat);
-  th.position.set(ox, -0.42, 0);
-  body.add(th);
-
-  const kn = new THREE.Mesh(sph(0.056, 12, 8), mat);
-  kn.position.set(ox, -0.60, 0);
-  body.add(kn);
-
-  const ca = new THREE.Mesh(cyl(0.050, 0.038, 0.29, 12), mat);
-  ca.position.set(ox, -0.76, 0);
-  body.add(ca);
-
-  const an = new THREE.Mesh(sph(0.036, 10, 8), mat);
-  an.position.set(ox, -0.915, 0);
-  body.add(an);
-
-  const ft = new THREE.Mesh(new THREE.BoxGeometry(0.092, 0.036, 0.165), mat);
-  ft.position.set(ox, -0.935, 0.038);
-  body.add(ft);
-});
-
-scene.add(body);
-
-/* ── Annotations ─────────────────────── */
-const annots = [
-  { id:'lbl-thyroid', pos: new THREE.Vector3( 0.06,  0.66, 0.11), ox:  62, oy: -28 },
-  { id:'lbl-heart',   pos: new THREE.Vector3(-0.13,  0.30, 0.16), ox: -72, oy: -8  },
-  { id:'lbl-liver',   pos: new THREE.Vector3( 0.12,  0.05, 0.15), ox:  68, oy:  0  },
-];
-
-setTimeout(() => {
-  annots.forEach(a => {
+  /* Annotations */
+  const annots = [
+    { id:'lbl-thyroid', pos: new THREE.Vector3( 0.06,  0.66, 0.11), ox:  62, oy: -28 },
+    { id:'lbl-heart',   pos: new THREE.Vector3(-0.13,  0.30, 0.16), ox: -72, oy:  -8 },
+    { id:'lbl-liver',   pos: new THREE.Vector3( 0.12,  0.05, 0.15), ox:  68, oy:   0 },
+  ];
+  setTimeout(() => annots.forEach(a => {
     const el = document.getElementById(a.id);
     if (el) el.classList.add('vis');
-  });
-}, 1200);
+  }), 1200);
 
-const vp = new THREE.Vector3();
-function updateAnnotations() {
-  const W = wrap.clientWidth, H = wrap.clientHeight;
-  annots.forEach(a => {
-    const el = document.getElementById(a.id);
-    if (!el) return;
-    vp.copy(a.pos).project(camera);
-    el.style.left = ((vp.x * 0.5 + 0.5) * W + a.ox) + 'px';
-    el.style.top  = ((-vp.y * 0.5 + 0.5) * H + a.oy) + 'px';
-  });
+  const vp = new THREE.Vector3();
+  function updateAnnotations() {
+    const CW = wrap.clientWidth, CH = wrap.clientHeight;
+    annots.forEach(a => {
+      const el = document.getElementById(a.id);
+      if (!el) return;
+      vp.copy(a.pos).project(camera);
+      el.style.left = ((vp.x * 0.5 + 0.5) * CW + a.ox) + 'px';
+      el.style.top  = ((-vp.y * 0.5 + 0.5) * CH + a.oy) + 'px';
+    });
+  }
+
+  /* Render loop */
+  (function tick() {
+    requestAnimationFrame(tick);
+    controls.update();
+    renderer.render(scene, camera);
+    updateAnnotations();
+  })();
+
+  /* Resize */
+  new ResizeObserver(() => {
+    const rw = wrap.clientWidth, rh = wrap.clientHeight;
+    camera.aspect = rw / rh;
+    camera.updateProjectionMatrix();
+    renderer.setSize(rw, rh);
+  }).observe(wrap);
 }
 
-/* ── Render loop ─────────────────────── */
-(function tick() {
-  requestAnimationFrame(tick);
-  controls.update();
-  renderer.render(scene, camera);
-  updateAnnotations();
-})();
-
-/* ── Resize ──────────────────────────── */
-new ResizeObserver(() => {
-  const w = wrap.clientWidth, h = wrap.clientHeight;
-  camera.aspect = w / h;
-  camera.updateProjectionMatrix();
-  renderer.setSize(w, h);
-}).observe(wrap);
+requestAnimationFrame(init);
 </script>
 
 <script>
