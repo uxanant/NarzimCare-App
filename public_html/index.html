@@ -886,9 +886,12 @@
   .voice-ring:nth-child(3){ inset:-20px;opacity:.22;animation-delay:.5s; }
   .voice-ring.stop{ animation:none; }
 
-  /* ===== anatomy direct embed ===== */
-  .anat-embed-wrap{ position:relative; width:100%; background:#fff; display:flex; align-items:center; justify-content:center; }
-  .anat-body-img{ width:100%; display:block; object-fit:contain; }
+  /* ===== anatomy SVG illustration ===== */
+  .anat-embed-wrap{ position:relative; width:100%; background:#fff; }
+  .anat-svg{ width:100%; display:block; }
+  .anat-organ{ cursor:pointer; transition:filter .2s; }
+  .anat-organ:active{ filter:brightness(1.18) drop-shadow(0 0 6px rgba(100,160,220,.7)); }
+  .anat-tip{ position:absolute; background:rgba(20,40,80,.88); color:#fff; font-size:12px; font-weight:600; padding:5px 12px; border-radius:20px; pointer-events:none; white-space:nowrap; display:none; transform:translateX(-50%); }
   .anat-embed-bar{ position:absolute; bottom:0; left:0; right:0; display:flex; align-items:center; justify-content:space-between; padding:10px 14px 12px; background:linear-gradient(to top,rgba(20,20,24,.85) 0%,transparent 100%); }
   .anat-embed-hint{ font-size:11.5px; color:rgba(255,255,255,.65); }
   .anat-embed-badge{ position:absolute; top:10px; left:12px; background:rgba(0,0,0,.5); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); padding:4px 10px; border-radius:20px; font-size:11px; font-weight:600; color:#fff; letter-spacing:.01em; }
@@ -1039,10 +1042,215 @@
               </div>
             </div>
 
-            <!-- Anatomy — full width illustration -->
-            <div class="anat-embed-wrap">
-              <img src="/assets/anatomy-body.png" class="anat-body-img" alt="Human Anatomy" />
+            <!-- Anatomy — SVG illustration -->
+            <div class="anat-embed-wrap" id="anatWrap">
+              <div class="anat-tip" id="anatTip"></div>
+              <svg class="anat-svg" viewBox="0 0 390 800" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <radialGradient id="bodyG" cx="50%" cy="35%" r="70%"><stop offset="0%" stop-color="#d8edf8" stop-opacity=".75"/><stop offset="100%" stop-color="#8bbcd8" stop-opacity=".9"/></radialGradient>
+                  <radialGradient id="lungG" cx="40%" cy="35%" r="65%"><stop offset="0%" stop-color="#f5cccc"/><stop offset="100%" stop-color="#e89898"/></radialGradient>
+                  <radialGradient id="heartG" cx="38%" cy="32%" r="65%"><stop offset="0%" stop-color="#e86060"/><stop offset="100%" stop-color="#bb2020"/></radialGradient>
+                  <radialGradient id="liverG" cx="45%" cy="38%" r="62%"><stop offset="0%" stop-color="#c86038"/><stop offset="100%" stop-color="#8b3515"/></radialGradient>
+                  <radialGradient id="stomG" cx="45%" cy="38%" r="62%"><stop offset="0%" stop-color="#d88898"/><stop offset="100%" stop-color="#b06878"/></radialGradient>
+                  <radialGradient id="intG" cx="50%" cy="40%" r="60%"><stop offset="0%" stop-color="#f0b8b8"/><stop offset="100%" stop-color="#d89898"/></radialGradient>
+                  <radialGradient id="brainG" cx="50%" cy="38%" r="62%"><stop offset="0%" stop-color="#d8b8cc"/><stop offset="100%" stop-color="#b898a8"/></radialGradient>
+                  <radialGradient id="kidneyG" cx="45%" cy="38%" r="62%"><stop offset="0%" stop-color="#c85040"/><stop offset="100%" stop-color="#8a3030"/></radialGradient>
+                  <clipPath id="bClip">
+                    <path d="M195,9 C222,9 247,25 250,50 C254,75 248,108 238,130 C230,146 218,155 215,160 L213,187 L283,191 C311,195 330,212 332,234 L340,362 C340,376 330,385 320,385 L316,485 C320,498 325,525 326,548 L348,572 C352,586 343,598 331,598 L317,598 C305,598 298,588 298,577 L296,550 L310,462 C302,450 294,442 284,440 L268,458 L260,645 C264,656 268,664 268,675 C268,685 262,692 253,692 L242,692 C233,692 226,685 226,675 C226,664 229,655 231,645 L225,478 L210,462 L195,465 L180,462 L165,478 L159,645 C161,655 164,664 164,675 C164,685 157,692 148,692 L137,692 C128,692 122,685 122,675 C122,664 126,656 130,645 L122,458 L106,440 C96,442 88,450 80,462 L94,550 L92,577 C92,588 85,598 73,598 L59,598 C47,598 38,586 42,572 L64,548 C65,525 70,498 74,485 L70,385 C60,385 50,376 50,362 L58,234 C60,212 79,195 107,191 L177,187 L175,160 C172,155 160,146 152,130 C142,108 136,75 140,50 C143,25 168,9 195,9 Z"/>
+                  </clipPath>
+                </defs>
+
+                <!-- ── BODY FILL ── -->
+                <path d="M195,9 C222,9 247,25 250,50 C254,75 248,108 238,130 C230,146 218,155 215,160 L213,187 L283,191 C311,195 330,212 332,234 L340,362 C340,376 330,385 320,385 L316,485 C320,498 325,525 326,548 L348,572 C352,586 343,598 331,598 L317,598 C305,598 298,588 298,577 L296,550 L310,462 C302,450 294,442 284,440 L268,458 L260,645 C264,656 268,664 268,675 C268,685 262,692 253,692 L242,692 C233,692 226,685 226,675 C226,664 229,655 231,645 L225,478 L210,462 L195,465 L180,462 L165,478 L159,645 C161,655 164,664 164,675 C164,685 157,692 148,692 L137,692 C128,692 122,685 122,675 C122,664 126,656 130,645 L122,458 L106,440 C96,442 88,450 80,462 L94,550 L92,577 C92,588 85,598 73,598 L59,598 C47,598 38,586 42,572 L64,548 C65,525 70,498 74,485 L70,385 C60,385 50,376 50,362 L58,234 C60,212 79,195 107,191 L177,187 L175,160 C172,155 160,146 152,130 C142,108 136,75 140,50 C143,25 168,9 195,9 Z"
+                      fill="url(#bodyG)" stroke="#70a8d0" stroke-width="1.8"/>
+
+                <!-- ── SKELETON (behind organs) ── -->
+                <g clip-path="url(#bClip)" opacity=".85">
+                  <!-- skull -->
+                  <ellipse cx="195" cy="72" rx="46" ry="57" fill="none" stroke="#a8c8e2" stroke-width="1.4"/>
+                  <path d="M160,122 Q195,138 230,122" fill="none" stroke="#a8c8e2" stroke-width="1.2"/>
+                  <!-- clavicles -->
+                  <path d="M178,192 Q155,186 122,198" fill="none" stroke="#a8c8e2" stroke-width="2" stroke-linecap="round"/>
+                  <path d="M212,192 Q235,186 268,198" fill="none" stroke="#a8c8e2" stroke-width="2" stroke-linecap="round"/>
+                  <!-- sternum -->
+                  <rect x="188" y="194" width="14" height="88" rx="5" fill="#b8d4ea" opacity=".75"/>
+                  <!-- ribs L -->
+                  <path d="M189,210 Q166,216 136,232" fill="none" stroke="#a8c8e2" stroke-width="1.1" opacity=".9"/>
+                  <path d="M189,226 Q163,233 132,252" fill="none" stroke="#a8c8e2" stroke-width="1.1" opacity=".9"/>
+                  <path d="M189,242 Q160,250 130,272" fill="none" stroke="#a8c8e2" stroke-width="1.1" opacity=".85"/>
+                  <path d="M189,258 Q159,267 130,292" fill="none" stroke="#a8c8e2" stroke-width="1" opacity=".78"/>
+                  <path d="M189,274 Q161,284 133,310" fill="none" stroke="#a8c8e2" stroke-width=".9" opacity=".65"/>
+                  <!-- ribs R -->
+                  <path d="M201,210 Q224,216 254,232" fill="none" stroke="#a8c8e2" stroke-width="1.1" opacity=".9"/>
+                  <path d="M201,226 Q227,233 258,252" fill="none" stroke="#a8c8e2" stroke-width="1.1" opacity=".9"/>
+                  <path d="M201,242 Q230,250 260,272" fill="none" stroke="#a8c8e2" stroke-width="1.1" opacity=".85"/>
+                  <path d="M201,258 Q231,267 260,292" fill="none" stroke="#a8c8e2" stroke-width="1" opacity=".78"/>
+                  <path d="M201,274 Q229,284 257,310" fill="none" stroke="#a8c8e2" stroke-width=".9" opacity=".65"/>
+                  <!-- spine -->
+                  <path d="M195,190 L195,448" fill="none" stroke="#a8c8e2" stroke-width="3" stroke-dasharray="7,5" stroke-linecap="round" opacity=".8"/>
+                  <!-- pelvis -->
+                  <path d="M128,448 Q145,470 195,474 Q245,470 262,448 Q270,488 258,512 Q242,528 195,530 Q148,528 132,512 Q120,488 128,448Z" fill="none" stroke="#a8c8e2" stroke-width="1.6" opacity=".9"/>
+                  <!-- knee caps -->
+                  <ellipse cx="154" cy="638" rx="24" ry="21" fill="#c4dced" stroke="#a8c8e2" stroke-width="1.3"/>
+                  <ellipse cx="236" cy="638" rx="24" ry="21" fill="#c4dced" stroke="#a8c8e2" stroke-width="1.3"/>
+                  <!-- shin bones L -->
+                  <line x1="148" y1="662" x2="145" y2="752" stroke="#a8c8e2" stroke-width="2.2"/>
+                  <line x1="160" y1="664" x2="162" y2="752" stroke="#a8c8e2" stroke-width="1.3"/>
+                  <!-- shin bones R -->
+                  <line x1="242" y1="662" x2="245" y2="752" stroke="#a8c8e2" stroke-width="2.2"/>
+                  <line x1="230" y1="664" x2="228" y2="752" stroke="#a8c8e2" stroke-width="1.3"/>
+                  <!-- forearm bones L -->
+                  <line x1="74" y1="388" x2="64" y2="535" stroke="#a8c8e2" stroke-width="2"/>
+                  <line x1="83" y1="390" x2="76" y2="535" stroke="#a8c8e2" stroke-width="1.2"/>
+                  <!-- forearm bones R -->
+                  <line x1="316" y1="388" x2="326" y2="535" stroke="#a8c8e2" stroke-width="2"/>
+                  <line x1="307" y1="390" x2="314" y2="535" stroke="#a8c8e2" stroke-width="1.2"/>
+                  <!-- hand bones L -->
+                  <line x1="54" y1="558" x2="47" y2="585" stroke="#a8c8e2" stroke-width="1.1" opacity=".85"/>
+                  <line x1="62" y1="560" x2="57" y2="588" stroke="#a8c8e2" stroke-width="1.1" opacity=".85"/>
+                  <line x1="70" y1="561" x2="67" y2="589" stroke="#a8c8e2" stroke-width="1.1" opacity=".85"/>
+                  <line x1="78" y1="559" x2="76" y2="585" stroke="#a8c8e2" stroke-width="1.1" opacity=".85"/>
+                  <line x1="85" y1="555" x2="84" y2="580" stroke="#a8c8e2" stroke-width="1.1" opacity=".85"/>
+                  <!-- hand bones R -->
+                  <line x1="336" y1="558" x2="343" y2="585" stroke="#a8c8e2" stroke-width="1.1" opacity=".85"/>
+                  <line x1="328" y1="560" x2="333" y2="588" stroke="#a8c8e2" stroke-width="1.1" opacity=".85"/>
+                  <line x1="320" y1="561" x2="323" y2="589" stroke="#a8c8e2" stroke-width="1.1" opacity=".85"/>
+                  <line x1="312" y1="559" x2="314" y2="585" stroke="#a8c8e2" stroke-width="1.1" opacity=".85"/>
+                  <line x1="305" y1="555" x2="306" y2="580" stroke="#a8c8e2" stroke-width="1.1" opacity=".85"/>
+                </g>
+
+                <!-- ── ORGANS (clipped to body) ── -->
+                <g clip-path="url(#bClip)">
+
+                  <!-- BRAIN -->
+                  <g class="anat-organ" data-label="Brain">
+                    <ellipse cx="195" cy="62" rx="40" ry="33" fill="url(#brainG)" stroke="#c0a0b5" stroke-width="1"/>
+                    <path d="M168,55 Q182,46 195,55 Q208,46 222,55" fill="none" stroke="#b890a8" stroke-width="1.1" stroke-linecap="round"/>
+                    <path d="M165,68 Q180,57 195,68 Q210,57 225,68" fill="none" stroke="#b890a8" stroke-width="1.1" stroke-linecap="round"/>
+                    <path d="M168,80 Q182,70 195,80 Q208,70 222,80" fill="none" stroke="#b890a8" stroke-width="1" stroke-linecap="round"/>
+                    <line x1="195" y1="30" x2="195" y2="93" stroke="#c0a0b5" stroke-width="1" opacity=".5"/>
+                    <!-- brain stem -->
+                    <rect x="189" y="93" width="12" height="38" rx="5" fill="#c8a8bc" stroke="#b890a8" stroke-width=".8"/>
+                  </g>
+
+                  <!-- TRACHEA -->
+                  <rect x="189" y="131" width="12" height="62" rx="5" fill="#d5e8f5" stroke="#a8c4de" stroke-width=".9" opacity=".9"/>
+                  <line x1="189" y1="141" x2="201" y2="141" stroke="#a8c4de" stroke-width="1.3" opacity=".8"/>
+                  <line x1="189" y1="151" x2="201" y2="151" stroke="#a8c4de" stroke-width="1.3" opacity=".8"/>
+                  <line x1="189" y1="161" x2="201" y2="161" stroke="#a8c4de" stroke-width="1.3" opacity=".8"/>
+                  <line x1="189" y1="171" x2="201" y2="171" stroke="#a8c4de" stroke-width="1.3" opacity=".8"/>
+
+                  <!-- LEFT LUNG -->
+                  <g class="anat-organ" data-label="Left Lung">
+                    <path d="M186,200 C168,202 138,220 128,252 C118,284 126,322 140,342 C150,356 164,360 176,355 C186,350 188,338 188,320 L188,202 Z"
+                          fill="url(#lungG)" stroke="#d89090" stroke-width="1" opacity=".93"/>
+                    <path d="M140,285 Q152,272 165,285" fill="none" stroke="#c07878" stroke-width=".9" opacity=".7"/>
+                  </g>
+
+                  <!-- RIGHT LUNG -->
+                  <g class="anat-organ" data-label="Right Lung">
+                    <path d="M204,200 C222,202 252,220 262,252 C272,284 264,322 250,342 C240,356 226,360 214,355 C204,350 202,338 202,320 L202,202 Z"
+                          fill="url(#lungG)" stroke="#d89090" stroke-width="1" opacity=".93"/>
+                    <path d="M250,285 Q238,272 225,285" fill="none" stroke="#c07878" stroke-width=".9" opacity=".7"/>
+                    <path d="M252,310 Q240,298 227,310" fill="none" stroke="#c07878" stroke-width=".9" opacity=".55"/>
+                  </g>
+
+                  <!-- HEART -->
+                  <g class="anat-organ" data-label="Heart">
+                    <path d="M177,222 C170,210 154,210 148,222 C142,234 146,248 165,264 C176,274 184,280 187,283 C190,280 198,274 209,264 C226,250 228,234 224,222 C218,210 204,210 198,222 C194,214 187,208 187,208 C187,208 181,214 177,222 Z"
+                          fill="url(#heartG)" stroke="#cc2020" stroke-width=".9" opacity=".94"/>
+                    <!-- aorta -->
+                    <path d="M187,210 Q187,198 194,192 Q202,186 202,210" fill="none" stroke="#cc2020" stroke-width="2.2" stroke-linecap="round" opacity=".85"/>
+                    <!-- pulmonary -->
+                    <path d="M175,218 Q168,208 158,205" fill="none" stroke="#6699cc" stroke-width="1.8" stroke-linecap="round" opacity=".7"/>
+                    <path d="M200,215 Q208,205 218,205" fill="none" stroke="#ee5555" stroke-width="1.8" stroke-linecap="round" opacity=".7"/>
+                  </g>
+
+                  <!-- LIVER -->
+                  <g class="anat-organ" data-label="Liver">
+                    <path d="M194,348 C218,342 250,346 264,358 C276,368 275,386 265,396 C255,406 236,410 216,406 C200,402 190,390 190,374 L190,348 Z"
+                          fill="url(#liverG)" stroke="#8b3515" stroke-width=".9" opacity=".92"/>
+                  </g>
+
+                  <!-- GALLBLADDER -->
+                  <g class="anat-organ" data-label="Gallbladder">
+                    <ellipse cx="216" cy="408" rx="12" ry="10" fill="#a0b838" stroke="#788028" stroke-width=".8" opacity=".88"/>
+                  </g>
+
+                  <!-- STOMACH -->
+                  <g class="anat-organ" data-label="Stomach">
+                    <path d="M190,350 C182,344 160,348 148,362 C136,376 140,400 154,406 C164,412 178,406 186,394 C193,384 193,364 190,350 Z"
+                          fill="url(#stomG)" stroke="#b06878" stroke-width=".9" opacity=".9"/>
+                  </g>
+
+                  <!-- KIDNEYS -->
+                  <g class="anat-organ" data-label="Left Kidney" opacity=".65">
+                    <ellipse cx="165" cy="378" rx="15" ry="22" fill="url(#kidneyG)" stroke="#8a3030" stroke-width=".8"/>
+                  </g>
+                  <g class="anat-organ" data-label="Right Kidney" opacity=".65">
+                    <ellipse cx="225" cy="378" rx="15" ry="22" fill="url(#kidneyG)" stroke="#8a3030" stroke-width=".8"/>
+                  </g>
+
+                  <!-- LARGE INTESTINE outline -->
+                  <g class="anat-organ" data-label="Large Intestine" opacity=".8">
+                    <!-- ascending right -->
+                    <path d="M228,476 Q236,448 234,412 Q232,396 226,386" fill="none" stroke="#d08888" stroke-width="7" stroke-linecap="round"/>
+                    <!-- transverse top -->
+                    <path d="M226,386 Q212,378 195,378 Q178,378 164,384" fill="none" stroke="#d08888" stroke-width="7" stroke-linecap="round"/>
+                    <!-- descending left -->
+                    <path d="M164,384 Q154,400 154,422 Q154,450 158,476" fill="none" stroke="#d08888" stroke-width="7" stroke-linecap="round"/>
+                    <!-- sigmoid -->
+                    <path d="M158,476 Q164,492 180,494 Q195,494 212,492 Q224,490 228,478" fill="none" stroke="#d08888" stroke-width="7" stroke-linecap="round"/>
+                    <!-- rectum -->
+                    <path d="M195,494 Q195,514 195,528" fill="none" stroke="#d08888" stroke-width="6" stroke-linecap="round"/>
+                  </g>
+
+                  <!-- SMALL INTESTINE coils -->
+                  <g class="anat-organ" data-label="Small Intestine" opacity=".88">
+                    <path d="M163,416 Q176,408 190,416 Q204,424 218,416 Q226,412 228,420" fill="none" stroke="#e8a0a0" stroke-width="4.5" stroke-linecap="round"/>
+                    <path d="M161,430 Q175,422 190,430 Q204,438 218,430 Q225,426 226,434" fill="none" stroke="#e8a0a0" stroke-width="4.5" stroke-linecap="round"/>
+                    <path d="M162,444 Q176,436 190,444 Q204,452 217,444 Q224,440 224,448" fill="none" stroke="#e8a0a0" stroke-width="4.5" stroke-linecap="round"/>
+                    <path d="M163,458 Q177,450 190,458 Q203,466 215,458 Q221,454 220,462" fill="none" stroke="#e8a0a0" stroke-width="4.5" stroke-linecap="round"/>
+                    <path d="M165,472 Q178,464 190,472 Q202,480 212,472" fill="none" stroke="#e8a0a0" stroke-width="4.5" stroke-linecap="round"/>
+                  </g>
+
+                  <!-- BLADDER -->
+                  <g class="anat-organ" data-label="Bladder" opacity=".78">
+                    <ellipse cx="195" cy="530" rx="24" ry="18" fill="#c8d8f2" stroke="#98b0de" stroke-width=".9"/>
+                  </g>
+
+                </g>
+
+                <!-- ── BODY OUTLINE on top (clean edge) ── -->
+                <path d="M195,9 C222,9 247,25 250,50 C254,75 248,108 238,130 C230,146 218,155 215,160 L213,187 L283,191 C311,195 330,212 332,234 L340,362 C340,376 330,385 320,385 L316,485 C320,498 325,525 326,548 L348,572 C352,586 343,598 331,598 L317,598 C305,598 298,588 298,577 L296,550 L310,462 C302,450 294,442 284,440 L268,458 L260,645 C264,656 268,664 268,675 C268,685 262,692 253,692 L242,692 C233,692 226,685 226,675 C226,664 229,655 231,645 L225,478 L210,462 L195,465 L180,462 L165,478 L159,645 C161,655 164,664 164,675 C164,685 157,692 148,692 L137,692 C128,692 122,685 122,675 C122,664 126,656 130,645 L122,458 L106,440 C96,442 88,450 80,462 L94,550 L92,577 C92,588 85,598 73,598 L59,598 C47,598 38,586 42,572 L64,548 C65,525 70,498 74,485 L70,385 C60,385 50,376 50,362 L58,234 C60,212 79,195 107,191 L177,187 L175,160 C172,155 160,146 152,130 C142,108 136,75 140,50 C143,25 168,9 195,9 Z"
+                      fill="none" stroke="#68a4cc" stroke-width="2"/>
+
+                <!-- face (subtle) -->
+                <ellipse cx="182" cy="84" rx="5" ry="6" fill="#d5e8f5" stroke="#98c0dc" stroke-width=".8" opacity=".5"/>
+                <ellipse cx="208" cy="84" rx="5" ry="6" fill="#d5e8f5" stroke="#98c0dc" stroke-width=".8" opacity=".5"/>
+                <path d="M184,100 Q195,107 206,100" fill="none" stroke="#90b8d0" stroke-width="1" stroke-linecap="round" opacity=".5"/>
+              </svg>
             </div>
+
+            <script>
+              (function(){
+                var organs = document.querySelectorAll('.anat-organ');
+                var tip = document.getElementById('anatTip');
+                var wrap = document.getElementById('anatWrap');
+                organs.forEach(function(g){
+                  g.addEventListener('click', function(e){
+                    var label = g.dataset.label;
+                    var rect = wrap.getBoundingClientRect();
+                    tip.textContent = label;
+                    tip.style.display = 'block';
+                    tip.style.left = (e.clientX - rect.left) + 'px';
+                    tip.style.top = (e.clientY - rect.top - 36) + 'px';
+                    clearTimeout(wrap._tt);
+                    wrap._tt = setTimeout(function(){ tip.style.display='none'; }, 2000);
+                  });
+                });
+              })();
+            </script>
 
             <div class="pad">
 
