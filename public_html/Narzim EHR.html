@@ -1,0 +1,711 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Narzim EHR — The AI-native EHR for clinics of every specialty</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=Caveat:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: {
+          sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+          display: ['"Bricolage Grotesque"', 'Inter', 'sans-serif'],
+          hand: ['Caveat', 'cursive'],
+          mono: ['"JetBrains Mono"', 'ui-monospace', 'monospace'],
+        },
+        colors: {
+          brand: { 50:'#ECFCFD', 100:'#CDF3F4', 200:'#A3E7E9', 400:'#2FC4CC', 500:'#0FA3AD', 600:'#0B8791', 700:'#0A6A72', 900:'#08383D' },
+        },
+      },
+    },
+  };
+</script>
+<style>
+  html { scroll-behavior: smooth; }
+  body { font-family:'Inter',sans-serif; -webkit-font-smoothing:antialiased; color:#0F172A; }
+  .font-display { font-family:'Bricolage Grotesque','Inter',sans-serif; }
+  .font-hand { font-family:'Caveat',cursive; }
+  .font-mono { font-family:'JetBrains Mono',ui-monospace,monospace; }
+  *,*::before,*::after { box-sizing:border-box; }
+
+  /* dashboard wallpaper gradient, reused from the product */
+  .mesh {
+    background:
+      radial-gradient(1100px 600px at 18% -5%, rgba(120,212,218,0.50), transparent 60%),
+      radial-gradient(900px 520px at 108% 8%, rgba(140,198,240,0.38), transparent 60%),
+      linear-gradient(140deg, #ECFCFD 0%, #ECFBFC 45%, #EDF4FD 100%);
+  }
+  .mesh-soft {
+    background:
+      radial-gradient(700px 400px at 90% 0%, rgba(150,224,228,0.52), transparent 60%),
+      radial-gradient(600px 360px at 0% 100%, rgba(168,205,245,0.40), transparent 60%),
+      #FBFCFE;
+  }
+
+  ::-webkit-scrollbar { width:11px; height:11px; }
+  ::-webkit-scrollbar-thumb { background:rgba(15,23,42,0.18); border-radius:9999px; border:3px solid transparent; background-clip:padding-box; }
+  ::-webkit-scrollbar-thumb:hover { background:rgba(15,23,42,0.3); background-clip:padding-box; }
+
+  @keyframes floaty { 0%,100%{ transform:translateY(0); } 50%{ transform:translateY(-10px); } }
+  .floaty { animation:floaty 6s ease-in-out infinite; }
+  .floaty-slow { animation:floaty 8s ease-in-out infinite; }
+
+  @keyframes rise { from{ opacity:0; transform:translateY(22px); } to{ opacity:1; transform:translateY(0); } }
+  .reveal { opacity:0; }
+  .reveal.in { animation:rise .7s cubic-bezier(.22,.61,.36,1) forwards; }
+
+  details.faq > summary { list-style:none; cursor:pointer; }
+  details.faq > summary::-webkit-details-marker { display:none; }
+  details.faq[open] .faq-chev { transform:rotate(45deg); }
+  .faq-chev { transition:transform .25s ease; }
+
+  /* live dashboard preview: scale the fixed 1500px app into the frame */
+  .dash-scaler { width:1500px; height:940px; transform-origin:top left; border:0; }
+</style>
+</head>
+<body class="bg-white">
+
+<!-- ─────────────────────────  NAV  ───────────────────────── -->
+<header id="nav" class="fixed top-0 inset-x-0 z-50 transition-all duration-300">
+  <div class="mx-auto max-w-7xl px-5 lg:px-8">
+    <nav class="mt-3 flex items-center gap-2 rounded-2xl bg-white/75 backdrop-blur-xl border border-white/70 shadow-[0_8px_30px_rgba(15,23,42,0.06)] px-3.5 py-2.5">
+      <a href="#top" class="flex items-center gap-2.5 pr-2">
+        <span class="logo-mark"></span>
+        <span class="font-display font-700 text-[20px] tracking-tight text-slate-900">Narzim <span class="text-brand-600">EHR</span></span>
+      </a>
+      <div class="hidden lg:flex items-center gap-1 ml-2 text-[14px] font-500 text-slate-600">
+        <a href="#services" class="px-3 py-2 rounded-lg hover:bg-slate-100/80 hover:text-slate-900 transition">Platform</a>
+        <a href="#ai" class="px-3 py-2 rounded-lg hover:bg-slate-100/80 hover:text-slate-900 transition">AI</a>
+        <a href="#pricing" class="px-3 py-2 rounded-lg hover:bg-slate-100/80 hover:text-slate-900 transition">Pricing</a>
+        <a href="#faq" class="px-3 py-2 rounded-lg hover:bg-slate-100/80 hover:text-slate-900 transition">FAQ</a>
+        <a href="Narzim.html" class="px-3 py-2 rounded-lg hover:bg-slate-100/80 hover:text-slate-900 transition">For patients</a>
+      </div>
+      <div class="flex-1"></div>
+      <a href="Narzim Login.html" data-clinic-login class="hidden sm:inline-flex h-10 items-center px-4 rounded-xl text-[14px] font-600 text-slate-700 hover:bg-slate-100 transition">Log in</a>
+      <a href="#demo" class="inline-flex h-10 items-center gap-1.5 px-4 rounded-xl text-[14px] font-600 text-white bg-brand-500 hover:bg-brand-600 shadow-sm shadow-brand-500/30 transition">
+        Book a demo
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+    </nav>
+  </div>
+</header>
+
+<!-- ─────────────────────────  HERO  ───────────────────────── -->
+<section id="top" class="mesh relative overflow-hidden pt-32 lg:pt-40 pb-20">
+  <!-- floating accent blobs -->
+  <div class="pointer-events-none absolute -top-10 right-[8%] size-40 rounded-full bg-brand-200/50 blur-2xl floaty-slow"></div>
+  <div class="pointer-events-none absolute top-40 left-[4%] size-32 rounded-full bg-pink-200/50 blur-2xl floaty"></div>
+
+  <div class="mx-auto max-w-7xl px-5 lg:px-8">
+    <div class="grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] gap-12 lg:gap-10 items-center">
+      <!-- copy -->
+      <div class="reveal">
+        <span class="inline-flex items-center gap-2 rounded-full bg-white/70 border border-white/80 px-3 py-1.5 text-[13px] font-600 text-brand-700 shadow-sm">
+          <span class="size-1.5 rounded-full bg-emerald-500"></span>
+          Narzim EHR · now with the Narzim AI copilot
+        </span>
+        <h1 class="font-display font-800 tracking-tight text-slate-900 mt-5 text-[44px] sm:text-[58px] leading-[1.02]">
+          The warm, AI-native EHR built for <span class="text-brand-500">every specialty</span>.
+        </h1>
+        <p class="mt-5 text-[18px] leading-relaxed text-slate-600 max-w-xl">
+          Narzim runs the whole clinic day — scheduling, charting, vitals, billing and patient messaging — with an AI copilot that drafts notes and surfaces what matters. Less clicking, more caring.
+        </p>
+        <div class="mt-7 flex flex-wrap items-center gap-3">
+          <a href="#demo" class="inline-flex h-12 items-center gap-2 px-6 rounded-xl text-[15px] font-600 text-white bg-brand-500 hover:bg-brand-600 shadow-lg shadow-brand-500/30 transition active:scale-[.98]">
+            Book a demo
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+          <a href="Narzim Login.html" data-clinic-login class="inline-flex h-12 items-center gap-2 px-6 rounded-xl text-[15px] font-600 text-slate-800 bg-white border border-slate-200 hover:bg-slate-50 shadow-sm transition active:scale-[.98]">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M10 17l5-5-5-5M15 12H3M14 4h5a2 2 0 012 2v12a2 2 0 01-2 2h-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Log in to clinic
+          </a>
+        </div>
+        <div class="mt-7 flex items-center gap-5 text-[13px] text-slate-500">
+          <div class="flex -space-x-2">
+            <span class="size-8 rounded-full ring-2 ring-white" style="background:#FECDD3"></span>
+            <span class="size-8 rounded-full ring-2 ring-white" style="background:#A3E7E9"></span>
+            <span class="size-8 rounded-full ring-2 ring-white" style="background:#A3E7E9"></span>
+            <span class="size-8 rounded-full ring-2 ring-white" style="background:#DDD6FE"></span>
+          </div>
+          <p>Trusted by <span class="font-600 text-slate-700">240+ care teams</span> across Latin America</p>
+        </div>
+      </div>
+
+      <!-- live dashboard in a browser frame -->
+      <div class="reveal" style="animation-delay:.12s">
+        <div class="relative">
+          <div class="absolute -inset-4 bg-gradient-to-tr from-brand-200/40 via-transparent to-pink-200/40 blur-2xl rounded-[28px]"></div>
+          <div class="relative rounded-2xl bg-white shadow-[0_30px_70px_-25px_rgba(15,23,42,0.45)] border border-slate-200/70 overflow-hidden">
+            <!-- browser chrome -->
+            <div class="flex items-center gap-2 px-4 h-11 bg-slate-50 border-b border-slate-200">
+              <span class="size-3 rounded-full bg-[#ff6159]"></span>
+              <span class="size-3 rounded-full bg-[#ffbd2e]"></span>
+              <span class="size-3 rounded-full bg-[#28c840]"></span>
+              <div class="flex-1 mx-3 h-6 rounded-md bg-white border border-slate-200 flex items-center justify-center gap-1.5 text-[11px] text-slate-400 font-mono">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none"><path d="M6 10V8a6 6 0 1112 0v2M5 10h14v10H5z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                app.narzim.health
+              </div>
+            </div>
+            <!-- scaled live dashboard -->
+            <div id="heroDashWrap" class="relative bg-[#E3EAF7] overflow-hidden" style="height:470px;">
+              <iframe id="heroDash" class="dash-scaler" src="Chavitos EHR.html" title="Narzim dashboard" scrolling="no" loading="lazy"></iframe>
+              <a href="Narzim Login.html" data-clinic-login class="absolute inset-0" aria-label="Open the dashboard"></a>
+            </div>
+          </div>
+          <!-- floating mini-cards -->
+          <div class="hidden md:flex absolute -left-6 top-24 floaty items-center gap-2.5 rounded-2xl bg-white shadow-xl border border-slate-100 px-3.5 py-2.5">
+            <span class="size-9 rounded-xl bg-emerald-100 text-emerald-600 grid place-items-center">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+            <div>
+              <p class="text-[12px] font-700 text-slate-900 leading-tight">Note signed</p>
+              <p class="text-[11px] text-slate-500">drafted by Narzim AI</p>
+            </div>
+          </div>
+          <div class="hidden md:flex absolute -right-5 bottom-12 floaty-slow items-center gap-2.5 rounded-2xl bg-white shadow-xl border border-slate-100 px-3.5 py-2.5">
+            <span class="size-9 rounded-xl bg-violet-100 text-violet-600 grid place-items-center font-hand text-[22px] leading-none pt-1">N</span>
+            <div>
+              <p class="text-[12px] font-700 text-slate-900 leading-tight">Narzim is thinking…</p>
+              <p class="text-[11px] text-slate-500">summarizing the chart</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────────────────  TRUST STRIP  ───────────────────────── -->
+<section class="bg-white border-y border-slate-100">
+  <div class="mx-auto max-w-7xl px-5 lg:px-8 py-7">
+    <p class="text-center text-[12.5px] font-600 uppercase tracking-[0.18em] text-slate-400">Clinics & specialty practices running on Narzim EHR</p>
+    <div class="mt-5 flex flex-wrap items-center justify-center gap-x-10 gap-y-4 text-slate-400">
+      <span class="font-display font-700 text-[19px]">Chavitos&nbsp;Clinic</span>
+      <span class="font-display font-700 text-[19px]">Clínica&nbsp;Mérida</span>
+      <span class="font-display font-700 text-[19px]">Vida&nbsp;Sana</span>
+      <span class="font-display font-700 text-[19px]">Yucatán&nbsp;Salud</span>
+      <span class="font-display font-700 text-[19px]">Bienestar&nbsp;Médico</span>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────────────────  STATS  ───────────────────────── -->
+<section class="mesh-soft py-16">
+  <div class="mx-auto max-w-7xl px-5 lg:px-8">
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div class="reveal rounded-2xl bg-white border border-slate-100 shadow-sm p-6 text-center">
+        <p class="font-display font-800 text-[40px] text-brand-500 leading-none">2.3M+</p>
+        <p class="mt-2 text-[14px] text-slate-500">visits charted</p>
+      </div>
+      <div class="reveal rounded-2xl bg-white border border-slate-100 shadow-sm p-6 text-center" style="animation-delay:.06s">
+        <p class="font-display font-800 text-[40px] text-emerald-500 leading-none">71%</p>
+        <p class="mt-2 text-[14px] text-slate-500">less time on notes</p>
+      </div>
+      <div class="reveal rounded-2xl bg-white border border-slate-100 shadow-sm p-6 text-center" style="animation-delay:.12s">
+        <p class="font-display font-800 text-[40px] text-violet-500 leading-none">240+</p>
+        <p class="mt-2 text-[14px] text-slate-500">clinics onboarded</p>
+      </div>
+      <div class="reveal rounded-2xl bg-white border border-slate-100 shadow-sm p-6 text-center" style="animation-delay:.18s">
+        <p class="font-display font-800 text-[40px] text-amber-500 leading-none">4.9/5</p>
+        <p class="mt-2 text-[14px] text-slate-500">avg. clinician rating</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────────────────  SERVICES  ───────────────────────── -->
+<section id="services" class="bg-white py-24">
+  <div class="mx-auto max-w-7xl px-5 lg:px-8">
+    <div class="max-w-2xl reveal">
+      <p class="font-hand text-[26px] text-brand-500 leading-none">everything in one place</p>
+      <h2 class="font-display font-800 tracking-tight text-slate-900 text-[38px] sm:text-[46px] leading-[1.05] mt-1">One platform for the whole clinic day</h2>
+      <p class="mt-4 text-[17px] text-slate-600">From the front desk to the exam room to billing — every role works in the same calm, fast system. No more bouncing between tools.</p>
+    </div>
+
+    <div class="mt-12 grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+      <!-- card -->
+      <div class="reveal group rounded-2xl bg-white border border-slate-200/80 shadow-[0_1px_2px_rgba(15,23,42,0.04)] p-6 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+        <span class="size-12 rounded-xl grid place-items-center" style="background:#CDF3F4;color:#0FA3AD">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="17" rx="2.5" stroke="currentColor" stroke-width="2"/><path d="M3 9h18M8 2v4M16 2v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </span>
+        <h3 class="mt-4 font-display font-700 text-[19px] text-slate-900">Smart scheduling</h3>
+        <p class="mt-1.5 text-[14.5px] leading-relaxed text-slate-600">A live appointment book across providers and locations, with waitlists, reminders and one-tap check-in.</p>
+      </div>
+
+      <div class="reveal group rounded-2xl bg-white border border-slate-200/80 shadow-[0_1px_2px_rgba(15,23,42,0.04)] p-6 hover:shadow-xl hover:-translate-y-1 transition-all duration-300" style="animation-delay:.05s">
+        <span class="size-12 rounded-xl grid place-items-center" style="background:#A3E7E9;color:#0B8791">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M9 4H6a2 2 0 00-2 2v13a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-3" stroke="currentColor" stroke-width="2"/><rect x="9" y="2.5" width="6" height="4" rx="1.2" stroke="currentColor" stroke-width="2"/><path d="M8 12h8M8 16h5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </span>
+        <h3 class="mt-4 font-display font-700 text-[19px] text-slate-900">Clinical charting</h3>
+        <p class="mt-1.5 text-[14.5px] leading-relaxed text-slate-600">SOAP notes on a clean clinic letterhead, with specialty-aware templates and an AI scribe that writes as you talk.</p>
+      </div>
+
+      <div class="reveal group rounded-2xl bg-white border border-slate-200/80 shadow-[0_1px_2px_rgba(15,23,42,0.04)] p-6 hover:shadow-xl hover:-translate-y-1 transition-all duration-300" style="animation-delay:.1s">
+        <span class="size-12 rounded-xl grid place-items-center" style="background:#DDD6FE;color:#7C3AED">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M3 12h4l2 6 4-14 2 8h6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+        <h3 class="mt-4 font-display font-700 text-[19px] text-slate-900">Vitals & charts</h3>
+        <p class="mt-1.5 text-[14.5px] leading-relaxed text-slate-600">Nurse-captured vitals with abnormal-range flagging, auto-BMI and trend charts across every visit.</p>
+      </div>
+
+      <div class="reveal group rounded-2xl bg-white border border-slate-200/80 shadow-[0_1px_2px_rgba(15,23,42,0.04)] p-6 hover:shadow-xl hover:-translate-y-1 transition-all duration-300" style="animation-delay:.05s">
+        <span class="size-12 rounded-xl grid place-items-center" style="background:#FDE68A;color:#D97706">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="14" rx="2.5" stroke="currentColor" stroke-width="2"/><path d="M3 10h18M7 15h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </span>
+        <h3 class="mt-4 font-display font-700 text-[19px] text-slate-900">Billing & invoices</h3>
+        <p class="mt-1.5 text-[14.5px] leading-relaxed text-slate-600">Collect payment at checkout, generate invoices in a click, and track every peso with clean financial reports.</p>
+      </div>
+
+      <div class="reveal group rounded-2xl bg-white border border-slate-200/80 shadow-[0_1px_2px_rgba(15,23,42,0.04)] p-6 hover:shadow-xl hover:-translate-y-1 transition-all duration-300" style="animation-delay:.1s">
+        <span class="size-12 rounded-xl grid place-items-center" style="background:#A3E7E9;color:#0B8791">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M21 15a2 2 0 01-2 2H8l-4 4V5a2 2 0 012-2h13a2 2 0 012 2z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+        </span>
+        <h3 class="mt-4 font-display font-700 text-[19px] text-slate-900">Patient messaging</h3>
+        <p class="mt-1.5 text-[14.5px] leading-relaxed text-slate-600">Secure two-way messages, appointment reminders and after-visit summaries patients actually read.</p>
+      </div>
+
+      <div class="reveal group rounded-2xl bg-white border border-slate-200/80 shadow-[0_1px_2px_rgba(15,23,42,0.04)] p-6 hover:shadow-xl hover:-translate-y-1 transition-all duration-300" style="animation-delay:.15s">
+        <span class="size-12 rounded-xl grid place-items-center" style="background:#FBCFE8;color:#DB2777">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="2"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </span>
+        <h3 class="mt-4 font-display font-700 text-[19px] text-slate-900">Patient 360</h3>
+        <p class="mt-1.5 text-[14.5px] leading-relaxed text-slate-600">A complete patient record — history, medications, allergies, visits and results — on a single calm screen.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────────────────  AI  ───────────────────────── -->
+<section id="ai" class="relative overflow-hidden py-24" style="background:linear-gradient(160deg,#062A2F 0%,#08383D 55%,#0C7D86 100%)">
+  <div class="pointer-events-none absolute top-10 right-[6%] size-72 rounded-full bg-brand-400/20 blur-3xl"></div>
+  <div class="pointer-events-none absolute -bottom-10 left-[8%] size-72 rounded-full bg-violet-500/20 blur-3xl"></div>
+  <div class="mx-auto max-w-7xl px-5 lg:px-8 relative">
+    <div class="max-w-2xl reveal">
+      <span class="inline-flex items-center gap-2 rounded-full bg-white/10 border border-white/15 px-3 py-1.5 text-[13px] font-600 text-brand-100">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 3l1.8 4.9L19 9.7l-4.2 2.8L16 18l-4-3-4 3 1.2-5.5L5 9.7l5.2-1.8z" fill="currentColor"/></svg>
+        Meet Narzim AI
+      </span>
+      <h2 class="font-display font-800 tracking-tight text-white text-[38px] sm:text-[46px] leading-[1.05] mt-4">An AI copilot that works the way clinicians think</h2>
+      <p class="mt-4 text-[17px] text-brand-100/80">Narzim sits quietly inside every screen. Ask it anything, and it drafts, summarizes and flags — you stay in control and always review before signing.</p>
+    </div>
+
+    <div class="mt-12 grid lg:grid-cols-[1.1fr_1fr] gap-6 items-stretch">
+      <!-- feature list -->
+      <div class="grid sm:grid-cols-2 gap-4">
+        <div class="reveal rounded-2xl bg-white/[0.07] border border-white/10 backdrop-blur p-6">
+          <span class="size-11 rounded-xl bg-brand-500/90 text-white grid place-items-center">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M8 10h8M8 14h5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><rect x="3" y="4" width="18" height="16" rx="3" stroke="currentColor" stroke-width="2"/></svg>
+          </span>
+          <h3 class="mt-4 font-display font-700 text-[18px] text-white">Ask Narzim</h3>
+          <p class="mt-1.5 text-[14px] leading-relaxed text-brand-100/75">"Summarize this patient's chart", "draft a follow-up to the patient", "who are today's no-shows?" — answered in seconds.</p>
+        </div>
+        <div class="reveal rounded-2xl bg-white/[0.07] border border-white/10 backdrop-blur p-6" style="animation-delay:.06s">
+          <span class="size-11 rounded-xl bg-emerald-500/90 text-white grid place-items-center">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 3v18M8 7a4 4 0 018 0v6a4 4 0 01-8 0z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          <h3 class="mt-4 font-display font-700 text-[18px] text-white">AI scribe</h3>
+          <p class="mt-1.5 text-[14px] leading-relaxed text-brand-100/75">Speak naturally during the visit. Narzim writes a structured SOAP note from the transcript — you just review and edit.</p>
+        </div>
+        <div class="reveal rounded-2xl bg-white/[0.07] border border-white/10 backdrop-blur p-6" style="animation-delay:.12s">
+          <span class="size-11 rounded-xl bg-violet-500/90 text-white grid place-items-center">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M3 12h4l2 6 4-14 2 8h6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          <h3 class="mt-4 font-display font-700 text-[18px] text-white">Smart vitals</h3>
+          <p class="mt-1.5 text-[14px] leading-relaxed text-brand-100/75">Out-of-range readings are flagged with specialty-aware thresholds before the patient ever reaches the provider.</p>
+        </div>
+        <div class="reveal rounded-2xl bg-white/[0.07] border border-white/10 backdrop-blur p-6" style="animation-delay:.18s">
+          <span class="size-11 rounded-xl bg-amber-500/90 text-white grid place-items-center">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 19V5m0 14l5-2 6 2 5-2V3l-5 2-6-2-5 2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          <h3 class="mt-4 font-display font-700 text-[18px] text-white">Visit summaries</h3>
+          <p class="mt-1.5 text-[14px] leading-relaxed text-brand-100/75">Every encounter ends with a patient-friendly after-visit summary, auto-generated and ready to send.</p>
+        </div>
+      </div>
+
+      <!-- chat mock -->
+      <div class="reveal rounded-2xl bg-white shadow-2xl overflow-hidden flex flex-col" style="animation-delay:.1s">
+        <div class="flex items-center gap-2.5 px-4 py-3 border-b border-slate-100">
+          <span class="size-8 rounded-lg bg-gradient-to-br from-brand-500 to-brand-700 text-white grid place-items-center font-display font-800 text-[15px]">N</span>
+          <div>
+            <p class="text-[14px] font-700 text-slate-900 leading-tight">Narzim</p>
+            <p class="text-[11.5px] text-emerald-600 flex items-center gap-1"><span class="size-1.5 rounded-full bg-emerald-500"></span>online · clinic copilot</p>
+          </div>
+        </div>
+        <div class="p-4 space-y-3 flex-1 bg-slate-50/60">
+          <div class="ml-auto max-w-[80%] w-fit rounded-2xl rounded-br-md bg-brand-500 text-white text-[13.5px] px-3.5 py-2.5">Summarize Elena's chart before her visit</div>
+          <div class="max-w-[88%] rounded-2xl rounded-bl-md bg-white border border-slate-200 text-[13.5px] text-slate-700 px-3.5 py-2.5 shadow-sm">
+            <p class="font-600 text-slate-900 mb-1">Elena Vargas · 42 yrs</p>
+            Here for a routine follow-up. BP well-controlled on current regimen. Labs from last month within range. Last visit (Feb) — mild hypertension, lisinopril daily. No active concerns flagged.
+          </div>
+          <div class="flex items-center gap-1.5 text-[12px] text-slate-400 px-1">
+            <span class="size-1.5 rounded-full bg-slate-400 animate-pulse"></span>
+            <span class="size-1.5 rounded-full bg-slate-400 animate-pulse" style="animation-delay:.2s"></span>
+            <span class="size-1.5 rounded-full bg-slate-400 animate-pulse" style="animation-delay:.4s"></span>
+            Narzim is thinking…
+          </div>
+        </div>
+        <div class="p-3 border-t border-slate-100 flex items-center gap-2">
+          <div class="flex-1 h-10 rounded-xl bg-slate-100 px-3 flex items-center text-[13px] text-slate-400">Ask Narzim about charts, invoices…</div>
+          <span class="size-10 rounded-xl bg-brand-500 text-white grid place-items-center">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </div>
+      </div>
+    </div>
+    <p class="reveal mt-6 text-[12.5px] text-brand-100/60 flex items-center gap-2">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 9v4m0 4h.01M10.3 3.9L2 18a2 2 0 001.7 3h16.6A2 2 0 0022 18L13.7 3.9a2 2 0 00-3.4 0z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Narzim can make mistakes. Clinicians always review and sign off before anything enters the record.
+    </p>
+  </div>
+</section>
+
+<!-- ─────────────────────────  TESTIMONIALS  ───────────────────────── -->
+<section class="bg-white py-24">
+  <div class="mx-auto max-w-7xl px-5 lg:px-8">
+    <div class="max-w-2xl reveal">
+      <p class="font-hand text-[26px] text-brand-500 leading-none">loved by clinicians</p>
+      <h2 class="font-display font-800 tracking-tight text-slate-900 text-[38px] sm:text-[46px] leading-[1.05] mt-1">Clinics get their evenings back</h2>
+    </div>
+    <div class="mt-12 grid md:grid-cols-3 gap-5">
+      <figure class="reveal rounded-2xl bg-slate-50 border border-slate-100 p-7">
+        <div class="flex gap-0.5 text-amber-400">★★★★★</div>
+        <blockquote class="mt-4 text-[16px] leading-relaxed text-slate-700">"I finish my notes before the patient leaves the room. The AI scribe gave me back two hours every day."</blockquote>
+        <figcaption class="mt-5 flex items-center gap-3">
+          <span class="size-10 rounded-full grid place-items-center font-600 text-slate-700" style="background:#A3E7E9">AC</span>
+          <div><p class="text-[14px] font-700 text-slate-900">Dr. Ariel Castillo</p><p class="text-[12.5px] text-slate-500">Physician · Chavitos Clinic</p></div>
+        </figcaption>
+      </figure>
+      <figure class="reveal rounded-2xl bg-slate-50 border border-slate-100 p-7" style="animation-delay:.07s">
+        <div class="flex gap-0.5 text-amber-400">★★★★★</div>
+        <blockquote class="mt-4 text-[16px] leading-relaxed text-slate-700">"Check-in to checkout finally lives in one place. The front desk and nurses are no longer fighting three systems."</blockquote>
+        <figcaption class="mt-5 flex items-center gap-3">
+          <span class="size-10 rounded-full grid place-items-center font-600 text-slate-700" style="background:#DDD6FE">LM</span>
+          <div><p class="text-[14px] font-700 text-slate-900">Lourdes Méndez</p><p class="text-[12.5px] text-slate-500">Head Nurse · Clínica Mérida</p></div>
+        </figcaption>
+      </figure>
+      <figure class="reveal rounded-2xl bg-slate-50 border border-slate-100 p-7" style="animation-delay:.14s">
+        <div class="flex gap-0.5 text-amber-400">★★★★★</div>
+        <blockquote class="mt-4 text-[16px] leading-relaxed text-slate-700">"Onboarding took a weekend. Parents love the reminders, and our no-show rate dropped by a third."</blockquote>
+        <figcaption class="mt-5 flex items-center gap-3">
+          <span class="size-10 rounded-full grid place-items-center font-600 text-slate-700" style="background:#A3E7E9">AS</span>
+          <div><p class="text-[14px] font-700 text-slate-900">Aminata Salinas</p><p class="text-[12.5px] text-slate-500">Practice Manager · Vida Sana</p></div>
+        </figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────────────────  PRICING  ───────────────────────── -->
+<section id="pricing" class="mesh-soft py-24">
+  <div class="mx-auto max-w-7xl px-5 lg:px-8">
+    <div class="text-center max-w-2xl mx-auto reveal">
+      <h2 class="font-display font-800 tracking-tight text-slate-900 text-[38px] sm:text-[46px] leading-[1.05]">Simple pricing that grows with you</h2>
+      <p class="mt-4 text-[17px] text-slate-600">Every plan includes Narzim AI, unlimited patients, and free onboarding.</p>
+      <div class="mt-6 inline-flex items-center gap-1 p-1 rounded-xl bg-white border border-slate-200 shadow-sm text-[13.5px] font-600">
+        <button id="billMonthly" class="px-4 py-2 rounded-lg bg-brand-500 text-white transition">Monthly</button>
+        <button id="billAnnual" class="px-4 py-2 rounded-lg text-slate-600 hover:text-slate-900 transition">Annual <span class="text-emerald-600">−20%</span></button>
+      </div>
+    </div>
+
+    <div class="mt-12 grid md:grid-cols-3 gap-5 max-w-5xl mx-auto items-start">
+      <!-- Solo -->
+      <div class="reveal rounded-2xl bg-white border border-slate-200 shadow-sm p-7">
+        <h3 class="font-display font-700 text-[20px] text-slate-900">Solo</h3>
+        <p class="mt-1 text-[14px] text-slate-500">For a single provider getting started.</p>
+        <p class="mt-5"><span class="font-display font-800 text-[44px] text-slate-900 leading-none price" data-m="49" data-a="39">$49</span><span class="text-[15px] text-slate-500">/mo</span></p>
+        <a href="#demo" class="mt-5 flex h-11 items-center justify-center rounded-xl border border-slate-200 text-[14px] font-600 text-slate-800 hover:bg-slate-50 transition">Start free trial</a>
+        <ul class="mt-6 space-y-3 text-[14px] text-slate-600"></ul>
+      </div>
+      <!-- Clinic (featured) -->
+      <div class="reveal relative rounded-2xl bg-white border-2 border-brand-500 shadow-xl shadow-brand-500/10 p-7 md:-mt-3" style="animation-delay:.06s">
+        <span class="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-brand-500 text-white text-[12px] font-700 px-3 py-1 shadow-sm">Most popular</span>
+        <h3 class="font-display font-700 text-[20px] text-slate-900">Clinic</h3>
+        <p class="mt-1 text-[14px] text-slate-500">For growing multi-provider practices.</p>
+        <p class="mt-5"><span class="font-display font-800 text-[44px] text-brand-500 leading-none price" data-m="129" data-a="103">$129</span><span class="text-[15px] text-slate-500">/mo</span></p>
+        <a href="#demo" class="mt-5 flex h-11 items-center justify-center rounded-xl bg-brand-500 text-white text-[14px] font-600 hover:bg-brand-600 shadow-sm shadow-brand-500/30 transition">Book a demo</a>
+        <ul class="mt-6 space-y-3 text-[14px] text-slate-600"></ul>
+      </div>
+      <!-- Enterprise -->
+      <div class="reveal rounded-2xl bg-white border border-slate-200 shadow-sm p-7" style="animation-delay:.12s">
+        <h3 class="font-display font-700 text-[20px] text-slate-900">Network</h3>
+        <p class="mt-1 text-[14px] text-slate-500">For groups & hospital networks.</p>
+        <p class="mt-5"><span class="font-display font-800 text-[40px] text-slate-900 leading-none">Custom</span></p>
+        <a href="#demo" class="mt-5 flex h-11 items-center justify-center rounded-xl border border-slate-200 text-[14px] font-600 text-slate-800 hover:bg-slate-50 transition">Talk to sales</a>
+        <ul class="mt-6 space-y-3 text-[14px] text-slate-600"></ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────────────────  FAQ  ───────────────────────── -->
+<section id="faq" class="bg-white py-24">
+  <div class="mx-auto max-w-3xl px-5 lg:px-8">
+    <div class="text-center reveal">
+      <h2 class="font-display font-800 tracking-tight text-slate-900 text-[38px] sm:text-[46px] leading-[1.05]">Questions, answered</h2>
+    </div>
+    <div class="mt-10 space-y-3" id="faqList"></div>
+  </div>
+</section>
+
+<!-- ─────────────────────────  BOOK A DEMO  ───────────────────────── -->
+<section id="demo" class="mesh py-24">
+  <div class="mx-auto max-w-6xl px-5 lg:px-8">
+    <div class="grid lg:grid-cols-2 gap-10 items-center rounded-[28px] bg-white shadow-[0_30px_80px_-30px_rgba(15,23,42,0.3)] border border-white/70 overflow-hidden">
+      <!-- left pitch -->
+      <div class="p-9 lg:p-12">
+        <p class="font-hand text-[26px] text-brand-500 leading-none">let's talk</p>
+        <h2 class="font-display font-800 tracking-tight text-slate-900 text-[34px] sm:text-[40px] leading-[1.05] mt-1">See Narzim in your clinic</h2>
+        <p class="mt-4 text-[16px] text-slate-600">Book a 30-minute walkthrough. We'll tailor it to your specialty and show you exactly how your day would run on Narzim.</p>
+        <ul class="mt-7 space-y-3.5 text-[15px] text-slate-700">
+          <li class="flex items-center gap-3"><span class="size-6 rounded-full bg-emerald-100 text-emerald-600 grid place-items-center shrink-0"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Personalized to your workflow</li>
+          <li class="flex items-center gap-3"><span class="size-6 rounded-full bg-emerald-100 text-emerald-600 grid place-items-center shrink-0"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Free data migration & onboarding</li>
+          <li class="flex items-center gap-3"><span class="size-6 rounded-full bg-emerald-100 text-emerald-600 grid place-items-center shrink-0"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>No commitment, no card required</li>
+        </ul>
+      </div>
+      <!-- right form -->
+      <div class="p-9 lg:p-12 bg-slate-50/70 lg:border-l border-slate-100 h-full">
+        <form id="demoForm" class="space-y-4">
+          <div class="grid sm:grid-cols-2 gap-4">
+            <label class="block"><span class="text-[13px] font-600 text-slate-700">Your name</span>
+              <input required type="text" class="mt-1.5 w-full h-11 rounded-xl border border-slate-200 bg-white px-3.5 text-[14px] outline-none focus:border-brand-400 focus:ring-2 focus:ring-brand-200 transition" placeholder="Dr. Ana López" /></label>
+            <label class="block"><span class="text-[13px] font-600 text-slate-700">Clinic name</span>
+              <input required type="text" class="mt-1.5 w-full h-11 rounded-xl border border-slate-200 bg-white px-3.5 text-[14px] outline-none focus:border-brand-400 focus:ring-2 focus:ring-brand-200 transition" placeholder="Sunrise Pediatrics" /></label>
+          </div>
+          <label class="block"><span class="text-[13px] font-600 text-slate-700">Work email</span>
+            <input required type="email" class="mt-1.5 w-full h-11 rounded-xl border border-slate-200 bg-white px-3.5 text-[14px] outline-none focus:border-brand-400 focus:ring-2 focus:ring-brand-200 transition" placeholder="ana@clinic.com" /></label>
+          <div class="grid sm:grid-cols-2 gap-4">
+            <label class="block"><span class="text-[13px] font-600 text-slate-700">Clinic size</span>
+              <select class="mt-1.5 w-full h-11 rounded-xl border border-slate-200 bg-white px-3 text-[14px] outline-none focus:border-brand-400 focus:ring-2 focus:ring-brand-200 transition">
+                <option>1 provider</option><option>2–5 providers</option><option>6–15 providers</option><option>16+ providers</option>
+              </select></label>
+            <label class="block"><span class="text-[13px] font-600 text-slate-700">Preferred date</span>
+              <input type="date" class="mt-1.5 w-full h-11 rounded-xl border border-slate-200 bg-white px-3 text-[14px] outline-none focus:border-brand-400 focus:ring-2 focus:ring-brand-200 transition" /></label>
+          </div>
+          <button type="submit" class="w-full h-12 rounded-xl bg-brand-500 text-white text-[15px] font-600 hover:bg-brand-600 shadow-lg shadow-brand-500/30 transition active:scale-[.99]">Book my demo</button>
+          <p class="text-[12px] text-slate-400 text-center">We'll reply within one business day.</p>
+        </form>
+        <!-- success -->
+        <div id="demoSuccess" class="hidden text-center py-10">
+          <div class="mx-auto size-16 rounded-full bg-emerald-100 text-emerald-600 grid place-items-center floaty">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <h3 class="mt-5 font-display font-800 text-[24px] text-slate-900">You're all set! 🎉</h3>
+          <p class="mt-2 text-[15px] text-slate-600 max-w-sm mx-auto">Thanks — our team will reach out within one business day to confirm your Narzim walkthrough.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────────────────  FOOTER  ───────────────────────── -->
+<footer class="bg-[#062A2F] text-brand-100/70">
+  <div class="mx-auto max-w-7xl px-5 lg:px-8 py-14">
+    <div class="grid md:grid-cols-[1.4fr_1fr_1fr_1fr] gap-10">
+      <div>
+        <div class="flex items-center gap-2.5">
+          <span class="logo-mark logo-mark-dark"></span>
+          <span class="font-display font-700 text-[20px] text-white">Narzim <span class="text-brand-200">EHR</span></span>
+        </div>
+        <p class="mt-4 text-[14px] max-w-xs leading-relaxed">The AI-native EHR built for clinics of every specialty. Less clicking, more caring.</p>
+      </div>
+      <div>
+        <p class="text-[13px] font-700 text-white uppercase tracking-wider">Product</p>
+        <ul class="mt-4 space-y-2.5 text-[14px]">
+          <li><a href="#services" class="hover:text-white transition">Platform</a></li>
+          <li><a href="#ai" class="hover:text-white transition">Narzim AI</a></li>
+          <li><a href="#pricing" class="hover:text-white transition">Pricing</a></li>
+          <li><a href="Narzim Login.html" data-clinic-login class="hover:text-white transition">Log in</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="text-[13px] font-700 text-white uppercase tracking-wider">For patients</p>
+        <ul class="mt-4 space-y-2.5 text-[14px]">
+          <li><a href="Narzim Login.html?tab=patient" class="hover:text-white transition">Patient login</a></li>
+          <li><a href="Narzim Login.html?tab=patient&mode=register" class="hover:text-white transition">Create account</a></li>
+          <li><a href="Narzim Patient Portal.html" class="hover:text-white transition">Patient portal</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="text-[13px] font-700 text-white uppercase tracking-wider">Company</p>
+        <ul class="mt-4 space-y-2.5 text-[14px]">
+          <li><a href="#" class="hover:text-white transition">About</a></li>
+          <li><a href="#faq" class="hover:text-white transition">FAQ</a></li>
+          <li><a href="#demo" class="hover:text-white transition">Book a demo</a></li>
+          <li><a href="#" class="hover:text-white transition">Privacy & HIPAA</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="mt-12 pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3 text-[13px]">
+      <p>© 2026 Narzim Health. All rights reserved.</p>
+      <p class="flex items-center gap-2"><span class="size-1.5 rounded-full bg-emerald-400"></span>HIPAA-ready · SOC 2 Type II</p>
+    </div>
+  </div>
+</footer>
+
+<!-- ═══════════ CLINIC LOGIN MODAL ═══════════ -->
+<div id="clinicModal" class="fixed inset-0 z-[90] hidden items-center justify-center px-5">
+  <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" data-close-clinic></div>
+  <div class="relative w-full max-w-md rounded-[26px] bg-white shadow-[0_40px_100px_-30px_rgba(15,23,42,0.5)] border border-white/70 p-7 sm:p-8">
+    <button type="button" data-close-clinic aria-label="Close" class="absolute top-4 right-4 size-9 rounded-full hover:bg-slate-100 grid place-items-center text-slate-400 transition">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M18 6 6 18M6 6l12 12" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+    </button>
+    <div class="flex items-center gap-2.5">
+      <span class="logo-mark"></span>
+      <span class="font-display font-700 text-[19px] tracking-tight text-slate-900">Narzim <span class="text-brand-600">EHR</span></span>
+    </div>
+    <h2 class="font-display font-800 text-[26px] leading-tight text-slate-900 mt-5">Clinic sign in</h2>
+    <p class="mt-1.5 text-[14px] text-slate-500">Access your schedule, charts and Narzim AI copilot.</p>
+    <form id="clinicLoginForm" class="mt-6 space-y-4">
+      <label class="block">
+        <span class="text-[13px] font-600 text-slate-700">Work email</span>
+        <input id="clEmail" type="email" value="ariel@chavitos.clinic" class="mt-1.5 w-full h-12 rounded-xl border border-slate-200 bg-white px-3.5 text-[14px] outline-none focus:border-brand-400 focus:ring-2 focus:ring-brand-200 transition" placeholder="you@clinic.com" />
+      </label>
+      <label class="block">
+        <span class="flex items-center justify-between">
+          <span class="text-[13px] font-600 text-slate-700">Password</span>
+          <a href="#" class="text-[12.5px] font-600 text-brand-600 hover:text-brand-700">Forgot?</a>
+        </span>
+        <input id="clPw" type="password" value="demo1234" class="mt-1.5 w-full h-12 rounded-xl border border-slate-200 bg-white px-3.5 text-[14px] outline-none focus:border-brand-400 focus:ring-2 focus:ring-brand-200 transition" placeholder="••••••••" />
+      </label>
+      <button type="submit" class="w-full h-12 rounded-xl bg-brand-500 text-white text-[15px] font-600 hover:bg-brand-600 shadow-lg shadow-brand-500/30 transition active:scale-[.99]">Sign in to clinic</button>
+    </form>
+    <div class="flex items-center gap-3 my-4">
+      <span class="flex-1 h-px bg-slate-200"></span><span class="text-[12px] text-slate-400">or</span><span class="flex-1 h-px bg-slate-200"></span>
+    </div>
+    <button type="button" id="clinicSso" class="w-full h-12 rounded-xl border border-slate-200 bg-white text-[14px] font-600 text-slate-800 hover:bg-slate-50 transition flex items-center justify-center gap-2">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M12 2 4 5v6c0 5 3.5 8.5 8 11 4.5-2.5 8-6 8-11V5z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+      Continue with clinic SSO
+    </button>
+    <p class="mt-5 pt-5 border-t border-slate-100 text-[13px] text-slate-500 text-center">
+      New clinic? <a href="#demo" data-close-clinic class="font-600 text-brand-600 hover:text-brand-700">Book a demo</a>
+    </p>
+  </div>
+</div>
+
+<!-- logo mark style (reused) -->
+<style>
+  .logo-mark { width:34px; height:34px; border-radius:11px; display:inline-block; position:relative;
+    background:linear-gradient(150deg,#2FC4CC 0%,#0FA3AD 55%,#0A6A72 100%);
+    box-shadow:0 4px 12px rgba(15,163,173,0.35), inset 0 1px 0 rgba(255,255,255,0.4); }
+  .logo-mark::before { content:""; position:absolute; inset:0;
+    background:
+      /* pulse line */
+      linear-gradient(transparent,transparent);
+    -webkit-mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M3 13h3l2 5 3-11 2 7h3' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/></svg>") center/22px no-repeat;
+    mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M3 13h3l2 5 3-11 2 7h3' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/></svg>") center/22px no-repeat;
+    background:#fff; }
+  .logo-mark::after { content:""; position:absolute; right:6px; top:5px; width:8px; height:8px;
+    -webkit-mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M12 2l1.6 5.4L19 9l-5.4 1.6L12 16l-1.6-5.4L5 9l5.4-1.6z' fill='white'/></svg>") center/contain no-repeat;
+    mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M12 2l1.6 5.4L19 9l-5.4 1.6L12 16l-1.6-5.4L5 9l5.4-1.6z' fill='white'/></svg>") center/contain no-repeat;
+    background:#FDE68A; }
+</style>
+
+<script>
+  // ── scroll-reveal ──
+  const io = new IntersectionObserver((es) => {
+    es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+  // ── nav shrink on scroll ──
+  const navWrap = document.querySelector('#nav nav');
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 20) navWrap.classList.add('shadow-[0_10px_40px_rgba(15,23,42,0.10)]');
+    else navWrap.classList.remove('shadow-[0_10px_40px_rgba(15,23,42,0.10)]');
+  });
+
+  // ── scale the embedded dashboard to fit its frame ──
+  function fitDash() {
+    const wrap = document.getElementById('heroDashWrap');
+    const frame = document.getElementById('heroDash');
+    if (!wrap || !frame) return;
+    const scale = wrap.clientWidth / 1500;
+    frame.style.transform = `scale(${scale})`;
+    wrap.style.height = (940 * scale) + 'px';
+  }
+  window.addEventListener('resize', fitDash);
+  fitDash();
+
+  // ── pricing toggle ──
+  const featureSets = {
+    Solo:    ["Up to 1 provider","Narzim AI copilot","Scheduling & charting","Vitals & growth charts","Email support"],
+    Clinic:  ["Up to 15 providers","Everything in Solo","AI scribe & visit summaries","Billing & invoicing","Parent messaging portal","Priority support"],
+    Network: ["Unlimited providers","Everything in Clinic","Multi-location analytics","SSO & custom roles","Dedicated success manager","SLA & API access"],
+  };
+  function fillFeatures() {
+    document.querySelectorAll('#pricing .reveal').forEach(card => {
+      const title = card.querySelector('h3')?.textContent?.trim();
+      const ul = card.querySelector('ul');
+      if (!title || !ul || !featureSets[title]) return;
+      ul.innerHTML = featureSets[title].map(f =>
+        `<li class="flex items-start gap-2.5"><span class="mt-0.5 size-5 rounded-full bg-brand-50 text-brand-500 grid place-items-center shrink-0"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>${f}</li>`
+      ).join('');
+    });
+  }
+  fillFeatures();
+  const bm = document.getElementById('billMonthly'), ba = document.getElementById('billAnnual');
+  function setBilling(annual) {
+    document.querySelectorAll('.price').forEach(p => {
+      const v = annual ? p.dataset.a : p.dataset.m;
+      if (v) p.textContent = '$' + v;
+    });
+    bm.classList.toggle('bg-brand-500', !annual); bm.classList.toggle('text-white', !annual); bm.classList.toggle('text-slate-600', annual);
+    ba.classList.toggle('bg-brand-500', annual); ba.classList.toggle('text-white', annual); ba.classList.toggle('text-slate-600', !annual);
+  }
+  bm.addEventListener('click', () => setBilling(false));
+  ba.addEventListener('click', () => setBilling(true));
+
+  // ── FAQ ──
+  const faqs = [
+    ["How long does it take to get started?","Most clinics are live within a weekend. We migrate your existing patient data for free and run a hands-on onboarding session with your team."],
+    ["Is Narzim built for my specialty?","Yes. Narzim adapts to any specialty — configurable templates, specialty-aware vitals thresholds, custom care plans and flexible charting work the way your practice actually does, whether you're primary care, dental, cardiology or beyond."],
+    ["How does the AI keep patient data safe?","Narzim is HIPAA-ready and SOC 2 Type II certified. The AI works on your data inside our secure environment, and clinicians always review and sign off before anything enters the record."],
+    ["Can patients book and message us?","Patients get a portal to view upcoming appointments, message your clinic securely and read after-visit summaries — all included in every plan."],
+    ["What if we already use another EHR?","We support free data migration from most major systems. Your history, charts and schedules come with you."],
+  ];
+  document.getElementById('faqList').innerHTML = faqs.map(([q,a]) => `
+    <details class="faq reveal rounded-2xl bg-slate-50 border border-slate-100 px-5">
+      <summary class="flex items-center justify-between gap-4 py-5">
+        <span class="text-[16px] font-600 text-slate-900">${q}</span>
+        <span class="faq-chev shrink-0 size-7 rounded-lg bg-white border border-slate-200 grid place-items-center text-slate-500"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></span>
+      </summary>
+      <p class="pb-5 -mt-1 text-[15px] leading-relaxed text-slate-600">${a}</p>
+    </details>`).join('');
+  document.querySelectorAll('#faqList .reveal').forEach(el => io.observe(el));
+
+  // ── demo form ──
+  document.getElementById('demoForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    document.getElementById('demoForm').classList.add('hidden');
+    document.getElementById('demoSuccess').classList.remove('hidden');
+  });
+
+  // ── clinic login modal ──
+  const clinicModal = document.getElementById('clinicModal');
+  function openClinic() {
+    clinicModal.classList.remove('hidden'); clinicModal.classList.add('flex');
+    document.body.style.overflow = 'hidden';
+    setTimeout(() => { const f = document.getElementById('clEmail'); if (f) f.focus(); }, 50);
+  }
+  function closeClinic() {
+    clinicModal.classList.add('hidden'); clinicModal.classList.remove('flex');
+    document.body.style.overflow = '';
+  }
+  document.addEventListener('click', (e) => {
+    if (e.target.closest('[data-clinic-login]')) { e.preventDefault(); openClinic(); return; }
+    if (e.target.closest('[data-close-clinic]')) closeClinic();
+  });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !clinicModal.classList.contains('hidden')) closeClinic(); });
+  const goClinic = () => { window.location.href = 'Chavitos EHR.html'; };
+  document.getElementById('clinicLoginForm').addEventListener('submit', (e) => { e.preventDefault(); goClinic(); });
+  document.getElementById('clinicSso').addEventListener('click', goClinic);
+</script>
+</body>
+</html>

@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Narzim · Patient App</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = { theme: { extend: {
+    fontFamily: { sans:['Inter','sans-serif'], display:['"Bricolage Grotesque"','Inter','sans-serif'], hand:['Caveat','cursive'] },
+    colors: { brand:{50:'#EAF5FF',100:'#D0ECFF',200:'#A9DCFF',300:'#7CCBF5',400:'#33B1F0',500:'#0098E4',600:'#0086cc',700:'#006093',900:'#003E5C'} },
+  }}};
+</script>
+<style>
+  *,*::before,*::after{box-sizing:border-box;}
+  body{font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased;color:#0F172A;margin:0;
+    background:radial-gradient(1200px 700px at 20% -5%, #1a2942, transparent 60%),
+               radial-gradient(900px 600px at 100% 100%, #102338, transparent 55%),
+               #0b1626;min-height:100vh;}
+  .font-display{font-family:'Bricolage Grotesque','Inter',sans-serif;} .font-hand{font-family:'Caveat',cursive;}
+
+  /* ── phone frame ── */
+  .stage{ min-height:100vh; display:flex; align-items:center; justify-content:center; padding:28px 16px; }
+  .phone{ position:relative; width:393px; height:852px; border-radius:54px; background:#0b0f17;
+    padding:13px; box-shadow:0 0 0 2px #2a3344, 0 30px 80px -20px rgba(0,0,0,.7), inset 0 0 3px rgba(255,255,255,.1);
+    flex-shrink:0; }
+  .screen{ position:relative; width:100%; height:100%; border-radius:42px; overflow:hidden; background:#F4F7FC; }
+  .island{ position:absolute; top:11px; left:50%; transform:translateX(-50%); width:122px; height:34px; background:#000; border-radius:20px; z-index:115; }
+
+  /* app layout inside the screen */
+  .app{ position:absolute; inset:0; display:flex; flex-direction:column; }
+  .statusbar{ height:52px; padding:0 30px; display:flex; align-items:flex-end; padding-bottom:7px; justify-content:space-between;
+    font-size:14px; font-weight:600; color:#0F172A; flex-shrink:0; position:relative; z-index:105; transition:color .25s; }
+  .statusbar.on-brand{ color:#fff; }
+  .scroll{ flex:1; overflow-y:auto; overflow-x:hidden; -webkit-overflow-scrolling:touch; position:relative; }
+  .scroll::-webkit-scrollbar{ display:none; } .scroll{ scrollbar-width:none; }
+  .tabbar{ flex-shrink:0; height:84px; background:rgba(255,255,255,.92); backdrop-filter:blur(20px);
+    border-top:1px solid #E8EDF4; display:flex; align-items:flex-start; padding:9px 8px 0; position:relative; z-index:40; }
+  .tabbtn{ flex:1; display:flex; flex-direction:column; align-items:center; gap:3px; padding-top:4px; color:#94A3B8;
+    font-size:10px; font-weight:600; background:none; border:none; cursor:pointer; transition:color .15s; }
+  .tabbtn.on{ color:#0098E4; }
+  .home-ind{ position:absolute; bottom:7px; left:50%; transform:translateX(-50%); width:128px; height:5px; border-radius:9px; background:#0F172A; opacity:.32; z-index:50; }
+
+  /* book FAB tab */
+  .tab-book{ position:relative; }
+  .tab-book .fab{ width:52px; height:52px; margin-top:-22px; border-radius:18px; background:linear-gradient(150deg,#33B1F0,#0098E4 60%,#006093);
+    box-shadow:0 8px 18px -4px rgba(0,152,228,.6); display:grid; place-items:center; color:#fff; }
+
+  .logo-mark{width:30px;height:30px;border-radius:9px;display:inline-block;position:relative;background:linear-gradient(150deg,#33B1F0,#0098E4 55%,#006093);box-shadow:0 4px 12px rgba(0,152,228,0.3);vertical-align:middle;}
+  .logo-mark::before{content:"";position:absolute;inset:0;background:#fff;
+    -webkit-mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M3 13h3l2 5 3-11 2 7h3' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/></svg>") center/66% no-repeat;
+    mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M3 13h3l2 5 3-11 2 7h3' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/></svg>") center/66% no-repeat;}
+
+  /* form controls */
+  .inp{ width:100%; height:46px; border:1px solid #E2E8F0; border-radius:14px; padding:0 14px; font-size:15px; color:#0F172A; background:#fff; outline:none; transition:border .15s, box-shadow .15s; }
+  .inp:focus{ border-color:#7CCBF5; box-shadow:0 0 0 3px rgba(0,152,228,.15); }
+  select.inp{ appearance:none; background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2394A3B8' stroke-width='2'><path d='M6 9l6 6 6-6'/></svg>"); background-repeat:no-repeat; background-position:right 12px center; background-size:18px; padding-right:38px; }
+  .lbl{ display:block; font-size:12px; font-weight:600; color:#64748B; margin-bottom:6px; }
+  textarea.inp{ height:auto; padding:11px 14px; line-height:1.45; }
+
+  /* toggle */
+  .toggle{ width:46px; height:27px; border-radius:9999px; background:#CBD5E1; position:relative; transition:background .18s; flex-shrink:0; border:none; cursor:pointer; }
+  .toggle.on{ background:#0098E4; }
+  .toggle .dot{ position:absolute; top:3px; left:3px; width:21px; height:21px; border-radius:9999px; background:#fff; transition:transform .18s; box-shadow:0 1px 3px rgba(0,0,0,.2); }
+  .toggle.on .dot{ transform:translateX(19px); }
+
+  /* anim */
+  @keyframes screenIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+  .screen-in{animation:screenIn .32s cubic-bezier(.22,.61,.36,1) both;}
+  @keyframes fadeIn{from{opacity:0}to{opacity:1}} .fade{animation:fadeIn .2s ease-out both;}
+  @keyframes sheetUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+  .sheet-up{animation:sheetUp .34s cubic-bezier(.22,.61,.36,1) both;}
+  @keyframes pop{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:scale(1)}} .pop{animation:pop .3s cubic-bezier(.22,.61,.36,1) both;}
+  @keyframes stagger{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+  .stag{opacity:0;animation:stagger .4s ease-out forwards;}
+
+  .tap{ transition:transform .1s, background .15s; -webkit-tap-highlight-color:transparent; }
+  .tap:active{ transform:scale(.97); }
+
+  .deviceHint{ color:#64748B; font-size:12.5px; text-align:center; margin-top:18px; }
+</style>
+</head>
+<body>
+
+<div class="stage">
+  <div>
+    <div class="phone">
+      <div class="island"></div>
+      <div class="screen">
+        <div class="app">
+          <!-- status bar -->
+          <div id="statusbar" class="statusbar">
+            <span id="sbTime">9:41</span>
+            <span class="flex items-center gap-1.5">
+              <svg width="17" height="12" viewBox="0 0 17 12" fill="currentColor"><rect x="0" y="7" width="3" height="5" rx="1"/><rect x="4.5" y="4.5" width="3" height="7.5" rx="1"/><rect x="9" y="2" width="3" height="10" rx="1"/><rect x="13.5" y="0" width="3" height="12" rx="1"/></svg>
+              <svg width="16" height="12" viewBox="0 0 16 12" fill="currentColor"><path d="M8 2.5c2 0 3.8.8 5.1 2.1l1.2-1.2A9.1 9.1 0 0 0 8 .7 9.1 9.1 0 0 0 1.7 3.4l1.2 1.2A7.1 7.1 0 0 1 8 2.5zm0 3.2c1.1 0 2.1.4 2.9 1.2l1.2-1.2A6 6 0 0 0 8 3.9a6 6 0 0 0-4.1 1.6l1.2 1.2A4.1 4.1 0 0 1 8 5.7zm0 3.1L9.9 7A2.7 2.7 0 0 0 8 6.2 2.7 2.7 0 0 0 6.1 7L8 8.8z"/></svg>
+              <svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x="1" y="1" width="20" height="10" rx="2.5" stroke="currentColor" stroke-opacity=".4"/><rect x="2.5" y="2.5" width="16" height="7" rx="1.5" fill="currentColor"/><rect x="22.5" y="4" width="1.5" height="4" rx="1" fill="currentColor" fill-opacity=".4"/></svg>
+            </span>
+          </div>
+
+          <!-- screens render here -->
+          <div id="scroll" class="scroll"></div>
+
+          <!-- bottom tab bar -->
+          <nav id="tabbar" class="tabbar"></nav>
+          <div class="home-ind"></div>
+        </div>
+
+        <!-- sheet / modal layer (inside the phone) -->
+        <div id="sheetRoot"></div>
+        <div id="toastRoot" class="absolute left-1/2 -translate-x-1/2 z-[120] flex flex-col items-center gap-2" style="bottom:104px"></div>
+      </div>
+    </div>
+    <p class="deviceHint">Narzim Patient App · sign in, then explore Home, your Body report, Booking, Records & Profile — and scan a report with AI</p>
+  </div>
+</div>
+
+<script src="portal-data.js"></script>
+<script src="app-data.js"></script>
+<script src="app-health.js?v=7"></script>
+<script src="app-core.js?v=7"></script>
+<script src="app-screens.js?v=7"></script>
+<script src="app-booking.js?v=7"></script>
+<script src="app-body.js?v=9"></script>
+<script src="app-scan.js?v=7"></script>
+<script src="app-auth.js?v=7"></script>
+<script>NZA.boot();</script>
+</body>
+</html>

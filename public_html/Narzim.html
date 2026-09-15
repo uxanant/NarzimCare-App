@@ -1,0 +1,356 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Narzim — Find & book trusted doctors near you</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=Caveat:wght@500;600;700&display=swap" rel="stylesheet">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = { theme: { extend: {
+    fontFamily: {
+      sans: ['Inter','-apple-system','BlinkMacSystemFont','sans-serif'],
+      display: ['"Bricolage Grotesque"','Inter','sans-serif'],
+      hand: ['Caveat','cursive'],
+    },
+    colors: { brand: { 50:'#EAF5FF',100:'#D0ECFF',200:'#A9DCFF',400:'#33B1F0',500:'#0098E4',600:'#0086cc',700:'#006093',900:'#003E5C' } },
+  }}};
+</script>
+<style>
+  html { scroll-behavior:smooth; }
+  body { font-family:'Inter',sans-serif; -webkit-font-smoothing:antialiased; color:#0F172A; }
+  .font-display { font-family:'Bricolage Grotesque','Inter',sans-serif; }
+  .font-hand { font-family:'Caveat',cursive; }
+  *,*::before,*::after { box-sizing:border-box; }
+
+  .mesh { background:
+      radial-gradient(1100px 600px at 18% -5%, rgba(160,200,255,0.55), transparent 60%),
+      radial-gradient(900px 520px at 108% 8%, rgba(255,180,200,0.40), transparent 60%),
+      linear-gradient(140deg,#EAF3FF 0%,#F3F1FB 45%,#FDF0F6 100%); }
+  .mesh-soft { background:
+      radial-gradient(700px 400px at 90% 0%, rgba(186,230,253,0.45), transparent 60%),
+      radial-gradient(600px 360px at 0% 100%, rgba(221,214,254,0.40), transparent 60%),
+      #FBFCFE; }
+
+  ::-webkit-scrollbar { width:11px; height:11px; }
+  ::-webkit-scrollbar-thumb { background:rgba(15,23,42,0.18); border-radius:9999px; border:3px solid transparent; background-clip:padding-box; }
+
+  @keyframes floaty { 0%,100%{ transform:translateY(0);} 50%{ transform:translateY(-10px);} }
+  .floaty { animation:floaty 6s ease-in-out infinite; }
+  .floaty-slow { animation:floaty 8s ease-in-out infinite; }
+  @keyframes rise { from{ opacity:0; transform:translateY(22px);} to{ opacity:1; transform:translateY(0);} }
+  .reveal { opacity:0; } .reveal.in { animation:rise .7s cubic-bezier(.22,.61,.36,1) forwards; }
+  @keyframes pop { from{ opacity:0; transform:scale(.96);} to{ opacity:1; transform:scale(1);} }
+  .pop { animation:pop .4s cubic-bezier(.22,.61,.36,1); }
+
+  .logo-mark { width:34px; height:34px; border-radius:11px; display:inline-block; position:relative;
+    background:linear-gradient(150deg,#33B1F0 0%,#0098E4 55%,#006093 100%);
+    box-shadow:0 4px 12px rgba(0,152,228,0.35), inset 0 1px 0 rgba(255,255,255,0.4); }
+  .logo-mark::before { content:""; position:absolute; inset:0;
+    -webkit-mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M3 13h3l2 5 3-11 2 7h3' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/></svg>") center/22px no-repeat;
+    mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M3 13h3l2 5 3-11 2 7h3' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/></svg>") center/22px no-repeat;
+    background:#fff; }
+  .logo-mark.on-dark { background:rgba(255,255,255,0.12); box-shadow:inset 0 0 0 1px rgba(255,255,255,0.25); }
+  .logo-mark.on-dark::before { background:#fff; }
+</style>
+</head>
+<body class="bg-white">
+
+<!-- ═══════════ COUNTRY GATE ═══════════ -->
+<div id="gate" class="fixed inset-0 z-[100] hidden items-center justify-center mesh px-5">
+  <div class="absolute inset-0 bg-slate-900/20 backdrop-blur-sm"></div>
+  <div class="relative w-full max-w-lg rounded-[28px] bg-white shadow-[0_40px_100px_-30px_rgba(15,23,42,0.5)] border border-white/70 p-8 sm:p-10">
+    <div class="flex items-center gap-2.5">
+      <span class="logo-mark"></span>
+      <span class="font-display font-700 text-[22px] tracking-tight text-slate-900">Narzim</span>
+    </div>
+    <h1 data-i18n="gate_title" class="font-display font-800 text-[30px] sm:text-[34px] leading-tight text-slate-900 mt-6">Welcome to Narzim</h1>
+    <p data-i18n="gate_sub" class="mt-2 text-[15.5px] text-slate-600">Choose your country to see doctors and care near you.</p>
+    <div id="gateOptions" class="mt-7 grid gap-3"></div>
+    <button id="gateContinue" data-i18n="gate_continue" disabled class="mt-7 w-full h-12 rounded-xl bg-brand-500 text-white text-[15px] font-600 shadow-lg shadow-brand-500/30 transition active:scale-[.99] disabled:opacity-40 disabled:cursor-not-allowed">Continue</button>
+  </div>
+</div>
+
+<!-- ═══════════ NAV ═══════════ -->
+<header id="nav" class="fixed top-0 inset-x-0 z-50 transition-all duration-300">
+  <div class="mx-auto max-w-7xl px-5 lg:px-8">
+    <nav class="mt-3 flex items-center gap-2 rounded-2xl bg-white/80 backdrop-blur-xl border border-white/70 shadow-[0_8px_30px_rgba(15,23,42,0.06)] px-3.5 py-2.5">
+      <a href="#top" class="flex items-center gap-2.5 pr-2">
+        <span class="logo-mark"></span>
+        <span class="font-display font-700 text-[20px] tracking-tight text-slate-900">Narzim</span>
+      </a>
+      <div class="hidden lg:flex items-center gap-1 ml-2 text-[14px] font-500 text-slate-600">
+        <a href="#specialties" data-i18n="nav_specialties" class="px-3 py-2 rounded-lg hover:bg-slate-100/80 hover:text-slate-900 transition">Specialties</a>
+        <a href="#doctors" data-i18n="nav_doctors" class="px-3 py-2 rounded-lg hover:bg-slate-100/80 hover:text-slate-900 transition">Top doctors</a>
+        <a href="#how" data-i18n="nav_how" class="px-3 py-2 rounded-lg hover:bg-slate-100/80 hover:text-slate-900 transition">How it works</a>
+        <a href="#telehealth" data-i18n="nav_telehealth" class="px-3 py-2 rounded-lg hover:bg-slate-100/80 hover:text-slate-900 transition">Telehealth</a>
+      </div>
+      <div class="flex-1"></div>
+
+      <!-- country / language switcher -->
+      <div class="relative">
+        <button id="switchBtn" class="inline-flex h-10 items-center gap-2 px-3 rounded-xl text-[14px] font-600 text-slate-700 hover:bg-slate-100 transition">
+          <span id="switchFlag" class="text-[18px] leading-none">🌐</span>
+          <span id="switchName" class="hidden sm:inline">—</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div id="switchMenu" class="hidden absolute right-0 mt-2 w-60 rounded-2xl bg-white shadow-xl border border-slate-100 p-1.5 z-50"></div>
+      </div>
+
+      <a href="Narzim EHR.html" data-i18n="for_practitioners" class="hidden md:inline-flex h-10 items-center px-3.5 rounded-xl text-[14px] font-600 text-slate-700 hover:bg-slate-100 transition">For practitioners</a>
+      <button type="button" data-login="patient" data-i18n="login" class="inline-flex h-10 items-center gap-1.5 px-5 rounded-xl text-[14px] font-600 text-white bg-brand-500 hover:bg-brand-600 shadow-sm shadow-brand-500/30 transition">
+        Log in
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M10 17l5-5-5-5M15 12H3M14 4h5a2 2 0 012 2v12a2 2 0 01-2 2h-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </nav>
+  </div>
+</header>
+
+<!-- ═══════════ HERO ═══════════ -->
+<section id="top" class="mesh relative overflow-hidden pt-32 lg:pt-40 pb-20">
+  <div class="pointer-events-none absolute -top-10 right-[8%] size-40 rounded-full bg-brand-200/50 blur-2xl floaty-slow"></div>
+  <div class="pointer-events-none absolute top-40 left-[4%] size-32 rounded-full bg-pink-200/50 blur-2xl floaty"></div>
+
+  <div class="mx-auto max-w-4xl px-5 lg:px-8 text-center">
+    <span class="reveal inline-flex items-center gap-2 rounded-full bg-white/70 border border-white/80 px-3.5 py-1.5 text-[13px] font-600 text-brand-700 shadow-sm">
+      <span class="size-1.5 rounded-full bg-emerald-500"></span>
+      <span data-i18n="hero_badge">Verified doctors · book in seconds</span>
+    </span>
+    <h1 class="reveal font-display font-800 tracking-tight text-slate-900 mt-5 text-[42px] sm:text-[60px] leading-[1.03]">
+      <span data-i18n="hero_title_1">Find the right doctor and</span>
+      <span data-i18n="hero_title_hl" class="text-brand-500">book in seconds</span>
+    </h1>
+    <p data-i18n="hero_sub" class="reveal mt-5 text-[18px] leading-relaxed text-slate-600 max-w-2xl mx-auto">Search trusted, verified doctors near you. Compare ratings and fees, then book in-person or video visits — all in one place.</p>
+
+    <!-- search bar -->
+    <form id="searchBar" class="reveal mt-8 mx-auto max-w-3xl bg-white rounded-2xl sm:rounded-full shadow-[0_20px_50px_-20px_rgba(15,23,42,0.35)] border border-slate-100 p-2 flex flex-col sm:flex-row items-stretch gap-2">
+      <label class="flex-1 flex items-center gap-2.5 px-4 py-2.5 rounded-xl sm:rounded-full hover:bg-slate-50 transition">
+        <svg class="text-brand-500 shrink-0" width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="m21 21-4.3-4.3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <input id="qSpec" type="text" data-i18n-ph="search_spec" class="w-full bg-transparent outline-none text-[15px] text-slate-800 placeholder:text-slate-400" placeholder="Condition, specialty or doctor" />
+      </label>
+      <div class="hidden sm:block w-px bg-slate-200 my-2"></div>
+      <label class="flex-1 sm:max-w-[34%] flex items-center gap-2.5 px-4 py-2.5 rounded-xl sm:rounded-full hover:bg-slate-50 transition">
+        <svg class="text-slate-400 shrink-0" width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 21s-7-5.5-7-11a7 7 0 0 1 14 0c0 5.5-7 11-7 11z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="12" cy="10" r="2.5" stroke="currentColor" stroke-width="2"/></svg>
+        <input id="qLoc" type="text" data-i18n-ph="search_loc" class="w-full bg-transparent outline-none text-[15px] text-slate-800 placeholder:text-slate-400" placeholder="City or area" />
+      </label>
+      <button type="submit" data-i18n="search_btn" class="shrink-0 h-12 px-7 rounded-xl sm:rounded-full bg-brand-500 text-white text-[15px] font-600 hover:bg-brand-600 shadow-lg shadow-brand-500/30 transition active:scale-[.98]">Search</button>
+    </form>
+
+    <!-- stats -->
+    <div class="reveal mt-10 grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-3xl mx-auto">
+      <div class="rounded-2xl bg-white/70 border border-white/80 shadow-sm py-4">
+        <p class="font-display font-800 text-[26px] text-brand-500 leading-none">5,200+</p>
+        <p data-i18n="stat_doctors" class="mt-1 text-[12.5px] text-slate-500">verified doctors</p>
+      </div>
+      <div class="rounded-2xl bg-white/70 border border-white/80 shadow-sm py-4">
+        <p class="font-display font-800 text-[26px] text-emerald-500 leading-none">40+</p>
+        <p data-i18n="stat_specialties" class="mt-1 text-[12.5px] text-slate-500">specialties</p>
+      </div>
+      <div class="rounded-2xl bg-white/70 border border-white/80 shadow-sm py-4">
+        <p class="font-display font-800 text-[26px] text-amber-500 leading-none">4.9★</p>
+        <p data-i18n="stat_rating" class="mt-1 text-[12.5px] text-slate-500">avg. rating</p>
+      </div>
+      <div class="rounded-2xl bg-white/70 border border-white/80 shadow-sm py-4">
+        <p class="font-display font-800 text-[26px] text-violet-500 leading-none">1.8M+</p>
+        <p data-i18n="stat_booked" class="mt-1 text-[12.5px] text-slate-500">visits booked</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ SPECIALTIES ═══════════ -->
+<section id="specialties" class="bg-white py-24">
+  <div class="mx-auto max-w-7xl px-5 lg:px-8">
+    <div class="max-w-2xl reveal">
+      <p data-i18n="spec_kicker" class="font-hand text-[26px] text-brand-500 leading-none">browse by need</p>
+      <h2 data-i18n="spec_title" class="font-display font-800 tracking-tight text-slate-900 text-[36px] sm:text-[44px] leading-[1.05] mt-1">Popular specialties</h2>
+      <p data-i18n="spec_sub" class="mt-3 text-[17px] text-slate-600">Pick a specialty and see top-rated doctors available near you.</p>
+    </div>
+    <div id="specGrid" class="mt-10 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4"></div>
+  </div>
+</section>
+
+<!-- ═══════════ FEATURED DOCTORS ═══════════ -->
+<section id="doctors" class="mesh-soft py-24">
+  <div class="mx-auto max-w-7xl px-5 lg:px-8">
+    <div class="max-w-2xl reveal">
+      <p data-i18n="feat_kicker" class="font-hand text-[26px] text-brand-500 leading-none">top rated near you</p>
+      <h2 data-i18n="feat_title" class="font-display font-800 tracking-tight text-slate-900 text-[36px] sm:text-[44px] leading-[1.05] mt-1">Featured doctors</h2>
+      <p data-i18n="feat_sub" class="mt-3 text-[17px] text-slate-600">Highly rated, verified and available this week.</p>
+    </div>
+    <div id="docGrid" class="mt-10 grid md:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+  </div>
+</section>
+
+<!-- ═══════════ HOW IT WORKS ═══════════ -->
+<section id="how" class="bg-white py-24">
+  <div class="mx-auto max-w-7xl px-5 lg:px-8">
+    <div class="max-w-2xl reveal">
+      <p data-i18n="how_kicker" class="font-hand text-[26px] text-brand-500 leading-none">simple & quick</p>
+      <h2 data-i18n="how_title" class="font-display font-800 tracking-tight text-slate-900 text-[36px] sm:text-[44px] leading-[1.05] mt-1">How Narzim works</h2>
+      <p data-i18n="how_sub" class="mt-3 text-[17px] text-slate-600">Three steps from "I need a doctor" to a confirmed appointment.</p>
+    </div>
+    <div class="mt-12 grid md:grid-cols-3 gap-5">
+      <div class="reveal relative rounded-2xl bg-slate-50 border border-slate-100 p-7">
+        <span class="font-display font-800 text-[15px] size-9 rounded-xl bg-brand-500 text-white grid place-items-center">1</span>
+        <h3 data-i18n="step1_t" class="mt-5 font-display font-700 text-[20px] text-slate-900">Search</h3>
+        <p data-i18n="step1_d" class="mt-1.5 text-[14.5px] leading-relaxed text-slate-600">Tell us the specialty or symptom and where you are.</p>
+      </div>
+      <div class="reveal relative rounded-2xl bg-slate-50 border border-slate-100 p-7" style="animation-delay:.07s">
+        <span class="font-display font-800 text-[15px] size-9 rounded-xl bg-emerald-500 text-white grid place-items-center">2</span>
+        <h3 data-i18n="step2_t" class="mt-5 font-display font-700 text-[20px] text-slate-900">Compare & choose</h3>
+        <p data-i18n="step2_d" class="mt-1.5 text-[14.5px] leading-relaxed text-slate-600">Compare ratings, fees, languages and the next available slot.</p>
+      </div>
+      <div class="reveal relative rounded-2xl bg-slate-50 border border-slate-100 p-7" style="animation-delay:.14s">
+        <span class="font-display font-800 text-[15px] size-9 rounded-xl bg-violet-500 text-white grid place-items-center">3</span>
+        <h3 data-i18n="step3_t" class="mt-5 font-display font-700 text-[20px] text-slate-900">Book & manage</h3>
+        <p data-i18n="step3_d" class="mt-1.5 text-[14.5px] leading-relaxed text-slate-600">Book in seconds and manage everything in your patient portal.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ TELEHEALTH ═══════════ -->
+<section id="telehealth" class="relative overflow-hidden py-24" style="background:linear-gradient(160deg,#003E5C 0%,#006093 55%,#0098E4 120%)">
+  <div class="pointer-events-none absolute top-10 right-[6%] size-72 rounded-full bg-brand-400/20 blur-3xl"></div>
+  <div class="pointer-events-none absolute -bottom-10 left-[8%] size-72 rounded-full bg-violet-500/20 blur-3xl"></div>
+  <div class="mx-auto max-w-7xl px-5 lg:px-8 relative grid lg:grid-cols-2 gap-12 items-center">
+    <div class="reveal">
+      <p data-i18n="tele_kicker" class="font-hand text-[26px] text-brand-100 leading-none">care from home</p>
+      <h2 data-i18n="tele_title" class="font-display font-800 tracking-tight text-white text-[36px] sm:text-[44px] leading-[1.05] mt-1">See a doctor by video, today</h2>
+      <p data-i18n="tele_sub" class="mt-4 text-[17px] text-brand-100/85 max-w-xl">Skip the waiting room. Connect with verified doctors over secure video and get prescriptions, advice and follow-ups from anywhere.</p>
+      <a href="Narzim Login.html?tab=patient&mode=register" data-login="patient" data-i18n="tele_cta" class="mt-7 inline-flex h-12 items-center gap-2 px-6 rounded-xl text-[15px] font-600 text-brand-700 bg-white hover:bg-brand-50 shadow-lg transition active:scale-[.98]">Start a video visit</a>
+    </div>
+    <div class="reveal" style="animation-delay:.1s">
+      <div class="relative rounded-3xl bg-white/[0.06] border border-white/15 backdrop-blur p-5 shadow-2xl">
+        <div class="rounded-2xl bg-slate-900/40 aspect-[4/3] grid place-items-center relative overflow-hidden">
+          <div class="absolute top-3 left-3 flex items-center gap-1.5 text-[12px] text-white/90 bg-black/30 rounded-full px-2.5 py-1"><span class="size-1.5 rounded-full bg-red-400 animate-pulse"></span>Live</div>
+          <span class="size-24 rounded-full bg-gradient-to-br from-brand-400 to-brand-600 grid place-items-center text-white font-display font-800 text-[34px] shadow-xl floaty">VR</span>
+          <div class="absolute bottom-3 right-3 size-16 rounded-xl bg-slate-700/70 border border-white/20 grid place-items-center text-white/70 text-[11px]">You</div>
+        </div>
+        <div class="mt-4 flex items-center justify-center gap-3">
+          <span class="size-11 rounded-full bg-white/10 grid place-items-center text-white"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 15a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3z" stroke="currentColor" stroke-width="2"/><path d="M19 11a7 7 0 0 1-14 0M12 18v3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+          <span class="size-11 rounded-full bg-white/10 grid place-items-center text-white"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="m23 7-7 5 7 5z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><rect x="1" y="5" width="15" height="14" rx="2" stroke="currentColor" stroke-width="2"/></svg></span>
+          <span class="size-11 rounded-full bg-red-500 grid place-items-center text-white"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M3 9c6-4 12-4 18 0v3l-4 1v-2c-3-1.5-7-1.5-10 0v2L3 12z" fill="currentColor"/></svg></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ TRUST ═══════════ -->
+<section class="bg-white py-20">
+  <div class="mx-auto max-w-5xl px-5 lg:px-8 text-center reveal">
+    <h2 data-i18n="trust_title" class="font-display font-800 tracking-tight text-slate-900 text-[32px] sm:text-[38px] leading-tight">Every doctor is verified</h2>
+    <p data-i18n="trust_sub" class="mt-3 text-[16px] text-slate-600 max-w-2xl mx-auto">Licenses and credentials are checked before any doctor joins Narzim. Your data is private and encrypted end-to-end.</p>
+    <div class="mt-9 grid sm:grid-cols-3 gap-4">
+      <div class="rounded-2xl bg-slate-50 border border-slate-100 p-6">
+        <span class="mx-auto size-12 rounded-xl bg-emerald-100 text-emerald-600 grid place-items-center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 2 4 5v6c0 5 3.5 8.5 8 11 4.5-2.5 8-6 8-11V5z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="m9 12 2 2 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        <p data-i18n="trust_1" class="mt-3 font-display font-700 text-[16px] text-slate-900">Verified licenses</p>
+      </div>
+      <div class="rounded-2xl bg-slate-50 border border-slate-100 p-6">
+        <span class="mx-auto size-12 rounded-xl bg-brand-100 text-brand-600 grid place-items-center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect x="3" y="11" width="18" height="11" rx="2" stroke="currentColor" stroke-width="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4" stroke="currentColor" stroke-width="2"/></svg></span>
+        <p data-i18n="trust_2" class="mt-3 font-display font-700 text-[16px] text-slate-900">Encrypted & private</p>
+      </div>
+      <div class="rounded-2xl bg-slate-50 border border-slate-100 p-6">
+        <span class="mx-auto size-12 rounded-xl bg-amber-100 text-amber-600 grid place-items-center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="m12 3 2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9 6.8 19.2l1-5.8L3.5 9.2l5.9-.9z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></span>
+        <p data-i18n="trust_3" class="mt-3 font-display font-700 text-[16px] text-slate-900">Real patient reviews</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ CTA ═══════════ -->
+<section class="mesh py-20">
+  <div class="mx-auto max-w-5xl px-5 lg:px-8">
+    <div class="rounded-[28px] bg-white shadow-[0_30px_80px_-30px_rgba(15,23,42,0.3)] border border-white/70 p-9 sm:p-12 text-center reveal">
+      <h2 data-i18n="cta_title" class="font-display font-800 tracking-tight text-slate-900 text-[32px] sm:text-[42px] leading-[1.05]">Your next appointment is a tap away</h2>
+      <p data-i18n="cta_sub" class="mt-3 text-[17px] text-slate-600 max-w-2xl mx-auto">Create a free account to book visits, message doctors and keep all your records in one place.</p>
+      <div class="mt-7 flex flex-wrap items-center justify-center gap-3">
+        <a href="Narzim Login.html?tab=patient&mode=register" data-login="patient" data-i18n="login" class="inline-flex h-12 items-center gap-2 px-7 rounded-xl text-[15px] font-600 text-white bg-brand-500 hover:bg-brand-600 shadow-lg shadow-brand-500/30 transition active:scale-[.98]">Log in</a>
+        <a href="#doctors" data-i18n="cta_secondary" class="inline-flex h-12 items-center px-7 rounded-xl text-[15px] font-600 text-slate-800 bg-white border border-slate-200 hover:bg-slate-50 shadow-sm transition">Browse doctors</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ FOOTER ═══════════ -->
+<footer class="bg-[#062a3f] text-brand-100/70">
+  <div class="mx-auto max-w-7xl px-5 lg:px-8 py-14">
+    <div class="grid md:grid-cols-[1.4fr_1fr_1fr] gap-10">
+      <div>
+        <div class="flex items-center gap-2.5">
+          <span class="logo-mark on-dark"></span>
+          <span class="font-display font-700 text-[20px] text-white">Narzim</span>
+        </div>
+        <p data-i18n="foot_tagline" class="mt-4 text-[14px] max-w-xs leading-relaxed">The easiest way to find a doctor and book care near you.</p>
+      </div>
+      <div>
+        <p data-i18n="foot_patients" class="text-[13px] font-700 text-white uppercase tracking-wider">For patients</p>
+        <ul class="mt-4 space-y-2.5 text-[14px]">
+          <li><a href="#doctors" data-i18n="foot_find" class="hover:text-white transition">Find a doctor</a></li>
+          <li><a href="#specialties" data-i18n="foot_specialties" class="hover:text-white transition">Specialties</a></li>
+          <li><a href="#telehealth" data-i18n="foot_tele" class="hover:text-white transition">Telehealth</a></li>
+          <li><a href="Narzim Patient Portal.html" data-i18n="foot_portal" class="hover:text-white transition">Patient portal</a></li>
+        </ul>
+      </div>
+      <div>
+        <p data-i18n="foot_company" class="text-[13px] font-700 text-white uppercase tracking-wider">Company</p>
+        <ul class="mt-4 space-y-2.5 text-[14px]">
+          <li><a href="#" data-i18n="foot_about" class="hover:text-white transition">About</a></li>
+          <li><a href="Narzim EHR.html" data-i18n="foot_practitioners" class="hover:text-white transition">For practitioners</a></li>
+          <li><a href="#" data-i18n="foot_help" class="hover:text-white transition">Help center</a></li>
+          <li><a href="#" data-i18n="foot_privacy" class="hover:text-white transition">Privacy</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="mt-12 pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3 text-[13px]">
+      <p data-i18n="foot_rights">© 2026 Narzim Health. All rights reserved.</p>
+      <p class="flex items-center gap-2"><span class="size-1.5 rounded-full bg-emerald-400"></span><span data-i18n="foot_verified">Verified doctors · Encrypted</span></p>
+    </div>
+  </div>
+</footer>
+
+<!-- ═══════════ PATIENT LOGIN MODAL ═══════════ -->
+<div id="loginModal" class="fixed inset-0 z-[90] hidden items-center justify-center px-5">
+  <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" data-close-login></div>
+  <div id="loginCard" class="relative w-full max-w-md rounded-[26px] bg-white shadow-[0_40px_100px_-30px_rgba(15,23,42,0.5)] border border-white/70 p-7 sm:p-8">
+    <button type="button" data-close-login aria-label="Close" class="absolute top-4 right-4 size-9 rounded-full hover:bg-slate-100 grid place-items-center text-slate-400 transition">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M18 6 6 18M6 6l12 12" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+    </button>
+    <div class="flex items-center gap-2.5">
+      <span class="logo-mark"></span>
+      <span class="font-display font-700 text-[19px] tracking-tight text-slate-900">Narzim</span>
+    </div>
+    <h2 data-i18n="login_title" class="font-display font-800 text-[26px] leading-tight text-slate-900 mt-5">Patient sign in</h2>
+    <p data-i18n="login_sub" class="mt-1.5 text-[14px] text-slate-500">Manage your appointments, records and messages.</p>
+    <form id="patientLoginForm" class="mt-6 space-y-4">
+      <label class="block">
+        <span data-i18n="login_id" class="text-[13px] font-600 text-slate-700">Email or phone</span>
+        <input id="plId" type="text" data-i18n-ph="login_id_ph" value="maria@email.com" class="mt-1.5 w-full h-12 rounded-xl border border-slate-200 bg-white px-3.5 text-[14px] outline-none focus:border-brand-400 focus:ring-2 focus:ring-brand-200 transition" placeholder="you@email.com" />
+      </label>
+      <label class="block">
+        <span class="flex items-center justify-between">
+          <span data-i18n="login_pw" class="text-[13px] font-600 text-slate-700">Password</span>
+          <a href="#" class="text-[12.5px] font-600 text-brand-600 hover:text-brand-700" data-i18n="login_forgot">Forgot?</a>
+        </span>
+        <input id="plPw" type="password" value="demo1234" class="mt-1.5 w-full h-12 rounded-xl border border-slate-200 bg-white px-3.5 text-[14px] outline-none focus:border-brand-400 focus:ring-2 focus:ring-brand-200 transition" placeholder="••••••••" />
+      </label>
+      <button type="submit" data-i18n="login_submit" class="w-full h-12 rounded-xl bg-brand-500 text-white text-[15px] font-600 hover:bg-brand-600 shadow-lg shadow-brand-500/30 transition active:scale-[.99]">Sign in</button>
+      <p data-i18n="login_demo" class="text-[12px] text-slate-400 text-center">Demo — any details work</p>
+    </form>
+    <p class="mt-5 pt-5 border-t border-slate-100 text-[13.5px] text-slate-500 text-center">
+      <span data-i18n="login_new">New to Narzim?</span>
+      <a href="Narzim Login.html?tab=patient&mode=register" data-i18n="login_create" class="font-600 text-brand-600 hover:text-brand-700">Create account</a>
+    </p>
+  </div>
+</div>
+
+<script src="marketplace-data.js?v=2"></script>
+<script src="marketplace.js?v=2"></script>
+</body>
+</html>

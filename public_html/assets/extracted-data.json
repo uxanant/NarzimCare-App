@@ -1,0 +1,87 @@
+{
+  "labs": [
+    {
+      "source": "scan-lab.png",
+      "facility": "Laboratorio Azteca",
+      "report": "Blood Panel",
+      "date": "15 Jan 2026",
+      "panel": "Blood Chemistry",
+      "results": [
+        { "test": "TSH", "value": "2.1 mIU/L" },
+        { "test": "Free T4", "value": "1.2 ng/dL" },
+        { "test": "Total cholesterol", "value": "182 mg/dL" },
+        { "test": "HDL", "value": "58 mg/dL" },
+        { "test": "Hemoglobin", "value": "13.6 g/dL" },
+        { "test": "Glucose (fasting)", "value": "104 mg/dL" }
+      ]
+    },
+    {
+      "source": "scan-duplicate.png",
+      "facility": "Laboratorio Azteca",
+      "report": "Clinical Laboratory · Blood Chemistry — Thyroid Panel",
+      "location": "Mérida, Yuc.",
+      "orderedBy": "Dr. Tomás Iglesias",
+      "sampleDate": "02 Jun 2026",
+      "signature": "L. Domínguez",
+      "results": [
+        { "test": "TSH", "value": "2.3 mIU/L", "ref": "0.4–4.0" },
+        { "test": "Free T4", "value": "1.1 ng/dL", "ref": "0.8–1.8" },
+        { "test": "Total cholesterol", "value": "176 mg/dL", "ref": "<200" },
+        { "test": "HDL", "value": "60 mg/dL", "ref": ">50" },
+        { "test": "Glucose (fasting)", "value": "98 mg/dL", "ref": "70–99" },
+        { "test": "Hemoglobin", "value": "13.8 g/dL", "ref": "12–15.5" }
+      ]
+    }
+  ],
+  "imaging": [
+    {
+      "source": "scan-imaging.png",
+      "facility": "Narzim Imaging",
+      "report": "Chest X-Ray Report · PA view",
+      "findings": [
+        "Lungs clear, no consolidation.",
+        "Heart size normal.",
+        "No pleural effusion.",
+        "Impression: Normal chest radiograph."
+      ],
+      "signature": "A. Méndez, MD"
+    }
+  ],
+  "prescriptions": [
+    {
+      "source": "scan-rx.png",
+      "facility": "Clínica Mérida Salud",
+      "physician": "Dra. Renata Solís",
+      "patient": "Mariana Reyes Castillo",
+      "medications": [
+        { "name": "Levotiroxina 75 mcg", "instructions": "1 tableta cada mañana en ayunas" },
+        { "name": "Salbutamol inhalador", "instructions": "2 inhalaciones según necesidad" },
+        { "name": "Vitamina D 1000 UI", "instructions": "1 cápsula diaria con alimentos" }
+      ],
+      "followUp": "Próxima revisión: 12 meses",
+      "signature": "R. Solís",
+      "license": "MEX-CED-441902"
+    }
+  ],
+  "receipts": [
+    {
+      "source": "scan-receipt.png",
+      "merchant": "Café Maya",
+      "address": "Calle 60 · Mérida",
+      "items": [
+        { "item": "2x Café", "price": "$70.00" },
+        { "item": "Pan dulce", "price": "$45.00" },
+        { "item": "Jugo", "price": "$38.00" },
+        { "item": "Agua", "price": "$20.00" }
+      ],
+      "total": "$173.00"
+    }
+  ],
+  "blurry": [
+    { "source": "scan-blurry.png", "note": "Illegible lipid panel — too blurry to read values" }
+  ],
+  "branding": [
+    { "source": "chavitos-logo.png", "name": "Chavitos Clinic", "tagline": "Alta Especialidad en Pediatría" },
+    { "source": "narzim-logo.png", "name": "Narzim" }
+  ]
+}

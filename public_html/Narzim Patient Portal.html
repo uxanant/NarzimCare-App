@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Narzim · Patient Portal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = { theme: { extend: {
+    fontFamily: { sans:['Inter','sans-serif'], display:['"Bricolage Grotesque"','Inter','sans-serif'], hand:['Caveat','cursive'] },
+    colors: { brand:{50:'#EAF5FF',100:'#D0ECFF',200:'#A9DCFF',300:'#7CCBF5',400:'#33B1F0',500:'#0098E4',600:'#0086cc',700:'#006093',900:'#003E5C'} },
+  }}};
+</script>
+<style>
+  body{font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased;color:#0F172A;}
+  .font-display{font-family:'Bricolage Grotesque','Inter',sans-serif;} .font-hand{font-family:'Caveat',cursive;}
+  *,*::before,*::after{box-sizing:border-box;}
+  .mesh{ background:
+      radial-gradient(1000px 560px at 12% -5%, rgba(160,200,255,0.40), transparent 60%),
+      radial-gradient(820px 460px at 108% 2%, rgba(255,190,210,0.26), transparent 60%),
+      linear-gradient(150deg,#EEF5FF 0%,#F4F2FB 50%,#FCF1F6 100%); min-height:100vh; }
+  ::-webkit-scrollbar{width:10px;height:10px;} ::-webkit-scrollbar-thumb{background:rgba(15,23,42,0.16);border-radius:9999px;border:2px solid transparent;background-clip:padding-box;}
+  .logo-mark{width:32px;height:32px;border-radius:10px;display:inline-block;position:relative;background:linear-gradient(150deg,#33B1F0,#0098E4 55%,#006093);box-shadow:0 4px 12px rgba(0,152,228,0.3);vertical-align:middle;}
+  .logo-mark::before{content:"";position:absolute;inset:0;background:#fff;
+    -webkit-mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M3 13h3l2 5 3-11 2 7h3' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/></svg>") center/66% no-repeat;
+    mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M3 13h3l2 5 3-11 2 7h3' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/></svg>") center/66% no-repeat;}
+  .nav-on{ color:#006093 !important; }
+  .nav-on::after{ content:""; position:absolute; left:12px; right:12px; bottom:-1px; height:2.5px; border-radius:9px; background:#0098E4; }
+  /* form controls */
+  .inp{ width:100%; height:40px; border:1px solid #E2E8F0; border-radius:12px; padding:0 12px; font-size:13.5px; color:#0F172A; background:#fff; outline:none; transition:border .15s, box-shadow .15s; }
+  .inp:focus{ border-color:#7CCBF5; box-shadow:0 0 0 3px rgba(0,152,228,.15); }
+  select.inp{ appearance:none; }
+  .lbl{ display:block; font-size:11.5px; font-weight:600; color:#64748B; margin-bottom:5px; }
+  /* toggle */
+  .toggle{ width:42px; height:24px; border-radius:9999px; background:#CBD5E1; position:relative; transition:background .18s; }
+  .toggle.on{ background:#0098E4; }
+  .toggle .dot{ position:absolute; top:3px; left:3px; width:18px; height:18px; border-radius:9999px; background:#fff; transition:transform .18s; box-shadow:0 1px 3px rgba(0,0,0,.2); }
+  .toggle.on .dot{ transform:translateX(18px); }
+  /* anim */
+  @keyframes pop{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}} .pop{animation:pop .4s ease-out both;}
+  @keyframes fadeIn{from{opacity:0}to{opacity:1}} .fade{animation:fadeIn .22s ease-out both;}
+  @keyframes sheet{from{opacity:0;transform:translateY(16px) scale(.99)}to{opacity:1;transform:translateY(0) scale(1)}} .sheet{animation:sheet .28s cubic-bezier(.22,.61,.36,1) both;}
+  @media print{
+    body * { visibility:hidden; }
+    #printArea, #printArea * { visibility:visible; }
+    #printArea { position:absolute; inset:0; margin:0; max-width:none !important; box-shadow:none !important; border-radius:0 !important; }
+    .no-print{ display:none !important; }
+  }
+</style>
+</head>
+<body class="mesh">
+
+<header class="sticky top-0 z-40 bg-white/75 backdrop-blur-xl border-b border-slate-200/70 no-print">
+  <div class="mx-auto max-w-6xl px-5 lg:px-8 h-16 flex items-center gap-3">
+    <button data-nav="home" class="flex items-center gap-2.5">
+      <span class="logo-mark"></span>
+      <span class="font-display font-700 text-[19px] text-slate-900">Narzim</span>
+      <span class="hidden sm:inline text-[12px] font-600 text-slate-400 border-l border-slate-200 pl-2.5 ml-0.5">Patient Portal</span>
+    </button>
+    <div class="flex-1"></div>
+    <button data-act="share360" class="hidden sm:inline-flex items-center gap-2 h-9 px-3.5 rounded-xl bg-brand-500 text-white text-[13px] font-600 hover:bg-brand-600 transition">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a1 1 0 001 1h14a1 1 0 001-1v-8"/><path d="M16 6l-4-4-4 4M12 2v14"/></svg>
+      Share 360°
+    </button>
+    <button class="relative size-10 rounded-xl hover:bg-slate-100 grid place-items-center text-slate-500 transition">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 01-3.4 0" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span class="absolute top-2 right-2.5 size-2 rounded-full bg-rose-500 ring-2 ring-white"></span>
+    </button>
+    <div class="relative pl-1">
+      <button data-act="userMenu" class="flex items-center gap-2.5 rounded-xl hover:bg-slate-100 pr-1.5 pl-1 py-1 transition">
+        <span class="size-9 rounded-full grid place-items-center font-600 text-slate-700 text-[13px]" style="background:#BAE6FD">MR</span>
+        <div class="hidden md:block leading-tight text-left">
+          <p class="text-[13.5px] font-600 text-slate-900">Mariana Reyes</p>
+          <p class="text-[11.5px] text-slate-500">MRN ·8903-42</p>
+        </div>
+        <svg class="text-slate-400" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div id="userMenu" class="hidden absolute right-0 top-[calc(100%+8px)] w-60 rounded-2xl bg-white border border-slate-200/80 shadow-xl shadow-slate-900/10 p-1.5 fade z-50">
+        <div class="flex items-center gap-3 px-2.5 py-2.5 border-b border-slate-100 mb-1.5">
+          <span class="size-10 rounded-full grid place-items-center font-600 text-slate-700 text-[14px]" style="background:#BAE6FD">MR</span>
+          <div class="min-w-0">
+            <p class="text-[13.5px] font-600 text-slate-900 truncate">Mariana Reyes Castillo</p>
+            <p class="text-[11.5px] text-slate-500 truncate">mariana.reyes@gmail.com</p>
+          </div>
+        </div>
+        <button data-act="view360" class="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[13px] font-500 text-slate-700 hover:bg-slate-100 transition">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0116 0"/></svg>360° profile
+        </button>
+        <button data-nav="settings" class="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[13px] font-500 text-slate-700 hover:bg-slate-100 transition">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>Settings
+        </button>
+        <div class="h-px bg-slate-100 my-1.5"></div>
+        <button data-act="signOut" class="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[13px] font-600 text-rose-600 hover:bg-rose-50 transition">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg>Sign out
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="mx-auto max-w-6xl px-5 lg:px-8">
+    <nav class="flex items-center gap-1 h-11 -mb-px text-[13.5px] font-600 text-slate-500">
+      <button data-nav="home"     class="relative h-11 px-3 hover:text-slate-800 transition">Home</button>
+      <button data-nav="health"   class="relative h-11 px-3 hover:text-slate-800 transition">Health record</button>
+      <button data-nav="access"   class="relative h-11 px-3 hover:text-slate-800 transition">Clinic access</button>
+      <button data-nav="settings" class="relative h-11 px-3 hover:text-slate-800 transition">Settings</button>
+    </nav>
+  </div>
+</header>
+
+<main class="mx-auto max-w-6xl px-5 lg:px-8 py-8">
+  <section id="view-home"></section>
+  <section id="view-health" class="hidden"></section>
+  <section id="view-access" class="hidden"></section>
+  <section id="view-settings" class="hidden"></section>
+</main>
+
+<div id="modalRoot"></div>
+<div id="toastRoot" class="fixed left-1/2 -translate-x-1/2 bottom-8 z-[120] flex flex-col items-center gap-2 no-print"></div>
+
+<script src="portal-data.js"></script>
+<script src="portal-core.js"></script>
+<script src="portal-views.js"></script>
+<script src="portal-docs.js"></script>
+<script>NZ.boot();</script>
+</body>
+</html>

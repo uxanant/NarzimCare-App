@@ -2,20 +2,15 @@
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="theme-color" content="#016066">
-<link rel="manifest" href="/manifest.json">
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Narzim · Family Health</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root{
-    --brand:#016066; --brand-light:#018A92; --tint:rgba(1,96,102,.09); --brand-dark:#014A4F; --accent:#02919A;
-    --surface:#F6F7F7; --card:#FFFFFF; --fill:rgba(120,120,128,.12);
+    --brand:#006AB9; --brand-light:#2E86D1; --tint:rgba(0,106,185,.09); --brand-dark:#00517F; --accent:#2E86D1;
+    --surface:#F9FCFF; --card:#FFFFFF; --fill:rgba(120,120,128,.12);
     --hair:rgba(60,60,67,.13); --hair-2:rgba(60,60,67,.09);
     --ease-spring:cubic-bezier(.32,.72,0,1); --ease-out:cubic-bezier(.22,.61,.36,1);
     --success:#34C759; --warning:#FF9500; --danger:#FF3B30;
@@ -45,8 +40,8 @@
   #screens{ flex:1; position:relative; }
   /* soothing ambient wash — slow, barely-there teal bloom */
   #screens::before{ content:''; position:absolute; inset:-15% -25% auto -25%; height:62%; z-index:0; pointer-events:none;
-    background:radial-gradient(58% 68% at 22% 8%, rgba(2,145,154,.13), transparent 70%),
-               radial-gradient(52% 60% at 88% 0%, rgba(1,96,102,.10), transparent 72%);
+    background:radial-gradient(58% 68% at 22% 8%, rgba(46,134,209,.13), transparent 70%),
+               radial-gradient(52% 60% at 88% 0%, rgba(0,106,185,.10), transparent 72%);
     filter:blur(6px); animation:bloom 22s ease-in-out infinite alternate; }
   @keyframes bloom{ 0%{ transform:translate3d(0,0,0) scale(1); opacity:.85 } 100%{ transform:translate3d(0,14px,0) scale(1.06); opacity:1 } }
 
@@ -84,25 +79,370 @@
   .nav-item.on{ color:var(--brand); }
   .nav-item .ndot{ display:none; }
   .home-ind{ position:absolute; bottom:8px; left:50%; transform:translateX(-50%); width:134px; height:5px; border-radius:9px; background:#000; opacity:.18; z-index:40; pointer-events:none; }
-  .nav-fab{ flex:1; display:flex; align-items:flex-start; justify-content:center; background:none; border:none; cursor:pointer; -webkit-tap-highlight-color:transparent; }
-  .nav-fab .nfb{ width:52px; height:52px; border-radius:50%; background:var(--brand); display:grid; place-items:center; box-shadow:0 6px 18px -3px rgba(1,96,102,.45); transform:translateY(-14px); transition:transform .1s; color:#fff; }
-  .nav-fab:active .nfb{ transform:translateY(-14px) scale(.93); }
+  .nav-fab{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; background:none; border:none; cursor:pointer; -webkit-tap-highlight-color:transparent; }
+  .nav-fab .nfb{ width:52px; height:52px; border-radius:50%; background:transparent; display:grid; place-items:center; box-shadow:0 4px 12px -2px rgba(0,106,185,.32), 0 0 0 4px rgba(252,252,252,.9); transform:translateY(-26px); transition:transform .26s var(--ease-spring); overflow:hidden; }
+  .nav-fab .nfb img{ width:100%; height:100%; object-fit:cover; }
+  .nav-fab .nfb-label{ font-size:10px; font-weight:500; color:rgba(60,60,67,.5); letter-spacing:.01em; margin-top:-8px; white-space:nowrap; }
+  .nav-fab:active .nfb{ transform:translateY(-26px) scale(.9); }
 
   .greeting{ font-size:24px; font-weight:600; color:var(--text); letter-spacing:-.038em; line-height:1.06; }
+
+  /* ===== Care Connect ===== */
+  .cc-hero{ font-size:27px; font-weight:700; letter-spacing:-.04em; line-height:1.14; color:var(--text); margin-top:14px; }
+  .cc-sub{ font-size:14.5px; color:var(--text-2); line-height:1.45; margin-top:9px; max-width:290px; }
+  .cc-clinic{ width:100%; display:flex; align-items:center; gap:13px; padding:13px; margin-top:11px; background:var(--card); border:1px solid transparent; border-radius:18px; box-shadow:var(--sh); cursor:pointer; text-align:left; font-family:inherit; transition:border-color .2s, transform .2s var(--ease-spring); }
+  .cc-clinic:active{ transform:scale(.982); }
+  .cc-clinic.on{ border-color:var(--brand); }
+  .cc-clinic-tile{ width:52px; height:52px; border-radius:13px; background:var(--tint); color:var(--brand); display:grid; place-items:center; flex-shrink:0; font-size:15px; font-weight:700; letter-spacing:-.01em; overflow:hidden; }
+  .cc-clinic-tile img{ width:100%; height:100%; object-fit:cover; }
+  .cc-top-av img{ width:100%; height:100%; object-fit:cover; }
+  .cc-clinic-name{ font-size:15px; font-weight:600; color:var(--text); letter-spacing:-.015em; }
+  .cc-clinic-tag{ font-size:12.5px; color:var(--muted); margin-top:2px; }
+  .cc-sheet{ display:flex; flex-direction:column; max-height:86%; padding-bottom:0; }
+  .cc-sheet-list{ flex:1; min-height:0; overflow-y:auto; margin-top:4px; padding-bottom:0; }
+  .cc-sheet-list::-webkit-scrollbar{ display:none; } .cc-sheet-list{ scrollbar-width:none; }
+  .cc-sheet-pill{ display:inline-flex; align-items:center; gap:7px; height:30px; padding:0 13px 0 4px; border-radius:15px; background:var(--tint); color:var(--brand); font-size:12.5px; font-weight:600; letter-spacing:-.01em; flex-shrink:0; align-self:flex-start; margin-bottom:12px; }
+  .cc-sheet-pill img{ width:24px; height:24px; border-radius:50%; object-fit:cover; }
+  .cc-sheet-hd{ font-size:21px; font-weight:700; letter-spacing:-.038em; line-height:1.18; color:var(--text); margin-top:2px; flex-shrink:0; }
+  .cc-sheet-sub{ font-size:13.5px; color:var(--text-2); line-height:1.45; margin-top:7px; flex-shrink:0; }
+  .cc-peek{ display:flex; align-items:flex-end; justify-content:center; padding:0; margin:10px 0 0; pointer-events:none; }
+
+  /* ===== auth + profile setup flow ===== */
+  .pane.flow{ background:#FBFDFF; flex-direction:column; padding:0; }
+  .pane.flow.active{ display:flex; }
+  .flow-top{ flex-shrink:0; display:flex; align-items:center; gap:12px; padding:52px 20px 0; }
+  .flow-bar{ flex:1; height:3px; border-radius:2px; background:#E3ECF5; overflow:hidden; }
+  .flow-bar i{ display:block; height:100%; border-radius:2px; background:var(--brand); transition:width .5s var(--ease-spring); }
+  .flow-body{ flex:1; min-height:0; overflow-y:auto; padding:26px 26px 0; animation:flowIn .46s var(--ease-spring) both; }
+  @keyframes flowIn{ from{opacity:0; transform:translateY(12px);} to{opacity:1; transform:none;} }
+  .flow-h{ margin:0; font-size:26px; font-weight:800; letter-spacing:-.04em; line-height:1.16; color:#0B2E5A; text-wrap:balance; }
+  .flow-s{ margin:9px 0 0; font-size:14px; line-height:1.48; color:#7C8A9C; text-wrap:pretty; }
+  .flow-foot{ flex-shrink:0; padding:14px 26px 28px; }
+  .flow-btn{ width:100%; height:52px; border-radius:26px; background:var(--brand); color:#fff; border:none; font-family:inherit;
+    font-size:15.5px; font-weight:650; letter-spacing:-.01em; display:flex; align-items:center; justify-content:center; gap:8px;
+    cursor:pointer; box-shadow:0 8px 20px -6px rgba(0,106,185,.4); transition:opacity .2s, transform .18s var(--ease-spring); }
+  .flow-btn:active{ transform:scale(.98); }
+  .flow-btn[disabled]{ opacity:.35; box-shadow:none; }
+  .flow-btn.ghost{ background:none; color:var(--muted); font-weight:500; box-shadow:none; height:44px; font-size:14px; }
+  .flow-btn.outline{ background:#fff; color:var(--text); border:1px solid var(--border); box-shadow:none; font-weight:600; }
+
+  .au-mark{ width:64px; height:64px; border-radius:20px; overflow:hidden; margin:0 auto 20px; box-shadow:0 8px 22px -8px rgba(11,46,90,.28); }
+  .au-mark img{ width:100%; height:100%; object-fit:cover; }
+  .au-opts{ display:flex; flex-direction:column; gap:10px; margin-top:28px; }
+  .au-opt{ width:100%; height:52px; border-radius:26px; background:#fff; border:1px solid var(--border); display:flex; align-items:center;
+    justify-content:center; gap:10px; font-family:inherit; font-size:15px; font-weight:600; color:var(--text); cursor:pointer;
+    box-shadow:0 2px 8px -3px rgba(11,46,90,.08); transition:transform .18s var(--ease-spring); }
+  .au-opt:active{ transform:scale(.98); }
+  .au-opt.pri{ background:var(--brand); color:#fff; border-color:var(--brand); box-shadow:0 8px 20px -6px rgba(0,106,185,.4); }
+  .au-or{ display:flex; align-items:center; gap:12px; margin:20px 0 0; font-size:12px; color:#9AA8B8; }
+  .au-or:before, .au-or:after{ content:''; flex:1; height:1px; background:#E3ECF5; }
+  .au-legal{ margin-top:22px; font-size:11.5px; line-height:1.5; color:#9AA8B8; text-align:center; }
+  .au-legal a{ color:var(--brand); text-decoration:none; }
+  .au-seg{ display:flex; gap:4px; padding:3px; background:#EDF3FA; border-radius:13px; margin-top:22px; }
+  .au-seg button{ flex:1; height:36px; border-radius:10px; border:none; background:none; font-family:inherit; font-size:13.5px;
+    font-weight:600; color:var(--muted); cursor:pointer; transition:all .24s var(--ease-spring); }
+  .au-seg button.on{ background:#fff; color:var(--brand); box-shadow:0 1px 4px rgba(11,46,90,.1); }
+  .au-field{ display:flex; align-items:center; gap:10px; margin-top:16px; height:52px; padding:0 16px; background:#fff;
+    border:1px solid var(--border); border-radius:14px; }
+  .au-field input{ flex:1; border:none; background:none; outline:none; font-family:inherit; font-size:15.5px; color:var(--text); }
+  .au-cc{ font-size:15.5px; font-weight:600; color:var(--text); padding-right:10px; border-right:1px solid var(--border); }
+  .au-otp{ display:flex; gap:9px; margin-top:24px; }
+  .au-otp input{ flex:1; height:56px; border:1.5px solid var(--border); border-radius:14px; background:#fff; text-align:center;
+    font-family:inherit; font-size:21px; font-weight:700; color:var(--text); outline:none; transition:border-color .2s, box-shadow .2s; }
+  .au-otp input:focus{ border-color:var(--brand); box-shadow:0 0 0 3px rgba(0,106,185,.12); }
+  .au-otp input.filled{ border-color:var(--brand); background:#F5FAFF; }
+  .au-resend{ margin-top:18px; font-size:13px; color:#9AA8B8; text-align:center; }
+  .au-resend b{ color:var(--brand); font-weight:600; }
+  .au-hint{ margin-top:14px; padding:10px 13px; border-radius:12px; background:#EDF6FF; font-size:12.5px; color:#2A6BA8; text-align:center; }
+
+  .pf-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:9px; margin-top:18px; }
+  .pf-tile{ padding:15px 8px; border-radius:15px; background:#fff; border:1.5px solid var(--border); font-family:inherit;
+    font-size:13px; font-weight:600; color:var(--text); cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:8px;
+    transition:all .22s var(--ease-spring); }
+  .pf-tile.on{ border-color:var(--brand); background:#F2F9FF; color:var(--brand); }
+  .pf-tile .pf-ic{ width:32px; height:32px; border-radius:50%; background:#EDF3FA; color:var(--muted); display:grid; place-items:center; transition:all .22s; }
+  .pf-tile.on .pf-ic{ background:var(--brand); color:#fff; }
+  .pf-chips{ display:flex; flex-wrap:wrap; gap:8px; margin-top:18px; }
+  .pf-chip{ height:38px; padding:0 15px; border-radius:19px; background:#fff; border:1.5px solid var(--border); font-family:inherit;
+    font-size:13.5px; font-weight:600; color:var(--text); cursor:pointer; display:inline-flex; align-items:center; gap:7px;
+    transition:all .2s var(--ease-spring); }
+  .pf-chip.on{ border-color:var(--brand); background:var(--brand); color:#fff; }
+  .pf-age{ display:flex; align-items:baseline; justify-content:center; gap:8px; margin-top:22px; }
+  .pf-age-v{ font-size:52px; font-weight:800; letter-spacing:-.05em; color:#0B2E5A; font-variant-numeric:tabular-nums; }
+  .pf-age-u{ font-size:14px; font-weight:600; color:#9AA8B8; }
+  .pf-slider{ -webkit-appearance:none; appearance:none; width:100%; height:5px; border-radius:3px; background:#E3ECF5; margin-top:14px; outline:none; }
+  .pf-slider::-webkit-slider-thumb{ -webkit-appearance:none; width:26px; height:26px; border-radius:50%; background:#fff;
+    border:2px solid var(--brand); box-shadow:0 2px 8px -2px rgba(11,46,90,.25); cursor:pointer; }
+  .pf-drop{ margin-top:18px; padding:26px 20px; border:1.5px dashed #C9DAEC; border-radius:18px; background:#fff; text-align:center; }
+  .pf-drop-ic{ width:48px; height:48px; border-radius:50%; background:#EDF6FF; color:var(--brand); display:grid; place-items:center; margin:0 auto 12px; }
+  .pf-drop-t{ font-size:14.5px; font-weight:650; color:var(--text); }
+  .pf-drop-s{ font-size:12.5px; color:#9AA8B8; margin-top:4px; line-height:1.45; }
+  .pf-drop-btns{ display:flex; gap:8px; margin-top:15px; }
+  .pf-drop-btn{ flex:1; height:42px; border-radius:21px; background:#F2F7FC; border:none; font-family:inherit; font-size:13.5px;
+    font-weight:600; color:var(--brand); cursor:pointer; display:flex; align-items:center; justify-content:center; gap:7px; }
+  .pf-scan{ margin-top:18px; padding:22px 18px; border-radius:18px; background:#fff; box-shadow:var(--sh); text-align:center; }
+  .pf-scan-orb{ width:54px; height:54px; border-radius:50%; background:#EDF6FF; color:var(--brand); display:grid; place-items:center;
+    margin:0 auto 13px; animation:pfPulse 1.5s ease-in-out infinite; }
+  @keyframes pfPulse{ 0%,100%{transform:scale(1); box-shadow:0 0 0 0 rgba(0,106,185,.22);} 50%{transform:scale(1.06); box-shadow:0 0 0 12px rgba(0,106,185,0);} }
+  .pf-scan-t{ font-size:14.5px; font-weight:650; color:var(--text); }
+  .pf-scan-s{ font-size:12.5px; color:#9AA8B8; margin-top:4px; }
+  .pf-scan-steps{ margin-top:16px; display:flex; flex-direction:column; gap:8px; text-align:left; }
+  .pf-ex{ margin-top:12px; padding:14px; border-radius:16px; background:#fff; box-shadow:var(--sh); animation:flowIn .42s var(--ease-spring) both; }
+  .pf-ex-hd{ display:flex; align-items:center; gap:10px; }
+  .pf-ex-ic{ width:34px; height:34px; border-radius:10px; background:#EDF6FF; color:var(--brand); display:grid; place-items:center; flex-shrink:0; }
+  .pf-ex-t{ font-size:14px; font-weight:650; color:var(--text); letter-spacing:-.018em; }
+  .pf-ex-s{ font-size:11.5px; color:#9AA8B8; margin-top:2px; }
+  .pf-ex-tag{ margin-left:auto; padding:3px 9px; border-radius:11px; background:#E8F7EE; color:#15803D; font-size:10.5px; font-weight:700; flex-shrink:0; }
+  .pf-ex-rows{ margin-top:11px; display:grid; grid-template-columns:1fr auto; gap:7px 10px; }
+  .pf-ex-k{ font-size:12.5px; color:#7C8A9C; }
+  .pf-ex-v{ font-size:12.5px; font-weight:650; color:var(--text); text-align:right; }
+
+  .pr-card{ position:relative; margin-top:12px; padding:18px; border-radius:20px; background:#fff; border:1.5px solid var(--border);
+    cursor:pointer; transition:all .24s var(--ease-spring); }
+  .pr-card.on{ border-color:var(--brand); box-shadow:0 10px 26px -10px rgba(0,106,185,.3); }
+  .pr-badge{ position:absolute; top:-9px; right:16px; padding:3px 11px; border-radius:11px; background:var(--brand); color:#fff;
+    font-size:10.5px; font-weight:700; letter-spacing:.02em; }
+  .pr-hd{ display:flex; align-items:flex-start; gap:12px; }
+  .pr-radio{ width:21px; height:21px; border-radius:50%; border:2px solid #CFDCE9; flex-shrink:0; margin-top:2px; display:grid; place-items:center; transition:all .22s; }
+  .pr-card.on .pr-radio{ border-color:var(--brand); background:var(--brand); }
+  .pr-radio i{ width:7px; height:7px; border-radius:50%; background:#fff; opacity:0; transition:opacity .2s; }
+  .pr-card.on .pr-radio i{ opacity:1; }
+  .pr-name{ font-size:16px; font-weight:750; letter-spacing:-.028em; color:#0B2E5A; }
+  .pr-price{ margin-left:auto; text-align:right; flex-shrink:0; }
+  .pr-price b{ font-size:19px; font-weight:800; letter-spacing:-.035em; color:#0B2E5A; }
+  .pr-price span{ display:block; font-size:11px; color:#9AA8B8; margin-top:1px; }
+  .pr-feats{ margin:13px 0 0; padding:0; list-style:none; display:flex; flex-direction:column; gap:8px; }
+  .pr-feats li{ display:flex; align-items:flex-start; gap:9px; font-size:13px; line-height:1.4; color:#4A5868; }
+  .pr-feats li svg{ width:15px; height:15px; stroke:var(--brand); stroke-width:2.6; fill:none; flex-shrink:0; margin-top:2px; }
+  .pr-feats li.off{ color:#B4C0CC; }
+  .pr-feats li.off svg{ stroke:#C9D4DF; }
+  .pr-toggle{ display:flex; gap:4px; padding:3px; background:#EDF3FA; border-radius:13px; margin-top:16px; }
+  .pr-toggle button{ flex:1; height:34px; border-radius:10px; border:none; background:none; font-family:inherit; font-size:13px;
+    font-weight:600; color:var(--muted); cursor:pointer; transition:all .24s var(--ease-spring); }
+  .pr-toggle button.on{ background:#fff; color:var(--brand); box-shadow:0 1px 4px rgba(11,46,90,.1); }
+  .pr-save{ font-size:10px; font-weight:700; color:#15803D; margin-left:5px; }
+
+  .su-wrap{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:0 34px 60px; }
+  .su-ring{ position:relative; width:96px; height:96px; }
+  .su-ring svg{ width:96px; height:96px; transform:rotate(-90deg); }
+  .su-ring circle{ fill:none; stroke-width:5; stroke-linecap:round; }
+  .su-ring .bg{ stroke:#E3ECF5; }
+  .su-ring .fg{ stroke:var(--brand); stroke-dasharray:264; stroke-dashoffset:264; transition:stroke-dashoffset .6s var(--ease-spring); }
+  .su-pct{ position:absolute; inset:0; display:grid; place-items:center; font-size:19px; font-weight:750; color:#0B2E5A; font-variant-numeric:tabular-nums; }
+  .su-t{ font-size:19px; font-weight:700; letter-spacing:-.032em; color:#0B2E5A; margin-top:24px; text-align:center; }
+  .su-s{ font-size:13.5px; color:#7C8A9C; margin-top:6px; text-align:center; min-height:20px; transition:opacity .3s; }
+
+  /* ===== intro / walkthrough ===== */
+  .pane.intro{ background:#FBFDFF; flex-direction:column; padding:0; }
+  .pane.intro.active{ display:flex; }
+  .intro-skip{ position:absolute; top:52px; right:20px; z-index:5; background:none; border:none; font-family:inherit;
+    font-size:14px; font-weight:500; color:var(--muted); cursor:pointer; padding:6px 4px; }
+  .intro-track{ flex:1; position:relative; min-height:0; }
+  .intro-slide{ position:absolute; inset:0; display:flex; flex-direction:column; padding:76px 26px 0;
+    opacity:0; transform:translateX(26px); pointer-events:none; transition:opacity .42s var(--ease-spring), transform .42s var(--ease-spring); }
+  .intro-slide.on{ opacity:1; transform:none; pointer-events:auto; }
+  .intro-slide.prev{ transform:translateX(-26px); }
+  .intro-copy{ flex:0 1 auto; min-height:0; text-align:center; }
+  .intro-h{ margin:0; font-size:clamp(23px, 6.6vh, 31px); font-weight:800; letter-spacing:-.042em; line-height:1.14; color:#0B2E5A; text-wrap:balance; }
+  .intro-h span{ color:var(--brand); }
+  .intro-s{ margin:11px auto 0; max-width:270px; font-size:clamp(12.5px, 3vh, 14.5px); line-height:1.45; color:#7C8A9C; text-wrap:pretty; }
+  .intro-art{ flex:1 1 auto; min-height:110px; position:relative; overflow:hidden; margin:12px 0 4px; }
+  .intro-art img{ position:absolute; inset:0; width:100%; height:100%; object-fit:contain; }
+  .intro-feats{ flex-shrink:0; display:flex; gap:8px; padding:2px 0 4px; }
+  .intro-feat{ flex:1; display:flex; flex-direction:column; align-items:center; gap:6px; font-size:11px; font-weight:500;
+    color:#4A5868; text-align:center; line-height:1.25; }
+  .intro-feat-ic{ width:34px; height:34px; border-radius:50%; background:#E8F2FD; color:var(--brand); display:grid; place-items:center; }
+  .intro-foot{ flex-shrink:0; position:relative; display:flex; align-items:center; justify-content:center;
+    padding:10px 26px 26px; min-height:84px; }
+  .intro-dots{ display:flex; gap:7px; }
+  .intro-dots i{ width:7px; height:7px; border-radius:50%; background:#D3DDE8; transition:all .3s var(--ease-spring); }
+  .intro-dots i.on{ background:var(--brand); width:20px; border-radius:4px; }
+  .intro-next{ position:absolute; right:26px; bottom:26px; width:56px; height:56px; border-radius:50%; background:var(--brand);
+    border:none; display:grid; place-items:center; cursor:pointer; box-shadow:0 8px 20px -5px rgba(0,106,185,.45);
+    transition:transform .22s var(--ease-spring); }
+  .intro-next:active{ transform:scale(.93); }
+  .intro-back{ position:absolute; left:26px; bottom:30px; width:48px; height:48px; border-radius:50%; background:#fff;
+    border:1px solid var(--border); display:none; place-items:center; cursor:pointer; box-shadow:0 3px 10px -3px rgba(11,46,90,.12); }
+  .intro-foot.has-back .intro-back{ display:grid; }
+  .intro-slide[data-intro-slide="3"]{ padding-top:58px; }
+  .intro-slide[data-intro-slide="3"] .intro-art{ min-height:0; flex:1 1 0%; margin:8px 0 2px; }
+  .intro-slide[data-intro-slide="3"] .intro-feat-ic{ width:30px; height:30px; }
+  .intro-slide[data-intro-slide="3"] .intro-feats{ gap:6px; padding:0 0 2px; }
+  .intro-start{ display:none; width:100%; height:54px; border-radius:27px; background:var(--brand); color:#fff; border:none;
+    font-family:inherit; font-size:16px; font-weight:650; letter-spacing:-.01em; align-items:center; justify-content:center; gap:8px;
+    cursor:pointer; box-shadow:0 8px 20px -5px rgba(0,106,185,.4); }
+  .intro-foot.last{ flex-direction:column; gap:14px; padding-bottom:26px; }
+  .intro-foot.last .intro-start{ display:flex; }
+  .intro-foot.last .intro-next,
+  .intro-foot.last .intro-back{ display:none; }
+  .cc-conn{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:0 30px 70px; }
+  .cc-conn-orb{ position:relative; width:104px; height:104px; display:grid; place-items:center; }
+  .cc-conn-orb .ring{ position:absolute; inset:0; border-radius:50%; border:1.5px solid var(--brand); opacity:0; animation:ccRing 2.4s var(--ease-out,ease-out) infinite; }
+  .cc-conn-orb .ring:nth-child(2){ animation-delay:.8s; }
+  .cc-conn-orb .ring:nth-child(3){ animation-delay:1.6s; }
+  @keyframes ccRing{ 0%{transform:scale(.72); opacity:.55;} 100%{transform:scale(1.65); opacity:0;} }
+  .cc-conn-ph{ width:72px; height:72px; border-radius:50%; overflow:hidden; box-shadow:0 8px 22px -6px rgba(0,106,185,.4); animation:ccOrbIn .5s var(--ease-spring) both; }
+  .cc-conn-ph img{ width:100%; height:100%; object-fit:cover; }
+  @keyframes ccOrbIn{ from{opacity:0; transform:scale(.6);} to{opacity:1; transform:scale(1);} }
+  .cc-conn-t{ font-size:19px; font-weight:600; letter-spacing:-.032em; color:var(--text); margin-top:24px; text-align:center; animation:ccFadeUp .45s .1s var(--ease-spring) both; }
+  .cc-conn-s{ font-size:13.5px; color:var(--muted); margin-top:5px; text-align:center; line-height:1.45; animation:ccFadeUp .45s .18s var(--ease-spring) both; }
+  @keyframes ccFadeUp{ from{opacity:0; transform:translateY(9px);} to{opacity:1; transform:none;} }
+  .cc-conn-steps{ margin-top:26px; display:flex; flex-direction:column; gap:9px; width:100%; max-width:240px; }
+  .cc-conn-step{ display:flex; align-items:center; gap:9px; font-size:13px; color:var(--muted); opacity:.35; transition:opacity .35s, color .35s; }
+  .cc-conn-step.on{ opacity:1; color:var(--text); }
+  .cc-conn-step .dot{ width:16px; height:16px; border-radius:50%; border:1.5px solid var(--border); display:grid; place-items:center; flex-shrink:0; transition:all .3s; }
+  .cc-conn-step.on .dot{ background:var(--brand); border-color:var(--brand); }
+  .cc-conn-step .dot svg{ width:9px; height:9px; stroke:#fff; stroke-width:3.4; opacity:0; transition:opacity .2s .12s; }
+  .cc-conn-step.on .dot svg{ opacity:1; }
+  .cc-perm{ width:100%; max-width:296px; background:var(--card); border-radius:20px; padding:22px 20px 16px; box-shadow:var(--sh-lift); text-align:center; animation:ccFadeUp .48s var(--ease-spring) both; }
+  .cc-perm-ic{ width:52px; height:52px; border-radius:50%; background:var(--tint); color:var(--brand); display:grid; place-items:center; margin:0 auto 13px; }
+  .cc-perm-t{ font-size:16.5px; font-weight:650; letter-spacing:-.026em; color:var(--text); }
+  .cc-perm-s{ font-size:13px; color:var(--muted); margin-top:6px; line-height:1.45; }
+  .cc-perm-btns{ display:flex; flex-direction:column; gap:7px; margin-top:17px; }
+  .cc-perm-btn{ height:40px; border-radius:20px; border:none; font-size:14px; font-weight:600; font-family:inherit; cursor:pointer; }
+  .cc-perm-btn.pri{ background:var(--brand); color:#fff; }
+  .cc-perm-btn.sec{ background:none; color:var(--muted); font-weight:500; }
+
+  /* ===== Care Connect · voice states ===== */
+  .cc-voice-wrap .cc-listen,
+  .cc-voice-wrap .cc-wave,
+  .cc-voice-wrap .cc-live{ opacity:0; transition:opacity .3s; pointer-events:none; }
+  .cc-voice-wrap.listening .cc-listen,
+  .cc-voice-wrap.listening .cc-wave,
+  .cc-voice-wrap.listening .cc-live{ opacity:1; }
+  .cc-voice-wrap.listening .cc-greet-card{ opacity:0; transform:translateY(-6px) scale(.97); }
+  .cc-greet-card{ transition:opacity .34s var(--ease-spring), transform .34s var(--ease-spring); }
+  .cc-live{ min-height:52px; margin:12px 20px 0; font-size:16px; line-height:1.4; font-weight:500; letter-spacing:-.02em; color:var(--text); text-align:center; text-wrap:pretty; }
+  .cc-live .w{ opacity:0; animation:ccWord .32s var(--ease-spring) both; }
+  @keyframes ccWord{ from{opacity:0; transform:translateY(5px); filter:blur(3px);} to{opacity:1; transform:none; filter:none;} }
+  .cc-live .caret{ display:inline-block; width:2px; height:15px; background:var(--brand); border-radius:1px; vertical-align:-2px; margin-left:2px; animation:ccCaret 1s steps(2) infinite; }
+  @keyframes ccCaret{ 50%{opacity:0;} }
+  .cc-got{ display:inline-flex; align-items:center; gap:6px; margin-top:12px; padding:6px 13px; border-radius:15px; background:var(--tint); color:var(--brand); font-size:12.5px; font-weight:600; animation:ccFadeUp .36s var(--ease-spring) both; }
+  .cc-mic.rec{ animation:ccMicPulse 1.4s ease-in-out infinite; }
+  @keyframes ccMicPulse{ 0%,100%{transform:scale(1);} 50%{transform:scale(1.07);} }
+
+  /* ===== Care Connect · in-place keyboard ===== */
+  .cc-kb{ position:absolute; left:0; right:0; bottom:0; z-index:60; background:rgba(252,252,252,.96);
+    backdrop-filter:blur(30px) saturate(180%); -webkit-backdrop-filter:blur(30px) saturate(180%);
+    border-top:1px solid var(--border); border-radius:18px 18px 0 0; transform:translateY(102%);
+    transition:transform .42s var(--ease-spring); padding-bottom:24px; }
+  .cc-kb.up{ transform:none; }
+  .cc-kb-chips{ display:flex; gap:7px; padding:11px 12px 9px; overflow-x:auto; scrollbar-width:none; }
+  .cc-kb-chips::-webkit-scrollbar{ display:none; }
+  .cc-kb-chip{ flex-shrink:0; height:31px; padding:0 13px; border-radius:16px; background:var(--tint); color:var(--brand);
+    font-size:12.5px; font-weight:600; font-family:inherit; border:none; cursor:pointer; white-space:nowrap; }
+  .cc-kb-chip:active{ transform:scale(.96); }
+  .cc-kb-field{ display:flex; align-items:flex-end; gap:8px; padding:0 12px 10px; }
+  .cc-kb-input{ flex:1; min-height:38px; max-height:76px; border:1px solid var(--border); background:var(--surface); border-radius:19px;
+    padding:9px 14px; font-size:14.5px; font-family:inherit; color:var(--text); outline:none; line-height:1.35; overflow-y:auto; }
+  .cc-kb-input:empty:before{ content:attr(data-ph); color:var(--muted); }
+  .cc-kb-send{ width:38px; height:38px; border-radius:50%; background:var(--brand); border:none; display:grid; place-items:center; flex-shrink:0; cursor:pointer; transition:opacity .2s, transform .2s; }
+  .cc-kb-send[disabled]{ opacity:.35; }
+  .cc-kb-keys{ background:#D1D5DB; padding:7px 3px 4px; }
+  .cc-kb-row{ display:flex; justify-content:center; gap:5px; margin-bottom:7px; }
+  .cc-kb-row:last-child{ margin-bottom:0; }
+  .cc-kb-k{ flex:1; max-width:34px; height:39px; border-radius:5px; background:#fff; display:grid; place-items:center;
+    font-size:16px; color:#1C1C1E; box-shadow:0 1px 0 rgba(0,0,0,.28); font-family:inherit; }
+  .cc-kb-k.wide{ max-width:44px; background:#ADB3BD; }
+  .cc-kb-k.space{ max-width:none; flex:5; }
+  .cc-kb-k.ret{ max-width:78px; background:#ADB3BD; font-size:12.5px; font-weight:600; }
+
+  /* ===== Care Connect · chat extras ===== */
+  .cc-typing{ display:inline-flex; align-items:center; gap:4px; padding:11px 14px; background:var(--card); border-radius:17px 17px 17px 5px; box-shadow:var(--sh); }
+  .cc-typing i{ width:6px; height:6px; border-radius:50%; background:var(--muted); opacity:.45; animation:ccDot 1.2s ease-in-out infinite; }
+  .cc-typing i:nth-child(2){ animation-delay:.16s; } .cc-typing i:nth-child(3){ animation-delay:.32s; }
+  @keyframes ccDot{ 0%,100%{transform:translateY(0); opacity:.35;} 40%{transform:translateY(-3.5px); opacity:.9;} }
+  .cc-row{ animation:ccFadeUp .38s var(--ease-spring) both; }
+  .cc-done{ background:var(--card); border-radius:17px; padding:16px; box-shadow:var(--sh); text-align:center; }
+  .cc-done-ic{ width:42px; height:42px; border-radius:50%; background:#E8F7EE; color:#15803D; display:grid; place-items:center; margin:0 auto 10px; }
+  .cc-done-t{ font-size:15px; font-weight:650; letter-spacing:-.022em; color:var(--text); }
+  .cc-done-s{ font-size:12.5px; color:var(--muted); margin-top:4px; line-height:1.45; }
+  .cc-done-ref{ display:inline-block; margin-top:10px; padding:4px 11px; border-radius:13px; background:var(--surface); font-size:11.5px; font-weight:600; color:var(--muted); letter-spacing:.02em; }
+
+  /* ===== Care Connect · request history ===== */
+  .cc-req{ width:100%; display:flex; align-items:flex-start; gap:11px; padding:14px; background:var(--card); border-radius:16px;
+    box-shadow:var(--sh); border:none; text-align:left; font-family:inherit; cursor:pointer; margin-bottom:9px; }
+  .cc-req-ic{ width:34px; height:34px; border-radius:10px; display:grid; place-items:center; flex-shrink:0; }
+  .cc-req-t{ font-size:14px; font-weight:600; letter-spacing:-.018em; color:var(--text); line-height:1.35; }
+  .cc-req-m{ font-size:12px; color:var(--muted); margin-top:4px; }
+  .cc-req-st{ display:inline-flex; align-items:center; gap:5px; margin-top:8px; padding:3px 9px; border-radius:11px; font-size:11px; font-weight:600; }
+  .cc-req-st.done{ background:#E8F7EE; color:#15803D; }
+  .cc-req-st.prog{ background:#FEF3E2; color:#B45309; }
+  .cc-req-st.wait{ background:var(--surface); color:var(--muted); }
+  .cc-peek img{ width:100%; max-width:250px; height:auto; display:block; }
+  .cc-peek-bubble{ background:var(--card); border-radius:16px 16px 16px 4px; box-shadow:var(--sh); padding:12px 14px; font-size:13.5px; font-weight:600; color:var(--brand); line-height:1.35; margin-bottom:26px; }
+
+  .cc-top{ display:flex; align-items:center; gap:11px; padding:8px 0 4px; }
+  .cc-top-av{ width:38px; height:38px; border-radius:50%; background:var(--tint); color:var(--brand); display:grid; place-items:center; font-size:12.5px; font-weight:700; flex-shrink:0; overflow:hidden; }
+  .cc-top-name{ font-size:15.5px; font-weight:600; letter-spacing:-.02em; }
+  .cc-top-status{ display:flex; align-items:center; gap:5px; font-size:12px; color:var(--muted); margin-top:1px; }
+  .cc-online{ width:7px; height:7px; border-radius:50%; background:var(--success); }
+
+  .cc-voice-wrap{ flex:1; min-height:0; overflow-y:auto; display:flex; flex-direction:column; align-items:center; justify-content:flex-start; padding:0 24px 28px; text-align:center; }
+  .cc-voice-wrap > *:first-child{ margin-top:auto; }
+  .cc-voice-wrap > *:last-child{ margin-bottom:auto; }
+  .cc-voice-wrap::-webkit-scrollbar{ display:none; } .cc-voice-wrap{ scrollbar-width:none; }
+  .cc-voice-mascot{ width:164px; height:auto; margin-bottom:-26px; position:relative; z-index:2; flex-shrink:0; }
+  .cc-greet-card{ background:var(--card); border-radius:22px; box-shadow:var(--sh); padding:34px 22px 22px; width:100%; flex-shrink:0; }
+  .cc-greet-t{ font-size:22px; font-weight:700; letter-spacing:-.035em; }
+  .cc-greet-s{ font-size:14.5px; color:var(--text-2); line-height:1.5; margin-top:7px; }
+  .cc-mic-ring{ position:relative; width:128px; height:128px; margin:24px auto 0; display:grid; place-items:center; flex-shrink:0; }
+  .cc-mic-ring::before,.cc-mic-ring::after{ content:''; position:absolute; border-radius:50%; background:var(--brand); opacity:.1; animation:ccpulse 2.6s var(--ease-out) infinite; }
+  .cc-mic-ring::before{ inset:0; }
+  .cc-mic-ring::after{ inset:22px; animation-delay:.5s; }
+  @keyframes ccpulse{ 0%{ transform:scale(.86); opacity:.16 } 60%{ transform:scale(1.04); opacity:.05 } 100%{ transform:scale(.86); opacity:.16 } }
+  .cc-mic{ position:relative; width:78px; height:78px; border-radius:50%; background:var(--brand); border:none; display:grid; place-items:center; box-shadow:0 10px 26px -6px rgba(0,106,185,.5); cursor:pointer; z-index:2; }
+  .cc-listen{ font-size:16px; font-weight:600; color:var(--text); margin-top:18px; letter-spacing:-.02em; flex-shrink:0; }
+  .cc-wave{ display:flex; align-items:center; justify-content:center; gap:4px; height:26px; margin-top:12px; flex-shrink:0; }
+  .cc-wave i{ width:3.5px; border-radius:2px; background:var(--brand); opacity:.45; animation:ccwave 1.1s var(--ease-out) infinite; }
+  @keyframes ccwave{ 0%,100%{ height:5px } 50%{ height:22px } }
+  .cc-type{ display:inline-flex; align-items:center; gap:9px; margin:22px auto 0; padding:0 20px; height:46px; border-radius:23px; background:var(--card); box-shadow:var(--sh); border:none; font-family:inherit; font-size:14.5px; font-weight:600; color:var(--text); cursor:pointer; flex-shrink:0; }
+
+  .cc-msgs{ flex:1; overflow-y:auto; padding:6px 16px 14px; display:flex; flex-direction:column; gap:12px; }
+  .cc-msgs::-webkit-scrollbar{ display:none; } .cc-msgs{ scrollbar-width:none; }
+  .cc-row{ display:flex; gap:9px; align-items:flex-end; }
+  .cc-row.me{ justify-content:flex-end; }
+  .cc-bot-av{ width:34px; height:34px; border-radius:50%; overflow:hidden; flex-shrink:0; background:var(--tint); }
+  .cc-bot-av img{ width:100%; height:100%; object-fit:cover; }
+  .cc-bub{ max-width:80%; padding:12px 15px; font-size:14.5px; line-height:1.45; border-radius:18px; }
+  .cc-bub.bot{ background:var(--card); box-shadow:var(--sh); border-bottom-left-radius:6px; }
+  .cc-bub.me{ background:#DCEBFA; color:var(--brand-dark); border-bottom-right-radius:6px; font-weight:500; }
+  .cc-card{ background:var(--card); box-shadow:var(--sh); border-radius:18px; padding:14px; max-width:84%; }
+  .cc-card-hd{ display:flex; align-items:center; gap:11px; }
+  .cc-card-ic{ width:38px; height:38px; border-radius:11px; background:var(--tint); color:var(--brand); display:grid; place-items:center; flex-shrink:0; }
+  .cc-card-t{ font-size:14.5px; font-weight:600; letter-spacing:-.015em; }
+  .cc-card-s{ font-size:12.5px; color:var(--muted); margin-top:1px; }
+  .cc-card-meta{ display:flex; align-items:center; gap:8px; font-size:13px; color:var(--text-2); margin-top:9px; }
+  .cc-card-q{ font-size:14px; color:var(--text); line-height:1.45; margin-top:13px; }
+  .cc-act{ width:100%; height:42px; border-radius:13px; border:none; font-family:inherit; font-size:14px; font-weight:600; cursor:pointer; margin-top:9px; }
+  .cc-act.pri{ background:var(--brand); color:#fff; }
+  .cc-act.sec{ background:var(--card); color:var(--brand); border:1px solid var(--hair); }
+  .cc-slots{ display:flex; gap:8px; overflow-x:auto; padding:2px 0 4px; }
+  .cc-slots::-webkit-scrollbar{ display:none; } .cc-slots{ scrollbar-width:none; }
+  .cc-slot{ flex-shrink:0; min-width:84px; padding:11px 10px; border-radius:15px; background:var(--card); box-shadow:var(--sh); border:1.5px solid transparent; text-align:center; cursor:pointer; font-family:inherit; }
+  .cc-slot.on{ border-color:var(--brand); }
+  .cc-slot-d{ font-size:12px; color:var(--muted); }
+  .cc-slot-n{ font-size:14.5px; font-weight:700; letter-spacing:-.02em; margin-top:2px; }
+  .cc-slot.on .cc-slot-d,.cc-slot.on .cc-slot-n{ color:var(--brand); }
+  .cc-slot-t{ font-size:11.5px; color:var(--muted); margin-top:3px; }
+  .cc-bar{ flex-shrink:0; display:flex; align-items:center; gap:9px; padding:10px 14px 14px; }
+  .cc-bar-kb{ width:44px; height:44px; border-radius:50%; background:var(--card); box-shadow:var(--sh); border:none; display:grid; place-items:center; color:var(--muted); flex-shrink:0; cursor:pointer; }
+  .cc-bar input{ flex:1; height:44px; border-radius:22px; border:none; background:var(--card); box-shadow:var(--sh); padding:0 17px; font-family:inherit; font-size:14.5px; color:var(--text); outline:none; }
+  .cc-bar-mic{ width:44px; height:44px; border-radius:50%; background:var(--brand); border:none; display:grid; place-items:center; flex-shrink:0; cursor:pointer; box-shadow:0 5px 14px -3px rgba(0,106,185,.45); }
   .screen-title{ font-size:22px; font-weight:600; color:var(--text); letter-spacing:-.022em; }
   .date-sub{ font-size:13px; font-weight:400; color:var(--muted); margin-top:5px; letter-spacing:-.01em; }
   .section-label{ font-size:12.5px; font-weight:500; color:var(--muted); letter-spacing:0; text-transform:none; margin:0 0 10px; padding-left:2px; }
   .meta{ font-size:14px; font-weight:400; color:var(--muted); }
 
-  .card{ background:var(--card); border:0.5px solid var(--hair-2); border-radius:22px; padding:18px; box-shadow:var(--sh); }
+  .card{ background:var(--card); border:0.5px solid var(--hair-2); border-radius:18px; padding:14px; box-shadow:0 1px 2px rgba(16,30,40,.035); }
   .card.accent{ border-left:4px solid currentColor; padding-left:14px; }
 
-  .chip{ display:inline-flex; align-items:center; height:22px; padding:0 9px; border-radius:9999px; font-size:12px; font-weight:500; white-space:nowrap; letter-spacing:.01em; }
-  .chip-upcoming{ background:rgba(1,96,102,.1); color:var(--brand); }
+  .chip{ display:inline-flex; align-items:center; height:20px; padding:0 8px; border-radius:9999px; font-size:11.5px; font-weight:500; white-space:nowrap; letter-spacing:.01em; }
+  .chip-upcoming{ background:rgba(0,106,185,.1); color:var(--brand); }
   .chip-completed{ background:rgba(52,199,89,.14); color:#1A8A3B; }
   .chip-cancelled{ background:rgba(60,60,67,.1); color:rgba(60,60,67,.65); }
   .chip-overdue{ background:rgba(255,149,0,.13); color:#C06D00; }
-  .chip-active{ background:rgba(1,96,102,.1); color:var(--brand); }
+  .chip-active{ background:rgba(0,106,185,.1); color:var(--brand); }
   .chip-stopped{ background:rgba(60,60,67,.1); color:rgba(60,60,67,.65); }
   .chip-paused{ background:rgba(255,149,0,.13); color:#C06D00; }
 
@@ -115,23 +455,24 @@
 
   .btn{ height:50px; border-radius:14px; font-size:17px; font-weight:600; display:inline-flex; align-items:center; justify-content:center; gap:8px; border:none; cursor:pointer; width:100%; letter-spacing:-.01em; }
   .btn-primary{ background:var(--brand); color:#fff; }
-  .btn-ghost{ background:rgba(1,96,102,.08); border:none; color:var(--brand); }
+  .btn-ghost{ background:rgba(0,106,185,.08); border:none; color:var(--brand); }
   .btn-danger-ghost{ background:rgba(255,59,48,.08); border:none; color:var(--danger); }
   .btn[disabled]{ background:rgba(60,60,67,.12); color:rgba(60,60,67,.35); cursor:not-allowed; }
   .btn-sm{ height:36px; padding:0 16px; width:auto; font-size:14px; border-radius:10px; cursor:pointer; }
-  .ghost-sm{ height:34px; padding:0 14px; width:auto; font-size:13px; font-weight:600; border-radius:10px; background:rgba(1,96,102,.08); border:none; color:var(--brand); display:inline-flex; align-items:center; justify-content:center; gap:6px; cursor:pointer; }
+  .ghost-sm{ height:30px; padding:0 12px; width:auto; font-size:12.5px; font-weight:500; border-radius:9px; background:rgba(0,106,185,.08); border:none; color:var(--brand); display:inline-flex; align-items:center; justify-content:center; gap:6px; cursor:pointer; }
 
   .memline{ display:inline-flex; align-items:center; gap:6px; font-size:13px; font-weight:600; }
   .memdot{ width:7px; height:7px; border-radius:50%; flex-shrink:0; }
 
-  .icon,.ic16,.ic18,.ic24,.nicon{ stroke:currentColor; stroke-width:2; fill:none; stroke-linecap:round; stroke-linejoin:round; flex-shrink:0; }
+  .icon,.ic16,.ic18,.ic22,.ic24,.nicon{ stroke:currentColor; stroke-width:2; fill:none; stroke-linecap:round; stroke-linejoin:round; flex-shrink:0; }
+  .ic22{ width:22px; height:22px; }
   .icon{ width:20px; height:20px; } .ic16{ width:16px; height:16px; } .ic18{ width:18px; height:18px; } .ic24{ width:24px; height:24px; } .nicon{ width:24px; height:24px; }
   .iconbtn{ background:none; border:none; padding:0; cursor:pointer; display:inline-flex; align-items:center; color:inherit; }
 
   .pill-circle{ width:40px; height:40px; border-radius:50%; background:var(--tint); display:grid; place-items:center; color:var(--brand); flex-shrink:0; }
 
   .field{ width:100%; height:44px; border:0.5px solid var(--hair); border-radius:12px; padding:0 13px; font-size:15px; font-weight:500; color:var(--text); background:var(--card); outline:none; font-family:inherit; transition:border-color .2s, box-shadow .2s; }
-  .field:focus{ border-color:var(--brand); box-shadow:0 0 0 3px rgba(1,96,102,.10); }
+  .field:focus{ border-color:var(--brand); box-shadow:0 0 0 3px rgba(0,106,185,.10); }
   .field::placeholder{ color:rgba(60,60,67,.35); }
   textarea.field{ height:auto; padding:11px 13px; line-height:1.5; resize:none; }
   .flabel{ display:block; font-size:12.5px; font-weight:400; color:var(--muted); margin-bottom:6px; letter-spacing:0; }
@@ -144,7 +485,7 @@
   .ochips{ display:flex; gap:8px; overflow-x:auto; padding:2px 0; }
   .ochips::-webkit-scrollbar{ display:none; } .ochips{ scrollbar-width:none; }
   .ochip{ height:32px; padding:0 13px; border-radius:9999px; font-size:13px; font-weight:500; white-space:nowrap; border:0.5px solid var(--hair); color:var(--muted); background:var(--card); display:inline-flex; align-items:center; cursor:pointer; }
-  .ochip.on{ border-color:rgba(1,96,102,.22); background:var(--tint); color:var(--brand-dark); font-weight:600; }
+  .ochip.on{ border-color:rgba(0,106,185,.22); background:var(--tint); color:var(--brand-dark); font-weight:600; }
 
   .toggle{ width:51px; height:31px; border-radius:9999px; background:rgba(120,120,128,.22); position:relative; flex-shrink:0; border:none; cursor:pointer; transition:background .2s; }
   .toggle.on{ background:#34C759; }
@@ -204,7 +545,7 @@
   .confbar{ height:6px; border-radius:4px; background:#EEF2F3; overflow:hidden; }
   .confbar > i{ display:block; height:100%; border-radius:4px; }
 
-  .ar{ width:44px; height:44px; border-radius:50%; display:grid; place-items:center; flex-shrink:0; cursor:pointer; transition:background .15s; }
+  .ar{ width:34px; height:34px; border-radius:50%; display:grid; place-items:center; flex-shrink:0; cursor:pointer; transition:background .15s; }
   .ar-accept{ background:var(--success); color:#fff; }
   .ar-reject{ background:var(--danger); color:#fff; }
 
@@ -213,6 +554,21 @@
   .tbadge{ display:inline-flex; align-items:center; height:22px; padding:0 9px; border-radius:6px; font-size:11px; font-weight:550; letter-spacing:.02em; }
   .tb-med{ background:var(--tint); color:var(--brand); }
   .tb-instr{ background:#EFE7FB; color:#7B4FC4; }
+  .tb-lab{ background:#E7F6EE; color:#1E8A55; }
+  .tb-imaging{ background:#FFF1E3; color:#C2680C; }
+  .tb-receipt{ background:#EEF1F4; color:#5B6672; }
+  .scan-chk{ width:22px; height:22px; border-radius:50%; border:1.5px solid rgba(60,60,67,.25); background:var(--card); display:grid; place-items:center; flex-shrink:0; cursor:pointer; transition:background .15s,border-color .15s; padding:0; }
+  .scan-chk svg{ width:13px; height:13px; stroke:#fff; stroke-width:3.2; fill:none; stroke-linecap:round; stroke-linejoin:round; opacity:0; transition:opacity .1s; }
+  .scan-chk.on{ background:var(--brand); border-color:var(--brand); }
+  .scan-chk.on svg{ opacity:1; }
+  .scan-row{ display:flex; align-items:center; gap:12px; padding:11px 14px; border-top:0.5px solid var(--hair-2); }
+  .scan-row:first-child{ border-top:none; }
+  .scan-t{ font-size:14.5px; font-weight:500; color:var(--text); line-height:1.35; }
+  .scan-sub{ display:flex; align-items:center; gap:7px; flex-wrap:wrap; margin-top:4px; }
+  .scan-m{ font-size:12px; font-weight:400; color:var(--muted); }
+  .scan-verify{ font-size:11.5px; font-weight:500; color:#B45309; }
+  .scan-lead{ width:22px; display:grid; place-items:center; flex-shrink:0; }
+  .scan-selall{ background:none; border:none; font-family:inherit; font-size:12.5px; font-weight:500; color:var(--brand); cursor:pointer; padding:0; }
 
   .cat{ display:inline-flex; align-items:center; height:22px; padding:0 9px; border-radius:6px; font-size:11px; font-weight:600; }
   .cat-diet{ background:#EAFAF3; color:#1F8A5E; }
@@ -221,7 +577,7 @@
   .cat-followup{ background:#EFE7FB; color:#7B4FC4; }
 
   .mapthumb{ position:relative; width:100%; height:140px; border-radius:12px; overflow:hidden;
-    background:linear-gradient(0deg, rgba(1,96,102,.04), rgba(1,96,102,.04)),
+    background:linear-gradient(0deg, rgba(0,106,185,.04), rgba(0,106,185,.04)),
       repeating-linear-gradient(0deg, #e9eff0 0 1px, transparent 1px 26px),
       repeating-linear-gradient(90deg, #e9eff0 0 1px, transparent 1px 26px), #f1f6f6;
     border:1px solid var(--border); }
@@ -241,12 +597,13 @@
   .avatar{ width:40px; height:40px; border-radius:50%; display:grid; place-items:center; color:#fff; font-weight:550; font-size:15px; flex-shrink:0; }
 
   .fab{ position:absolute; right:20px; bottom:96px; width:56px; height:56px; border-radius:50%; background:var(--brand);
-    box-shadow:0 8px 20px -4px rgba(1,96,102,.5); display:grid; place-items:center; z-index:45; border:none; cursor:pointer; }
+    box-shadow:0 8px 20px -4px rgba(0,106,185,.5); display:grid; place-items:center; z-index:45; border:none; cursor:pointer; }
 
   /* global chat widget */
   .chatfab{ position:absolute; right:18px; bottom:150px; width:52px; height:52px; border-radius:50%; background:var(--brand);
-    box-shadow:0 10px 24px -6px rgba(1,96,102,.55); display:grid; place-items:center; z-index:150; border:none; cursor:pointer; color:#fff; touch-action:none; transition:box-shadow .2s ease; }
-  .chatfab.dragging{ box-shadow:0 16px 34px -8px rgba(1,96,102,.65); transform:scale(1.06); cursor:grabbing; }
+    box-shadow:0 10px 24px -6px rgba(0,106,185,.55); display:grid; place-items:center; z-index:150; border:none; cursor:pointer; color:#fff; touch-action:none; transition:box-shadow .2s ease; }
+  .chatfab.dragging{ box-shadow:0 16px 34px -8px rgba(0,106,185,.65); transform:scale(1.06); cursor:grabbing; }
+  .device:has(.pane.active .sticky-bar) .chatfab{ display:none !important; }
   .chatfab-badge{ position:absolute; top:-3px; right:-3px; width:19px; height:19px; border-radius:50%; background:var(--danger); color:#fff; font-size:10.5px; font-weight:550; display:grid; place-items:center; border:2px solid var(--surface); }
   #chat-overlay{ position:absolute; inset:0; z-index:220; background:var(--surface); display:none; flex-direction:column; }
   #chat-overlay.show{ display:flex; }
@@ -333,6 +690,10 @@
   .rem-switch.on span{ transform:translateX(20px); }
   .rem-label{ font-size:12.5px; font-weight:500; color:var(--muted); margin:14px 2px 8px; }
   .rem-times{ display:flex; gap:8px; flex-wrap:wrap; }
+  .med-status-opts{ display:flex; flex-direction:column; gap:8px; }
+  .med-status-opt{ display:flex; align-items:center; gap:12px; padding:11px 12px; border:0.5px solid var(--hair); border-radius:14px; background:var(--card); cursor:pointer; text-align:left; -webkit-appearance:none; }
+  .med-status-opt:active{ background:var(--surface); }
+  .med-status-ic{ width:34px; height:34px; border-radius:10px; display:grid; place-items:center; flex-shrink:0; }
   .rem-time{ display:flex; align-items:center; gap:7px; }
   .rem-hm{ width:74px; text-align:center; }
   .rem-ap{ display:flex; background:rgba(120,120,128,.1); border-radius:10px; padding:2px; }
@@ -342,18 +703,36 @@
   .rem-input:focus{ border-color:var(--brand); }
   .rem-sounds{ display:flex; gap:7px; flex-wrap:wrap; }
   .rem-sound{ padding:8px 14px; border-radius:9999px; border:0.5px solid var(--hair); background:#fff; font-family:inherit; font-size:13px; font-weight:500; color:var(--text); cursor:pointer; }
-  .rem-sound.on{ background:var(--tint); border-color:rgba(1,96,102,.22); color:var(--brand-dark); font-weight:600; }
+  .rem-sound.on{ background:var(--tint); border-color:rgba(0,106,185,.22); color:var(--brand-dark); font-weight:600; }
   .doc-av{ width:40px; height:40px; border-radius:50%; color:#fff; font-size:13px; font-weight:600; display:grid; place-items:center; flex-shrink:0; letter-spacing:-.02em; }
   .doc-bio{ font-size:13.5px; font-weight:400; color:var(--text-2); line-height:1.5; margin-top:14px; padding-top:14px; border-top:0.5px solid var(--hair-2); text-wrap:pretty; }
+  .doc-card-ic{ width:36px; height:36px; border-radius:10px; display:grid; place-items:center; flex-shrink:0; }
   .f-hide{ display:none !important; }
+  .rate-star{ border:none; background:none; padding:6px; cursor:pointer; -webkit-tap-highlight-color:transparent; }
+  .rate-star svg{ transition:transform .15s var(--ease-out); }
+  .rate-star:active svg{ transform:scale(1.15); }
   .f-hide2{ display:none !important; }
 
   /* appointments timeline */
   .filt-row{ display:flex; gap:7px; overflow-x:auto; padding:2px 0; }
   .filt-row::-webkit-scrollbar{ display:none; } .filt-row{ scrollbar-width:none; }
-  .filt{ height:32px; padding:0 14px; border-radius:9999px; font-size:13px; font-weight:600; color:var(--text); background:rgba(120,120,128,.1); border:none; display:inline-flex; align-items:center; gap:5px; white-space:nowrap; cursor:pointer; }
+  .filt{ height:32px; padding:0 14px; border-radius:9999px; font-size:13px; font-weight:500; color:var(--text); background:rgba(0,106,185,.08); border:none; display:inline-flex; align-items:center; gap:5px; white-space:nowrap; cursor:pointer; }
   .filt svg{ width:14px; height:14px; stroke:var(--muted); stroke-width:2.2; fill:none; }
-  .filt.on{ background:rgba(1,96,102,.12); color:var(--brand); }
+  .filt.on{ background:var(--brand); color:#fff; }
+  .book-progress{ margin-top:16px; }
+  .book-progress-bar{ height:4px; border-radius:9999px; background:rgba(120,120,128,.15); overflow:hidden; }
+  .book-progress-bar i{ display:block; height:100%; background:var(--brand); border-radius:9999px; transition:width .3s var(--ease-out); }
+  .book-progress-label{ font-size:12.5px; font-weight:500; color:var(--muted); margin-top:7px; }
+  .book-purpose-list{ display:flex; flex-direction:column; gap:8px; }
+  .doc-photo{ width:56px; height:56px; border-radius:50%; object-fit:cover; flex-shrink:0; }
+  .doc-card-row{ align-items:flex-start; padding:14px 15px; position:relative; gap:12px; }
+  .doc-card-rating{ font-size:12.5px; font-weight:500; color:var(--text); margin-top:4px; }
+  .doc-view-btn{ font-family:inherit; font-size:13px; font-weight:500; color:var(--brand); background:none; border:none; padding:0; cursor:pointer; flex-shrink:0; }
+  .doc-view-corner{ position:absolute; top:14px; right:15px; }
+  .book-sum-row{ display:flex; justify-content:space-between; gap:12px; padding:12px 15px; border-top:0.5px solid var(--hair-2); }
+  .book-sum-row:first-child{ border-top:none; }
+  .book-sum-k{ font-size:13.5px; color:var(--muted); font-weight:400; flex-shrink:0; }
+  .book-sum-v{ font-size:14.5px; color:var(--text); font-weight:500; text-align:right; }
   .filt.on svg{ stroke:var(--brand); }
   .tl{ display:flex; flex-direction:column; gap:0; margin-top:10px; background:var(--card); border:0.5px solid var(--hair); border-radius:18px; overflow:hidden; box-shadow:0 1px 2px rgba(16,30,40,.035); }
   .tl-item{ display:block; }
@@ -380,7 +759,7 @@
   .rq-s{ font-size:12.5px; font-weight:400; color:var(--muted); margin-top:2px; line-height:1.4; }
   .rq-opts{ display:flex; gap:7px; margin-top:8px; }
   .rq-opt{ padding:6px 13px; border-radius:9999px; border:0.5px solid var(--hair); background:#fff; font-family:inherit; font-size:12.5px; font-weight:500; color:var(--text); cursor:pointer; }
-  .rq-opt.on{ background:var(--tint); border-color:rgba(1,96,102,.22); color:var(--brand-dark); font-weight:600; }
+  .rq-opt.on{ background:var(--tint); border-color:rgba(0,106,185,.22); color:var(--brand-dark); font-weight:600; }
   .req-sheet-row:first-of-type{ border-top:none; }
   .req-sheet-ic{ width:30px; height:30px; border-radius:9px; background:var(--tint); color:var(--brand); display:grid; place-items:center; flex-shrink:0; }
   .req-sheet-label{ font-size:14.5px; font-weight:500; color:var(--text); }
@@ -438,6 +817,7 @@
   .hm-member svg{ width:13px; height:13px; stroke:rgba(60,60,67,.4); stroke-width:2.1; fill:none; stroke-linecap:round; stroke-linejoin:round; }
 
   .hm-group{ margin-top:24px; }
+  .hm-banner{ display:block; width:100%; height:auto; border-radius:16px; margin-top:16px; }
   .hm-glabel{ font-size:12.5px; font-weight:500; color:var(--muted); letter-spacing:0; padding:0 2px 8px; }
   .hm-card{ background:#fff; border:0.5px solid var(--hair); border-radius:18px; box-shadow:0 1px 2px rgba(16,30,40,.035); overflow:hidden; }
   .hm-row{ display:flex; align-items:center; gap:14px; padding:14px 16px; border-top:0.5px solid var(--hair-2); cursor:pointer; -webkit-tap-highlight-color:transparent; }
@@ -445,6 +825,7 @@
   .hm-row:active{ background:rgba(120,120,128,.05); }
   .hm-row-t{ font-size:15px; font-weight:500; color:var(--text); letter-spacing:-.008em; }
   .hm-row-s{ font-size:13px; font-weight:400; color:var(--muted); margin-top:2px; line-height:1.35; }
+  .hm-row-v{ font-size:14.5px; font-weight:400; color:var(--muted); flex-shrink:0; }
   .hm-chev{ width:14px; height:14px; stroke:rgba(60,60,67,.26); stroke-width:2.4; fill:none; stroke-linecap:round; stroke-linejoin:round; flex-shrink:0; }
 
   /* check-in */
@@ -456,7 +837,7 @@
     font-family:inherit; font-size:11.5px; font-weight:500; color:var(--text-2); letter-spacing:0; cursor:pointer; }
   .hm-mood .fc{ width:22px; height:22px; }
   .hm-mood .fc svg{ width:22px; height:22px; stroke:rgba(60,60,67,.5); stroke-width:1.6; fill:none; stroke-linecap:round; }
-  .hm-mood.on{ background:var(--tint); border-color:rgba(1,96,102,.22); color:var(--brand-dark); font-weight:600; }
+  .hm-mood.on{ background:var(--tint); border-color:rgba(0,106,185,.22); color:var(--brand-dark); font-weight:600; }
   .hm-mood.on .fc svg{ stroke:var(--brand); }
 
   /* focus */
@@ -467,7 +848,7 @@
   .hm-focus-t{ font-size:15px; font-weight:500; color:var(--text); letter-spacing:-.008em; }
   .hm-focus-s{ font-size:13px; font-weight:400; color:var(--muted); margin-top:2px; }
   .hm-log{ align-self:center; height:31px; padding:0 14px; border-radius:9999px; background:var(--tint); color:var(--brand); border:none; font-family:inherit; font-size:13px; font-weight:600; cursor:pointer; flex-shrink:0; }
-  .hm-log:active{ background:rgba(1,96,102,.16); }
+  .hm-log:active{ background:rgba(0,106,185,.16); }
 
   /* appointment */
   .hm-appt{ display:flex; align-items:center; gap:14px; padding:16px; cursor:pointer; }
@@ -555,9 +936,9 @@
   .cue-card{ scroll-snap-align:start; flex-shrink:0; width:158px; border-radius:20px; padding:14px 14px 13px; border:none; background:var(--cc-bg,var(--card)); display:flex; flex-direction:column; gap:0; cursor:pointer; transition:transform .1s; box-shadow:var(--sh); }
   .cue-card:active{ transform:scale(.97); }
   .cue-card-top{ display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:10px; }
-  .cue-icon{ width:36px; height:36px; border-radius:12px; background:var(--cc-ic-bg,rgba(1,96,102,.1)); display:grid; place-items:center; flex-shrink:0; }
+  .cue-icon{ width:36px; height:36px; border-radius:12px; background:var(--cc-ic-bg,rgba(0,106,185,.1)); display:grid; place-items:center; flex-shrink:0; }
   .cue-icon svg{ width:18px; height:18px; stroke:var(--cc-ic,var(--brand)); stroke-width:2; fill:none; stroke-linecap:round; stroke-linejoin:round; }
-  .cue-tag{ font-size:10px; font-weight:550; letter-spacing:.04em; text-transform:uppercase; color:var(--cc-tag,var(--brand)); background:var(--cc-tag-bg,rgba(1,96,102,.1)); padding:3px 8px; border-radius:9999px; line-height:1.4; white-space:nowrap; }
+  .cue-tag{ font-size:10px; font-weight:550; letter-spacing:.04em; text-transform:uppercase; color:var(--cc-tag,var(--brand)); background:var(--cc-tag-bg,rgba(0,106,185,.1)); padding:3px 8px; border-radius:9999px; line-height:1.4; white-space:nowrap; }
   .cue-title{ font-size:14px; font-weight:550; color:var(--text); line-height:1.25; letter-spacing:-.02em; }
   .cue-sub{ font-size:12px; color:var(--muted); margin-top:4px; line-height:1.4; }
   .cue-dots{ display:flex; justify-content:center; gap:5px; margin-top:10px; }
@@ -580,9 +961,9 @@
   #splash{ position:absolute; inset:0; z-index:230; background:var(--brand);
     display:flex; flex-direction:column; align-items:center; justify-content:center; gap:18px; }
   #splash.hide{ display:none; }
-  .splash-mark{ width:96px; height:96px; border-radius:26px; display:grid; place-items:center;
-    box-shadow:0 20px 50px -12px rgba(0,0,0,.45); animation:splashIn .55s cubic-bezier(.22,.61,.36,1); overflow:hidden; }
-  .splash-mark img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .splash-mark{ width:140px; height:96px; border-radius:0; display:grid; place-items:center;
+    animation:splashIn .55s cubic-bezier(.22,.61,.36,1); }
+  .splash-mark img{ width:100%; height:100%; object-fit:contain; display:block; }
   @keyframes splashIn{ from{transform:scale(.82)} to{transform:scale(1)} }
   .splash-word{ font-size:30px; font-weight:600; color:#fff; letter-spacing:-.02em; }
   .splash-tag{ font-size:13px; color:rgba(255,255,255,.82); margin-top:-12px; }
@@ -603,7 +984,7 @@
   .onb-sub{ font-size:14.5px; color:var(--muted); line-height:1.5; margin-top:10px; }
   .onb-feat{ display:flex; gap:14px; align-items:flex-start; }
   .onb-feat .fi{ width:46px; height:46px; border-radius:13px; background:var(--tint); display:grid; place-items:center; color:var(--brand); flex-shrink:0; }
-  .onb-logo{ width:64px; height:64px; border-radius:19px; background:var(--brand); display:grid; place-items:center; box-shadow:0 14px 30px -8px rgba(1,96,102,.5); }
+  .onb-logo{ width:64px; height:64px; border-radius:19px; background:var(--brand); display:grid; place-items:center; box-shadow:0 14px 30px -8px rgba(0,106,185,.5); }
   .onb-cta{ margin-top:auto; padding-top:24px; }
 
   /* ===== camera simulator ===== */
@@ -648,11 +1029,14 @@
   @keyframes rot{ to{ transform:rotate(360deg); } }
 
   /* photo-check result rows */
-  .resrow{ display:flex; gap:14px; align-items:center; }
-  .res-thumb{ width:50px; height:64px; border-radius:8px; background:#fff; border:1px solid var(--border); flex-shrink:0; padding:7px 6px; display:flex; flex-direction:column; gap:4px; position:relative; overflow:hidden; }
+  .resrow{ display:flex; gap:12px; align-items:center; padding:2px; }
+  .res-thumb{ width:44px; height:56px; border-radius:8px; background:#fff; border:0.5px solid var(--hair); flex-shrink:0; padding:6px 5px; display:flex; flex-direction:column; gap:4px; position:relative; overflow:hidden; }
   .res-thumb .tln{ height:4px; border-radius:2px; background:#e3e9ea; }
   .res-thumb.bad{ filter:blur(1.2px); }
-  .res-tag{ position:absolute; right:-1px; bottom:-1px; width:20px; height:20px; border-radius:50%; display:grid; place-items:center; color:#fff; }
+  .res-tag{ position:absolute; right:-1px; bottom:-1px; width:16px; height:16px; border-radius:50%; display:grid; place-items:center; color:#fff; }
+  .pc-ic{ width:38px; height:38px; border-radius:10px; display:grid; place-items:center; flex-shrink:0; }
+  .pc-ok{ width:22px; height:22px; border-radius:50%; background:var(--tint); color:var(--success); display:grid; place-items:center; flex-shrink:0; }
+  .pc-retake{ font-family:inherit; font-size:14px; font-weight:500; color:var(--brand); background:none; border:none; padding:0; cursor:pointer; flex-shrink:0; }
 
   /* ===== iOS-style settings (Profile) ===== */
   .set-hdr{ display:flex; align-items:center; gap:15px; background:var(--card); border-radius:20px; padding:16px; border:none; box-shadow:var(--sh); cursor:pointer; }
@@ -700,7 +1084,7 @@
   .tag .tx svg{ width:12px; height:12px; stroke:currentColor; stroke-width:2.6; fill:none; stroke-linecap:round; }
   .tag-add{ display:flex; gap:8px; margin-top:10px; }
   .tag-add .field{ flex:1; }
-  .btn-add{ flex:0 0 auto; height:44px; padding:0 16px; border-radius:12px; border:0.5px solid rgba(1,96,102,.22); background:var(--tint); color:var(--brand-dark); font-weight:550; font-size:13.5px; font-family:inherit; cursor:pointer; }
+  .btn-add{ flex:0 0 auto; height:44px; padding:0 16px; border-radius:12px; border:0.5px solid rgba(0,106,185,.22); background:var(--tint); color:var(--brand-dark); font-weight:550; font-size:13.5px; font-family:inherit; cursor:pointer; }
   .btn-add:active{ background:rgba(1,138,146,.16); }
   /* family list (compact) */
   .fam-list{ display:flex; flex-direction:column; gap:9px; margin-top:18px; }
@@ -724,13 +1108,20 @@
   .datechip{ flex-shrink:0; width:56px; height:66px; border-radius:13px; border:1.5px solid var(--border); background:#fff; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; cursor:pointer; }
   .datechip .dn{ font-size:11px; font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:.03em; }
   .datechip .dd{ font-size:18px; font-weight:550; color:var(--text); line-height:1; }
+  .datechip .dmo{ font-size:10px; font-weight:500; color:var(--muted); margin-top:1px; }
+  .datechip.on .dmo{ color:var(--brand); }
   .datechip.on{ border-color:var(--brand); background:var(--tint); }
   .datechip.on .dn{ color:var(--brand); } .datechip.on .dd{ color:var(--brand-dark); }
   .timegrid{ display:grid; grid-template-columns:repeat(3,1fr); gap:9px; }
-  .timechip{ height:42px; border-radius:10px; border:1.5px solid var(--border); background:#fff; font-size:13.5px; font-weight:600; color:var(--text); display:grid; place-items:center; cursor:pointer; }
+  .timechip{ height:44px; border-radius:12px; border:1.5px solid var(--border); background:#fff; font-size:14px; font-weight:600; color:var(--text); display:grid; place-items:center; cursor:pointer; transition:transform .12s var(--ease-out); }
+  .timechip:active{ transform:scale(.96); }
+  .datechip:active{ transform:scale(.96); }
   .timechip.on{ border-color:var(--brand); background:var(--tint); color:var(--brand); }
   .timechip.off{ color:#C2CAD2; background:#F7FAFA; cursor:not-allowed; border-style:dashed; }
   .docrow{ display:flex; align-items:center; gap:12px; padding:12px 13px; border:1.5px solid var(--border); border-radius:12px; background:#fff; cursor:pointer; }
+  .book-recap{ display:flex; align-items:center; gap:10px; margin-top:16px; padding:13px 15px; border-radius:14px; background:var(--tint); }
+  .book-recap svg{ flex-shrink:0; }
+  .book-recap-text{ font-size:13.5px; font-weight:500; color:var(--brand-dark); }
   .docrow.on{ border-color:var(--brand); background:var(--tint); }
   .docrow .radio{ order:2; }
   .docrow.on .radio{ border-color:var(--brand); }
@@ -739,6 +1130,9 @@
 
   /* booking cascading dropdowns */
   .dropdown{ position:relative; }
+  .dropdown.open{ z-index:59; }
+  .dropdown.open::before{ content:''; position:fixed; inset:0; background:rgba(255,255,255,.4); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); z-index:1; }
+  .dropdown.open .dd-trigger{ position:relative; z-index:2; }
   .dd-trigger{ width:100%; display:flex; align-items:center; gap:12px; min-height:56px; padding:9px 14px; border:1.5px solid var(--border); border-radius:13px; background:#fff; cursor:pointer; text-align:left; font-family:inherit; -webkit-tap-highlight-color:transparent; transition:border-color .15s, box-shadow .15s; }
   .dropdown.open .dd-trigger{ border-color:var(--brand-light); box-shadow:0 0 0 3px rgba(1,138,146,.14); }
   .dropdown.disabled{ opacity:.5; pointer-events:none; }
@@ -747,11 +1141,11 @@
   .dd-lead-ico{ width:38px; height:38px; border-radius:11px; background:var(--tint); display:grid; place-items:center; }
   .dd-text{ flex:1; min-width:0; display:flex; flex-direction:column; }
   .dd-label{ font-size:15px; font-weight:600; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-  .dd-label.placeholder{ color:#9CA3AF; font-weight:500; }
+  .dd-label.placeholder{ color:var(--muted); font-weight:500; }
   .dd-sub{ font-size:12.5px; font-weight:500; color:var(--muted); margin-top:1px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
   .dd-sub:empty{ display:none; }
   .dd-chev{ width:18px; height:18px; stroke:var(--muted); stroke-width:2.2; fill:none; stroke-linecap:round; stroke-linejoin:round; flex-shrink:0; transition:transform .2s; }
-  .dropdown.open .dd-chev{ transform:rotate(90deg); }
+  .dd-trail-change{ font-family:inherit; font-size:13px; font-weight:500; color:var(--brand); background:none; border:none; padding:0; flex-shrink:0; }
   .dd-panel{ display:none; position:absolute; left:0; right:0; top:calc(100% + 6px); z-index:60; background:#fff; border:1px solid var(--border); border-radius:14px; box-shadow:0 18px 44px -12px rgba(16,30,40,.3); padding:6px; max-height:264px; overflow-y:auto; }
   .dropdown.open .dd-panel{ display:block; animation:ddIn .16s ease both; }
   @keyframes ddIn{ from{opacity:0; transform:translateY(-4px)} to{opacity:1; transform:translateY(0)} }
@@ -770,7 +1164,7 @@
 
   /* insurance cards */
   .inscard{ border-radius:16px; padding:18px; color:#fff; position:relative; overflow:hidden; box-shadow:0 8px 22px -10px rgba(1,74,79,.55); }
-  .inscard.primary{ background:linear-gradient(135deg, #014A4F, #017E86); }
+  .inscard.primary{ background:linear-gradient(135deg, #00517F, #2E86D1); }
   .inscard.alt{ background:linear-gradient(135deg, #344b4d, #5a787a); }
   .inscard::after{ content:""; position:absolute; right:-30px; top:-30px; width:120px; height:120px; border-radius:50%; background:rgba(255,255,255,.07); }
   .ins-plan{ font-size:11px; opacity:.82; font-weight:550; letter-spacing:.06em; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
@@ -788,12 +1182,34 @@
   @keyframes fade{ from{opacity:0} to{opacity:1} }
   .sheet{ position:absolute; left:0; right:0; bottom:0; background:rgba(255,255,255,.94); backdrop-filter:blur(30px) saturate(180%); -webkit-backdrop-filter:blur(30px) saturate(180%);
     border-radius:28px 28px 0 0; padding:10px 20px 28px; box-shadow:var(--sh-lift); animation:up .56s var(--ease-spring) both; }
+  .sheet-mascot{ display:none; }
+  .sheet.cc-sheet{ padding-bottom:0; }
+  .center-modal{ position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:78%; max-width:300px;
+    background:rgba(255,255,255,.96); backdrop-filter:blur(30px) saturate(180%); -webkit-backdrop-filter:blur(30px) saturate(180%);
+    border-radius:20px; padding:8px; box-shadow:var(--sh-lift); animation:pop .3s var(--ease-spring) both; }
+  @keyframes pop{ from{opacity:0; transform:translate(-50%,-50%) scale(.92);} to{opacity:1; transform:translate(-50%,-50%) scale(1);} }
+  .center-modal-opt{ display:flex; align-items:center; gap:12px; padding:13px 12px; border-radius:14px; cursor:pointer; }
+  .center-modal-opt:active{ background:var(--surface); }
+  .center-modal-opt + .center-modal-opt{ margin-top:2px; }
+  .center-modal-ic{ width:38px; height:38px; border-radius:11px; background:var(--tint); color:var(--brand); display:grid; place-items:center; flex-shrink:0; }
+  .center-modal-label{ font-size:15px; font-weight:600; color:var(--text); }
+  .review-sheet{ position:absolute; left:0; right:0; bottom:0; top:auto; height:78vh; max-height:78vh; display:flex; flex-direction:column; overflow:hidden;
+    border-radius:28px 28px 0 0; background:rgba(255,255,255,.97); backdrop-filter:blur(30px) saturate(180%); -webkit-backdrop-filter:blur(30px) saturate(180%);
+    box-shadow:var(--sh-lift); animation:up .56s var(--ease-spring) both; transition:top .38s var(--ease-spring), max-height .38s var(--ease-spring), border-radius .3s; }
+  .review-sheet.expanded{ top:0; height:100%; max-height:100%; border-radius:0; }
+  .review-sheet .grab{ flex-shrink:0; }
+  .review-sheet.expanded .grab{ opacity:0; }
+  .review-sheet-compact{ padding:2px 20px 14px; flex-shrink:0; transition:opacity .2s; }
+  .review-sheet.expanded .review-sheet-compact{ display:none; }
+  .review-sheet-pinned{ display:none; align-items:center; gap:11px; padding:14px 20px 14px; flex-shrink:0; border-bottom:0.5px solid var(--hair-2); }
+  .review-sheet.expanded .review-sheet-pinned{ display:flex; }
+  .review-sheet-list{ flex:1; min-height:0; overflow-y:auto; padding:0 20px 24px; }
   @keyframes up{ from{transform:translateY(100%)} to{transform:translateY(0)} }
   .sheet > *{ animation:riseIn .5s var(--ease-spring) both; animation-delay:.1s; }
   .sheet .grab{ width:36px; height:4px; border-radius:3px; background:rgba(60,60,67,.2); margin:0 auto 16px; }
   .sheet-row{ display:flex; align-items:center; gap:14px; padding:15px 4px; font-size:17px; font-weight:500; cursor:pointer; border-radius:12px; }
   .sheet-row:active{ background:var(--surface); }
-  .sheet-row .ico{ width:40px; height:40px; border-radius:11px; background:rgba(1,96,102,.1); display:grid; place-items:center; color:var(--brand); flex-shrink:0; }
+  .sheet-row .ico{ width:40px; height:40px; border-radius:11px; background:rgba(0,106,185,.1); display:grid; place-items:center; color:var(--brand); flex-shrink:0; }
 
   /* member picker sheet — sleek grouped list with profile avatars */
   .mem-head{ padding:2px 4px 16px; }
@@ -802,7 +1218,7 @@
   .mem-card{ background:var(--surface); border:1px solid var(--border); border-radius:18px; overflow:hidden; }
   .mem-row{ display:flex; align-items:center; gap:14px; width:100%; padding:13px 14px; background:transparent; border:none; cursor:pointer; text-align:left; -webkit-tap-highlight-color:transparent; position:relative; transition:background .15s; }
   .mem-row + .mem-row::before{ content:""; position:absolute; left:70px; right:0; top:0; height:1px; background:var(--border); }
-  .mem-row:active{ background:rgba(1,96,102,.06); }
+  .mem-row:active{ background:rgba(0,106,185,.06); }
   .mem-av{ width:46px; height:46px; border-radius:50%; flex-shrink:0; display:grid; place-items:center; color:#fff; font-size:18px; font-weight:550; letter-spacing:-.01em;
     background:linear-gradient(150deg, color-mix(in srgb, var(--mc) 72%, #fff), var(--mc)); box-shadow:0 4px 11px -3px color-mix(in srgb, var(--mc) 55%, transparent), inset 0 0 0 1.5px rgba(255,255,255,.35); }
   .mem-meta{ flex:1; min-width:0; display:flex; flex-direction:column; }
@@ -827,7 +1243,7 @@
   .hp-step{ display:none;padding:12px 16px 16px; }
   .hp-step.active{ display:block;animation:hpIn .3s cubic-bezier(.22,.61,.36,1); }
   @keyframes hpIn{ from{opacity:0;transform:translateX(14px)} to{opacity:1;transform:translateX(0)} }
-  .hp-fact{ background:rgba(1,96,102,.07);border-radius:12px;padding:11px 13px;margin-bottom:13px;display:flex;gap:9px;align-items:flex-start; }
+  .hp-fact{ background:rgba(0,106,185,.07);border-radius:12px;padding:11px 13px;margin-bottom:13px;display:flex;gap:9px;align-items:flex-start; }
   .hp-fact-icon{ font-size:15px;flex-shrink:0;line-height:1.5; }
   .hp-fact-text{ font-size:13px;color:var(--brand-dark);line-height:1.55;font-weight:400; }
   .hp-fact-text strong{ font-weight:550; }
@@ -837,7 +1253,7 @@
   .hp-opt-em{ font-size:20px;flex-shrink:0; }
   .hp-opt:active{ transform:scale(.98); }
   .hp-opt.sel-ok{ background:rgba(52,199,89,.1);border-color:#34C759;color:#1A8A3B; }
-  .hp-opt.sel-mid{ background:rgba(1,96,102,.08);border-color:var(--brand);color:var(--brand-dark); }
+  .hp-opt.sel-mid{ background:rgba(0,106,185,.08);border-color:var(--brand);color:var(--brand-dark); }
   .hp-opt.sel-low{ background:rgba(255,149,0,.1);border-color:#FF9500;color:#C06D00; }
   /* health pulse remaining styles */
   .hp-card{ background:var(--card);border:none;border-radius:22px;overflow:hidden;box-shadow:var(--sh);margin-top:18px; }
@@ -852,7 +1268,7 @@
   @keyframes hpCelebIn{ from{opacity:0;transform:scale(.96)} to{opacity:1;transform:scale(1)} }
   .hp-done-xp{ font-size:24px;font-weight:550;color:#34C759;letter-spacing:-.03em;margin-bottom:2px; }
   .hp-done-streak{ font-size:14px;font-weight:600;color:#FF9500;margin-bottom:12px; }
-  .hp-done-teaser{ background:rgba(1,96,102,.07);border-radius:12px;padding:11px 14px;font-size:13px;color:var(--brand-dark);line-height:1.5;font-weight:400;margin-bottom:12px; }
+  .hp-done-teaser{ background:rgba(0,106,185,.07);border-radius:12px;padding:11px 14px;font-size:13px;color:var(--brand-dark);line-height:1.5;font-weight:400;margin-bottom:12px; }
   .hp-done-teaser strong{ font-weight:550;display:block;margin-bottom:2px;font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--brand); }
   .hp-edit{ background:none;border:none;color:var(--muted);font-size:13px;font-weight:500;padding:0;cursor:pointer;font-family:inherit; }
 
@@ -864,7 +1280,7 @@
   .ck-opt{ width:100%;min-height:50px;border-radius:14px;border:0.5px solid var(--hair);background:var(--card);box-shadow:0 1px 2px rgba(16,30,40,.035);font-size:15px;font-weight:500;color:var(--text);display:flex;align-items:center;gap:12px;padding:0 18px;cursor:pointer;font-family:inherit;text-align:left;transition:border-color .15s,background .15s;-webkit-tap-highlight-color:transparent; }
   .ck-opt .ck-em{ font-size:19px;flex-shrink:0; }
   .ck-opt:active{ background:var(--surface); }
-  .ck-opt.on{ background:var(--tint);border-color:rgba(1,96,102,.22);color:var(--brand-dark);font-weight:600; }
+  .ck-opt.on{ background:var(--tint);border-color:rgba(0,106,185,.22);color:var(--brand-dark);font-weight:600; }
   .ck-skip{ background:none;border:none;color:var(--muted);font-size:13px;font-weight:400;padding:16px 0 0;cursor:pointer;font-family:inherit;width:100%;text-align:center; }
   .ck-dots{ display:flex;gap:5px;align-items:center; }
   .ck-dot{ width:6px;height:6px;border-radius:50%;background:var(--border);transition:background .2s,width .2s; }
@@ -885,46 +1301,6 @@
   .voice-ring:nth-child(2){ inset:-10px;opacity:.4; }
   .voice-ring:nth-child(3){ inset:-20px;opacity:.22;animation-delay:.5s; }
   .voice-ring.stop{ animation:none; }
-
-  /* ===== 3D Body Viewer ===== */
-  .body3d-wrap{ position:relative; width:100%; height:480px; overflow:hidden; background:#111418; }
-  .body3d-frame{ width:100%; height:100%; border:none; display:block; }
-  .body3d-label{ position:absolute; pointer-events:none; z-index:5; opacity:0; transition:opacity .6s ease; }
-  .body3d-label.vis{ opacity:1; }
-  .body3d-pill{ background:rgba(0,0,0,.45); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px);
-    border:0.5px solid rgba(255,255,255,.18); border-radius:20px; padding:5px 11px;
-    display:flex; align-items:center; gap:7px; white-space:nowrap; }
-  .body3d-dot{ width:7px; height:7px; border-radius:50%; flex-shrink:0; }
-  .body3d-pname{ font-size:12px; font-weight:600; color:#fff; line-height:1.25; }
-  .body3d-psub{ font-size:10px; color:rgba(255,255,255,.52); line-height:1.2; }
-  /* anatomy full-screen viewer */
-  .anat-viewer-pane{ background:#1a1a1e; }
-  .anat-viewer-pane .body{ overflow:hidden; }
-  .anat-full-frame{ width:100%; height:100%; border:none; display:block; }
-  .anat-back{ position:absolute; top:10px; left:12px; z-index:100; width:36px; height:36px; border-radius:50%; background:rgba(0,0,0,.45); border:none; cursor:pointer; display:grid; place-items:center; backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); }
-
-  /* ── PWA install banner ── */
-  .pwa-banner{ position:fixed; bottom:0; left:0; right:0; z-index:9999; padding:14px 16px calc(14px + env(safe-area-inset-bottom)); background:#fff; box-shadow:0 -1px 0 rgba(0,0,0,.08), 0 -8px 32px rgba(0,0,0,.12); display:flex; align-items:center; gap:12px; transform:translateY(110%); transition:transform .4s cubic-bezier(.32,.72,0,1); }
-  .pwa-banner.show{ transform:translateY(0); }
-  .pwa-icon{ width:48px; height:48px; border-radius:12px; background:var(--brand); flex-shrink:0; display:grid; place-items:center; }
-  .pwa-icon svg{ width:26px; height:26px; stroke:#fff; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
-  .pwa-text{ flex:1; min-width:0; }
-  .pwa-title{ font-size:14px; font-weight:600; color:var(--text); }
-  .pwa-sub{ font-size:12px; color:var(--muted); margin-top:1px; }
-  .pwa-install{ height:36px; padding:0 16px; border-radius:20px; background:var(--brand); border:none; color:#fff; font-size:13px; font-weight:600; font-family:inherit; cursor:pointer; flex-shrink:0; }
-  .pwa-close{ width:28px; height:28px; border-radius:50%; background:rgba(120,120,128,.12); border:none; cursor:pointer; display:grid; place-items:center; flex-shrink:0; color:var(--muted); font-size:16px; line-height:1; }
-
-  /* ── Real mobile device: fill full screen, hide fake frame ── */
-  @media (max-width: 480px) {
-    html, body { height: 100%; background: var(--surface); }
-    .stage { padding: 0; align-items: stretch; background: var(--surface); min-height: 100dvh; }
-    .device { width: 100%; height: 100dvh; max-height: 100dvh; border-radius: 0; box-shadow: none; }
-    .island { display: none; }
-    .statusbar { display: none; }
-    .deviceHint { display: none; }
-    #screens { padding-top: env(safe-area-inset-top); }
-    .nav { padding-bottom: env(safe-area-inset-bottom); height: calc(72px + env(safe-area-inset-bottom)); }
-  }
 </style>
 </head>
 <body>
@@ -950,6 +1326,7 @@
   <symbol id="i-pencil" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></symbol>
   <symbol id="i-back" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></symbol>
   <symbol id="i-play" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M7 5v14l11-7Z"/></symbol>
+  <symbol id="i-dots" viewBox="0 0 24 24" fill="currentColor" stroke="none"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></symbol>
   <symbol id="i-chat" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4.5h16v12H8.5L4 20.5Z"/></symbol>
   <symbol id="i-send" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M3 11 20.5 3.5 15 20.5l-3.5-6.5Z"/><path d="M11.5 14 20.5 3.5"/></symbol>
   <symbol id="i-nav" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l18-8-8 18-2-8Z"/></symbol>
@@ -967,7 +1344,10 @@
   <symbol id="i-clinic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V8l8-4 8 4v13"/><path d="M9 21v-4.5h6V21"/><path d="M12 8.5v3.5M10.25 10.25h3.5"/></symbol>
   <symbol id="i-card" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M3 9.5h18M6.5 14.5h4"/></symbol>
   <symbol id="i-sliders" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M6 12h12M9 18h6"/></symbol>
-  <symbol id="i-mic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0M12 19v3M9 22h6"/></symbol>
+  <symbol id="i-mic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0M12 19v3M9 22h6"/></symbol>  <symbol id="i-keyboard" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="6" width="19" height="12" rx="2.5"/><path d="M6.5 10h.01M10 10h.01M13.5 10h.01M17 10h.01M8 14h8"/></symbol>  <symbol id="i-keyboard" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="6" width="19" height="12" rx="2.5"/><path d="M6.5 10h.01M10 10h.01M13.5 10h.01M17 10h.01M8 14h8"/></symbol>  <symbol id="i-arrow-r" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"/><path d="M13 6l6 6-6 6"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2.5 20 5.5v6c0 5-3.4 8.9-8 10.5-4.6-1.6-8-5.5-8-10.5v-6Z"/></symbol>
+  <symbol id="i-heart" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 21s-8-5-8-10.5A4.5 4.5 0 0 1 12 7.5 4.5 4.5 0 0 1 20 10.5C20 16 12 21 12 21Z"/></symbol>  <symbol id="i-mail" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5" width="19" height="14" rx="2.5"/><path d="m3 7 9 6 9-6"/></symbol>
+  <symbol id="i-sparkle" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2.5 13.9 9 20.5 11 13.9 13 12 19.5 10.1 13 3.5 11 10.1 9Z"/><path d="M19 3.5 19.8 6 22.5 6.8 19.8 7.6 19 10 18.2 7.6 15.5 6.8 18.2 6Z"/></symbol>
 </svg>
 
 <div class="stage">
@@ -981,6 +1361,249 @@
       </span></div>
 
       <div id="screens">
+
+        <!-- ============ AUTH · WELCOME ============ -->
+        <section class="pane flow" data-screen="auth" data-screen-label="Sign In">
+          <div class="flow-body" style="display:flex;flex-direction:column;justify-content:center;padding-top:0;">
+            <div class="au-mark"><img src="assets/cc-fab-icon.webp" alt="Narzim" /></div>
+            <h1 class="flow-h" style="text-align:center;">Welcome to Narzim</h1>
+            <p class="flow-s" style="text-align:center;">Your family's health, organised and always within reach.</p>
+            <div class="au-opts">
+              <button class="au-opt" data-act="auth-google">
+                <svg width="19" height="19" viewBox="0 0 48 48" style="flex-shrink:0;"><path fill="#4285F4" d="M45 24c0-1.6-.1-2.7-.4-4H24v8h11.8c-.2 2-1.5 5-4.8 7l7.3 5.6C42.6 36.3 45 30.7 45 24Z"/><path fill="#34A853" d="M24 46c5.9 0 10.9-2 14.3-5.4l-7.3-5.6c-2 1.3-4.6 2.2-7 2.2-5.7 0-10.5-3.7-12.2-8.9l-7.6 5.9C7.6 41.3 15.2 46 24 46Z"/><path fill="#FBBC05" d="M11.8 28.3A13.4 13.4 0 0 1 11.1 24c0-1.5.3-3 .7-4.3l-7.6-5.9A22 22 0 0 0 2 24c0 3.6.9 6.9 2.2 10.2l7.6-5.9Z"/><path fill="#EA4335" d="M24 10.2c3.2 0 6.1 1.1 8.4 3.3l6.4-6.4C34.9 3.5 29.9 2 24 2 15.2 2 7.6 6.7 4.2 13.8l7.6 5.9C13.5 14.5 18.3 10.2 24 10.2Z"/></svg>
+                Continue with Google
+              </button>
+              <button class="au-opt pri" data-act="auth-manual">
+                <svg class="ic18" style="stroke:#fff"><use href="#i-mail"/></svg>
+                Continue with Email or Phone
+              </button>
+            </div>
+            <div class="au-or">Already have an account?</div>
+            <button class="flow-btn ghost" data-act="auth-manual" style="margin-top:6px;">Log in</button>
+            <p class="au-legal">By continuing you agree to our <a href="#">Terms</a> and <a href="#">Privacy Policy</a>.</p>
+          </div>
+        </section>
+
+        <!-- ============ AUTH · EMAIL / PHONE ============ -->
+        <section class="pane flow" data-screen="auth-entry" data-screen-label="Sign In Details">
+          <div class="flow-top">
+            <button class="iconbtn" data-go="back"><svg class="ic24" style="stroke:var(--text)"><use href="#i-back"/></svg></button>
+            <div class="flow-bar"><i style="width:20%"></i></div>
+          </div>
+          <div class="flow-body">
+            <h1 class="flow-h">How should we<br>reach you?</h1>
+            <p class="flow-s">We'll send a one-time code to confirm it's you.</p>
+            <div class="au-seg" data-au-seg>
+              <button class="on" data-au-mode="email">Email</button>
+              <button data-au-mode="phone">Phone</button>
+            </div>
+            <div class="au-field" data-au-email>
+              <svg class="ic18" style="stroke:var(--muted)"><use href="#i-mail"/></svg>
+              <input type="email" placeholder="you@example.com" data-au-input-email />
+            </div>
+            <div class="au-field" data-au-phone hidden>
+              <span class="au-cc">+52</span>
+              <input type="tel" placeholder="55 1234 5678" data-au-input-phone />
+            </div>
+            <div class="au-hint">Demo mode — any value works, and the code is <b>123456</b>.</div>
+          </div>
+          <div class="flow-foot">
+            <button class="flow-btn" data-act="auth-send-otp">Send code</button>
+          </div>
+        </section>
+
+        <!-- ============ AUTH · OTP ============ -->
+        <section class="pane flow" data-screen="auth-otp" data-screen-label="Verify Code">
+          <div class="flow-top">
+            <button class="iconbtn" data-go="back"><svg class="ic24" style="stroke:var(--text)"><use href="#i-back"/></svg></button>
+            <div class="flow-bar"><i style="width:36%"></i></div>
+          </div>
+          <div class="flow-body">
+            <h1 class="flow-h">Enter your code</h1>
+            <p class="flow-s">Sent to <b data-au-dest style="color:var(--text);font-weight:600;">you@example.com</b>.</p>
+            <div class="au-otp" data-au-otp>
+              <input inputmode="numeric" maxlength="1" /><input inputmode="numeric" maxlength="1" /><input inputmode="numeric" maxlength="1" />
+              <input inputmode="numeric" maxlength="1" /><input inputmode="numeric" maxlength="1" /><input inputmode="numeric" maxlength="1" />
+            </div>
+            <div class="au-resend">Didn't get it? <b>Resend in 0:24</b></div>
+            <div class="au-hint">Tap below to autofill the demo code.</div>
+            <button class="flow-btn outline" data-act="auth-autofill" style="margin-top:12px;height:44px;font-size:14px;">Autofill 123456</button>
+          </div>
+          <div class="flow-foot">
+            <button class="flow-btn" data-act="auth-verify" disabled>Verify</button>
+          </div>
+        </section>
+
+        <!-- ============ PROFILE · BASICS ============ -->
+        <section class="pane flow" data-screen="pf-basics" data-screen-label="Profile Basics">
+          <div class="flow-top">
+            <button class="iconbtn" data-go="back"><svg class="ic24" style="stroke:var(--text)"><use href="#i-back"/></svg></button>
+            <div class="flow-bar"><i style="width:52%"></i></div>
+          </div>
+          <div class="flow-body">
+            <h1 class="flow-h">A little about you</h1>
+            <p class="flow-s">This helps your clinic personalise your care.</p>
+            <div class="au-field" style="margin-top:22px;">
+              <svg class="ic18" style="stroke:var(--muted)"><use href="#i-user"/></svg>
+              <input placeholder="Full name" data-pf-name />
+            </div>
+            <div class="pf-age">
+              <span class="pf-age-v" data-pf-age-v>34</span><span class="pf-age-u">years old</span>
+            </div>
+            <input type="range" class="pf-slider" min="1" max="99" value="34" data-pf-age />
+            <p class="flow-s" style="margin-top:24px;font-weight:600;color:var(--text);font-size:14px;">Gender</p>
+            <div class="pf-grid" data-pf-gender>
+              <button class="pf-tile" data-pf-g="Female"><span class="pf-ic"><svg class="ic18"><use href="#i-user"/></svg></span>Female</button>
+              <button class="pf-tile on" data-pf-g="Male"><span class="pf-ic"><svg class="ic18"><use href="#i-user"/></svg></span>Male</button>
+              <button class="pf-tile" data-pf-g="Other"><span class="pf-ic"><svg class="ic18"><use href="#i-users"/></svg></span>Other</button>
+            </div>
+          </div>
+          <div class="flow-foot">
+            <button class="flow-btn" data-go="pf-conditions">Continue</button>
+          </div>
+        </section>
+
+        <!-- ============ PROFILE · CONDITIONS ============ -->
+        <section class="pane flow" data-screen="pf-conditions" data-screen-label="Known Conditions">
+          <div class="flow-top">
+            <button class="iconbtn" data-go="back"><svg class="ic24" style="stroke:var(--text)"><use href="#i-back"/></svg></button>
+            <div class="flow-bar"><i style="width:66%"></i></div>
+          </div>
+          <div class="flow-body">
+            <h1 class="flow-h">Any known conditions?</h1>
+            <p class="flow-s">Select what applies. You can change this any time in your profile.</p>
+            <div class="pf-chips" data-pf-conds>
+              <button class="pf-chip" data-pf-cond="Hypothyroidism">Hypothyroidism</button>
+              <button class="pf-chip" data-pf-cond="Hypertension">Hypertension</button>
+              <button class="pf-chip" data-pf-cond="Type 2 Diabetes">Type 2 Diabetes</button>
+              <button class="pf-chip" data-pf-cond="Asthma">Asthma</button>
+              <button class="pf-chip" data-pf-cond="High cholesterol">High cholesterol</button>
+              <button class="pf-chip" data-pf-cond="Migraine">Migraine</button>
+              <button class="pf-chip" data-pf-cond="Anaemia">Anaemia</button>
+              <button class="pf-chip" data-pf-cond="Allergies">Allergies</button>
+              <button class="pf-chip" data-pf-cond="None">None of these</button>
+            </div>
+          </div>
+          <div class="flow-foot">
+            <button class="flow-btn" data-go="pf-reports">Continue</button>
+            <button class="flow-btn ghost" data-go="pf-reports">Skip for now</button>
+          </div>
+        </section>
+
+        <!-- ============ PROFILE · REPORTS + AI EXTRACT ============ -->
+        <section class="pane flow" data-screen="pf-reports" data-screen-label="Upload Reports">
+          <div class="flow-top">
+            <button class="iconbtn" data-go="back"><svg class="ic24" style="stroke:var(--text)"><use href="#i-back"/></svg></button>
+            <div class="flow-bar"><i style="width:82%"></i></div>
+          </div>
+          <div class="flow-body" data-pf-reports></div>
+          <div class="flow-foot">
+            <button class="flow-btn" data-go="pricing" data-pf-reports-cta>Continue</button>
+            <button class="flow-btn ghost" data-go="pricing">Skip for now</button>
+          </div>
+        </section>
+
+        <!-- ============ PRICING ============ -->
+        <section class="pane flow" data-screen="pricing" data-screen-label="Choose a Plan">
+          <div class="flow-top">
+            <button class="iconbtn" data-go="back"><svg class="ic24" style="stroke:var(--text)"><use href="#i-back"/></svg></button>
+            <div class="flow-bar"><i style="width:94%"></i></div>
+          </div>
+          <div class="flow-body">
+            <h1 class="flow-h">Choose your plan</h1>
+            <p class="flow-s">Narzim is free forever. Upgrade when you want AI help with your records.</p>
+            <div class="pr-toggle" data-pr-cycle>
+              <button class="on" data-pr-c="monthly">Monthly</button>
+              <button data-pr-c="annual">Annual <span class="pr-save">SAVE 40%</span></button>
+            </div>
+            <div class="pr-card" data-pr-plan="free">
+              <div class="pr-hd">
+                <span class="pr-radio"><i></i></span>
+                <span class="pr-name">Free</span>
+                <span class="pr-price"><b>$0</b><span>always</span></span>
+              </div>
+              <ul class="pr-feats">
+                <li><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>Book and manage appointments</li>
+                <li><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>Store reports, prescriptions and files</li>
+                <li><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>Care Connect chat with your clinics</li>
+                <li><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>Medication reminders for 1 profile</li>
+                <li class="off"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg>AI report extraction</li>
+                <li class="off"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg>Family profiles</li>
+              </ul>
+            </div>
+            <div class="pr-card on" data-pr-plan="plus">
+              <span class="pr-badge">MOST POPULAR</span>
+              <div class="pr-hd">
+                <span class="pr-radio"><i></i></span>
+                <span class="pr-name">Narzim Plus</span>
+                <span class="pr-price"><b data-pr-amt>$5</b><span data-pr-per>per month</span></span>
+              </div>
+              <ul class="pr-feats">
+                <li><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>Everything in Free</li>
+                <li><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg><b>50 Narzim credits</b> every month for AI extraction and summaries</li>
+                <li><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>Plain-language explanations of lab results</li>
+                <li><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>Up to 6 family profiles</li>
+                <li><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>Trend tracking across past reports</li>
+                <li><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>Priority replies from clinic front desks</li>
+              </ul>
+            </div>
+          </div>
+          <div class="flow-foot">
+            <button class="flow-btn" data-act="pricing-go">Start with Plus</button>
+            <button class="flow-btn ghost" data-act="pricing-skip">Continue on Free</button>
+          </div>
+        </section>
+
+        <!-- ============ SETTING UP ============ -->
+        <section class="pane flow" data-screen="setup" data-screen-label="Setting Up">
+          <div class="su-wrap">
+            <div class="su-ring">
+              <svg viewBox="0 0 96 96"><circle class="bg" cx="48" cy="48" r="42"/><circle class="fg" cx="48" cy="48" r="42" data-su-ring/></svg>
+              <div class="su-pct" data-su-pct>0%</div>
+            </div>
+            <div class="su-t">Setting up your profile</div>
+            <div class="su-s" data-su-step>Creating your secure health record…</div>
+          </div>
+        </section>
+
+        <!-- ============ INTRO ============ -->
+        <section class="pane intro" data-screen="intro" data-screen-label="Intro">
+          <button class="intro-skip" data-act="intro-skip">Skip</button>
+          <div class="intro-track" data-intro-track>
+            <div class="intro-slide on" data-intro-slide="1">
+              <div class="intro-copy">
+                <h1 class="intro-h">Your Health<br><span>in One Place</span></h1>
+                <p class="intro-s">Book appointments, manage records, get prescriptions and more — all in one app.</p>
+              </div>
+              <div class="intro-art"><img src="assets/intro-1.webp" alt="" /></div>
+            </div>
+            <div class="intro-slide" data-intro-slide="2">
+              <div class="intro-copy">
+                <h1 class="intro-h">Care Connect<br><span>Whenever You Need Us</span></h1>
+                <p class="intro-s">Have a question? Need help? Care Connect puts you in touch with your clinic — quickly and easily.</p>
+              </div>
+              <div class="intro-art"><img src="assets/intro-2.webp" alt="" /></div>
+            </div>
+            <div class="intro-slide" data-intro-slide="3">
+              <div class="intro-copy">
+                <h1 class="intro-h">A Healthier<br>Tomorrow, <span>Together</span></h1>
+                <p class="intro-s">We're here to support you at every step — for you and the people you care about.</p>
+              </div>
+              <div class="intro-art"><img src="assets/intro-3.webp" alt="" /></div>
+              <div class="intro-feats">
+                <div class="intro-feat"><span class="intro-feat-ic"><svg class="ic22"><use href="#i-users"/></svg></span>Better Care</div>
+                <div class="intro-feat"><span class="intro-feat-ic"><svg class="ic22"><use href="#i-shield"/></svg></span>More Convenience</div>
+                <div class="intro-feat"><span class="intro-feat-ic"><svg class="ic22"><use href="#i-heart"/></svg></span>Brighter Tomorrows</div>
+              </div>
+            </div>
+          </div>
+          <div class="intro-foot">
+            <button class="intro-back" data-act="intro-back" aria-label="Back"><svg class="ic22" style="stroke:var(--text)"><use href="#i-back"/></svg></button>
+            <div class="intro-dots" data-intro-dots><i class="on"></i><i></i><i></i></div>
+            <button class="intro-next" data-act="intro-next" aria-label="Next"><svg class="ic22" style="stroke:#fff"><use href="#i-arrow-r"/></svg></button>
+            <button class="intro-start" data-act="intro-skip">Get Started <svg class="ic18" style="stroke:#fff"><use href="#i-arrow-r"/></svg></button>
+          </div>
+        </section>
 
         <!-- ============ ONBOARDING ============ -->
         <section class="pane onb" data-screen="onboarding" data-screen-label="Onboarding">
@@ -1024,54 +1647,23 @@
 
         <!-- ============ HOME ============ -->
         <section class="pane active mc-home" data-screen="home" data-screen-label="Dashboard">
-          <div class="body">
+          <div class="body"><div class="pad" style="background-color: #F9FCFF">
 
-            <!-- Header -->
-            <div class="pad" style="padding-bottom:0;">
-              <div class="hm-nav">
-                <div style="flex:1;min-width:0;">
-                  <div class="hm-eyebrow">Friday, 13 June</div>
-                  <div class="hm-title">Good morning</div>
-                </div>
-                <button class="hm-iconbtn" data-go="notifications" aria-label="Notifications">
-                  <svg><use href="#i-bell"/></svg><span class="notif-badge">3</span>
-                </button>
-                <button class="hm-member" data-homefilter>
-                  <span class="pdot" data-hf-dot></span><span data-hf-name>Mateo</span>
-                  <svg><use href="#i-chevron"/></svg>
-                </button>
+            <div class="hm-nav">
+              <div style="flex:1;min-width:0;">
+                <div class="hm-eyebrow">Friday, 13 June</div>
+                <div class="hm-title">Good morning</div>
               </div>
+              <button class="hm-iconbtn" data-go="notifications" aria-label="Notifications">
+                <svg><use href="#i-bell"/></svg><span class="notif-badge">3</span>
+              </button>
+              <button class="hm-member" data-homefilter>
+                <span class="pdot" data-hf-dot></span><span data-hf-name>Mateo</span>
+                <svg><use href="#i-chevron"/></svg>
+              </button>
             </div>
 
-            <!-- 3D Body Viewer (Sketchfab embed) -->
-            <div class="body3d-wrap" id="body3dWrap">
-              <iframe
-                id="body3dFrame"
-                class="body3d-frame"
-                allow="autoplay; fullscreen; xr-spatial-tracking"
-                title="3D Body Model">
-              </iframe>
-              <div class="body3d-label vis" id="lbl-thyroid" style="left:62%;top:22%">
-                <div class="body3d-pill">
-                  <div class="body3d-dot" style="background:#FF9500;box-shadow:0 0 6px 2px rgba(255,149,0,.6)"></div>
-                  <div><div class="body3d-pname">Elevated T3</div><div class="body3d-psub">Thyroid</div></div>
-                </div>
-              </div>
-              <div class="body3d-label vis" id="lbl-heart" style="left:14%;top:33%">
-                <div class="body3d-pill">
-                  <div class="body3d-dot" style="background:#FF3B30;box-shadow:0 0 6px 2px rgba(255,59,48,.6)"></div>
-                  <div><div class="body3d-pname">12% Health</div><div class="body3d-psub">Heart</div></div>
-                </div>
-              </div>
-              <div class="body3d-label vis" id="lbl-liver" style="left:62%;top:47%">
-                <div class="body3d-pill">
-                  <div class="body3d-dot" style="background:#FF9500;box-shadow:0 0 6px 2px rgba(255,149,0,.6)"></div>
-                  <div><div class="body3d-pname">High Fat Risk</div><div class="body3d-psub">Liver</div></div>
-                </div>
-              </div>
-            </div>
-
-            <div class="pad">
+            <img class="hm-banner" src="assets/narzim-banner.webp" alt="Pequeños pasos hoy para un mañana más saludable." />
 
             <div class="hm-group">
               <div class="hm-card">
@@ -1094,7 +1686,7 @@
                 <div class="hm-focus">
                   <div class="hm-ring">
                     <svg viewBox="0 0 48 48">
-                      <circle cx="24" cy="24" r="20" fill="none" stroke="rgba(1,96,102,.12)" stroke-width="4.5"/>
+                      <circle cx="24" cy="24" r="20" fill="none" stroke="rgba(0,106,185,.12)" stroke-width="4.5"/>
                       <circle cx="24" cy="24" r="20" fill="none" stroke="var(--brand)" stroke-width="4.5" stroke-linecap="round"
                         stroke-dasharray="125.7" stroke-dashoffset="83.8"/>
                     </svg>
@@ -1139,27 +1731,25 @@
               </div>
             </div>
 
+            <div class="hm-group">
+              <div class="hm-glabel">Last appointment</div>
+              <div class="hm-card">
+                <div class="hm-appt" data-go="appointment">
+                  <div class="hm-date" style="opacity:.72;"><div class="m">MAY</div><div class="d">18</div></div>
+                  <div style="flex:1;min-width:0;">
+                    <div class="hm-doc">Dr. Ricardo Morales</div>
+                    <div class="hm-meta">Follow-up · Blood pressure review</div>
+                    <div class="hm-when"><svg><use href="#i-doc"/></svg>Visit summary and notes</div>
+                  </div>
+                  <svg class="hm-chev"><use href="#i-chevron"/></svg>
+                </div>
+              </div>
+            </div>
+
             <div class="hm-foot">Your care team sees only what you share.</div>
 
           </div></div>
           <nav class="nav"></nav>
-        </section>
-
-        <!-- ============ ANATOMY VIEWER ============ -->
-        <section class="pane anat-viewer-pane" data-screen="anatomy" data-screen-label="Anatomy">
-          <div class="body" style="overflow:hidden; position:relative;">
-            <button class="anat-back" data-go="back" aria-label="Back">
-              <svg style="width:18px;height:18px;stroke:#fff;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;"><use href="#i-back"/></svg>
-            </button>
-            <iframe
-              id="anatomy-full-frame"
-              class="anat-full-frame"
-              src="about:blank"
-              data-src="https://human-atlas-seven.vercel.app/"
-              title="Human Anatomy Atlas"
-              allow="fullscreen">
-            </iframe>
-          </div>
         </section>
 
         <!-- ============ APPOINTMENTS ============ -->
@@ -1299,6 +1889,96 @@
               <svg class="ic16" style="stroke:currentColor"><use href="#i-plus"/></svg>Book an appointment
             </button>
 
+          </div></div>
+          <nav class="nav"></nav>
+        </section>
+
+        <!-- ============ CARE CONNECT · CONNECTING ============ -->
+        <section class="pane sub" data-screen="cc-connect" data-screen-label="Care Connect Connecting">
+          <div style="padding:0 16px;">
+            <div class="cc-top">
+              <button class="iconbtn" data-go="back"><svg class="ic24" style="stroke:var(--text)"><use href="#i-back"/></svg></button>
+              <span class="cc-top-av" data-cc-av>HE</span>
+              <div style="flex:1;min-width:0;">
+                <div class="cc-top-name" data-cc-name>Hospital Español</div>
+                <div class="cc-top-status">Connecting…</div>
+              </div>
+            </div>
+          </div>
+          <div class="cc-conn" data-cc-conn></div>
+        </section>
+
+        <!-- ============ CARE CONNECT · VOICE ============ -->
+        <section class="pane sub" data-screen="cc-voice" data-screen-label="Care Connect Voice">
+          <div style="padding:0 16px;">
+            <div class="cc-top">
+              <button class="iconbtn" data-go="back"><svg class="ic24" style="stroke:var(--text)"><use href="#i-back"/></svg></button>
+              <span class="cc-top-av" data-cc-av>HE</span>
+              <div style="flex:1;min-width:0;">
+                <div class="cc-top-name" data-cc-name>Hospital Español</div>
+                <div class="cc-top-status"><span class="cc-online"></span>Online</div>
+              </div>
+              <button class="iconbtn" data-go="cc-history" aria-label="My requests"><svg class="ic22" style="stroke:var(--text)"><use href="#i-clock"/></svg></button>
+            </div>
+          </div>
+          <div class="cc-voice-wrap" data-cc-voice>
+            <img class="cc-voice-mascot" src="assets/narzim-mascot-peek.webp" alt="" />
+            <div class="cc-greet-card">
+              <div class="cc-greet-t">Hi! I'm Narzim.</div>
+              <div class="cc-greet-s">Just tell me what you need.<br>I'll take care of the rest.</div>
+            </div>
+            <div class="cc-mic-ring">
+              <button class="cc-mic" data-act="cc-listen"><svg class="ic24" style="stroke:#fff"><use href="#i-mic"/></svg></button>
+            </div>
+            <div class="cc-listen" data-cc-listen-label>Listening…</div>
+            <div class="cc-wave" data-cc-wave></div>
+            <div class="cc-live" data-cc-live></div>
+            <button class="cc-type tap" data-act="cc-type"><svg class="ic18" style="stroke:var(--muted)"><use href="#i-keyboard"/></svg>Type instead</button>
+          </div>
+          <div class="cc-kb" data-cc-kb>
+            <div class="cc-kb-chips">
+              <button class="cc-kb-chip" data-cc-fill="I need to reschedule my appointment with Dr. Reyes.">Reschedule my visit</button>
+              <button class="cc-kb-chip" data-cc-fill="Can I get a refill for Levotiroxina 75 mcg?">Request a refill</button>
+              <button class="cc-kb-chip" data-cc-fill="Are my lab results ready?">Lab results</button>
+              <button class="cc-kb-chip" data-cc-fill="What should I bring to my next appointment?">What to bring</button>
+            </div>
+            <div class="cc-kb-field">
+              <div class="cc-kb-input" data-cc-kb-input data-ph="Message Hospital Español…" contenteditable="true"></div>
+              <button class="cc-kb-send" data-act="cc-kb-send" disabled><svg class="ic18" style="stroke:#fff"><use href="#i-send"/></svg></button>
+            </div>
+            <div class="cc-kb-keys" data-cc-keys></div>
+          </div>
+        </section>
+
+        <!-- ============ CARE CONNECT · CHAT ============ -->
+        <section class="pane sub" data-screen="cc-chat" data-screen-label="Care Connect Chat">
+          <div style="padding:0 16px;">
+            <div class="cc-top">
+              <button class="iconbtn" data-go="back"><svg class="ic24" style="stroke:var(--text)"><use href="#i-back"/></svg></button>
+              <span class="cc-top-av" data-cc-av>HE</span>
+              <div style="flex:1;min-width:0;">
+                <div class="cc-top-name" data-cc-name>Hospital Español</div>
+                <div class="cc-top-status"><span class="cc-online"></span>Online</div>
+              </div>
+              <button class="iconbtn" data-go="cc-history" aria-label="My requests"><svg class="ic22" style="stroke:var(--text)"><use href="#i-clock"/></svg></button>
+            </div>
+          </div>
+          <div class="cc-msgs" data-cc-msgs></div>
+          <div class="cc-bar">
+            <button class="cc-bar-kb" data-act="cc-chat-kb"><svg class="ic18" style="stroke:var(--muted)"><use href="#i-keyboard"/></svg></button>
+            <input placeholder="Type a message…" data-cc-input />
+            <button class="cc-bar-mic" data-go="cc-voice"><svg class="ic18" style="stroke:#fff"><use href="#i-mic"/></svg></button>
+          </div>
+        </section>
+
+        <!-- ============ CARE CONNECT · MY REQUESTS ============ -->
+        <section class="pane sub" data-screen="cc-history" data-screen-label="Care Connect Requests">
+          <div class="body"><div class="pad">
+            <div style="display:flex;align-items:center;gap:12px;padding-top:6px;">
+              <button class="iconbtn" data-go="back"><svg class="ic24" style="stroke:var(--text)"><use href="#i-back"/></svg></button>
+              <span class="screen-title">My Requests</span>
+            </div>
+            <div data-cc-reqs style="margin-top:20px;"></div>
           </div></div>
           <nav class="nav"></nav>
         </section>
@@ -1475,13 +2155,170 @@
         <section class="pane" data-screen="medications" data-screen-label="Medications List">
           <div class="body"><div class="pad">
             <div style="display:flex;align-items:center;justify-content:space-between;padding-top:8px;">
-              <div class="screen-title">Medications</div>
+              <div class="screen-title">Health</div>
               <button class="memfilter" data-homefilter><span class="pdot" data-hf-dot></span><span data-hf-name>Mateo</span><svg><use href="#i-chevron"/></svg></button>
             </div>
-            <div class="tabs" data-medtabs style="margin-top:18px;">
-              <span class="tab on" data-medtab="active">Active</span>
-              <span class="tab" data-medtab="instructions">Instructions</span>
-              <span class="tab" data-medtab="history">History</span>
+            <div class="tabs" data-healthtabs style="margin-top:18px;">
+              <span class="tab" data-healthtab="reports">Reports</span>
+              <span class="tab on" data-healthtab="medications">Medications</span>
+              <span class="tab" data-healthtab="surgical">Surgical History</span>
+            </div>
+
+            <div data-healthpane="reports" style="display:none;margin-top:16px;padding-bottom:56px;">
+              <div class="filt-row" data-reportfilters>
+                <button class="filt on" data-reportfilter="all">All</button>
+                <button class="filt" data-reportfilter="lab">Lab reports</button>
+                <button class="filt" data-reportfilter="imaging">Imaging</button>
+                <button class="filt" data-reportfilter="prescription">Prescriptions</button>
+                <button class="filt" data-reportfilter="general">General</button>
+              </div>
+              <div class="tl" style="margin-top:14px;" data-report-list>
+                <div class="med-row" data-reporttype="lab" data-member="anant">
+                  <div class="doc-card-ic" style="background:var(--tint);color:var(--brand);"><svg class="ic18"><use href="#i-doc"/></svg></div>
+                  <div style="flex:1;min-width:0;">
+                    <div class="med-n">Blood chemistry panel</div>
+                    <div class="med-s">Laboratorio Azteca · 15 Jan 2026</div>
+                    <div class="med-s2">Mateo</div>
+                  </div>
+                  <span class="chip chip-completed" style="flex-shrink:0;">Lab report</span>
+                </div>
+                <div class="med-row" data-reporttype="lab" data-member="priya">
+                  <div class="doc-card-ic" style="background:var(--tint);color:var(--brand);"><svg class="ic18"><use href="#i-doc"/></svg></div>
+                  <div style="flex:1;min-width:0;">
+                    <div class="med-n">Thyroid panel</div>
+                    <div class="med-s">Laboratorio Azteca · 02 Jun 2026</div>
+                    <div class="med-s2">Sofía</div>
+                  </div>
+                  <span class="chip chip-completed" style="flex-shrink:0;">Lab report</span>
+                </div>
+                <div class="med-row" data-reporttype="imaging" data-member="anant">
+                  <div class="doc-card-ic" style="background:#EFF6FF;color:#1D4ED8;"><svg class="ic18"><use href="#i-scan"/></svg></div>
+                  <div style="flex:1;min-width:0;">
+                    <div class="med-n">Chest X-ray, PA view</div>
+                    <div class="med-s">Narzim Imaging · 18 May 2026</div>
+                    <div class="med-s2">Mateo</div>
+                  </div>
+                  <span class="chip" style="flex-shrink:0;background:#EFF6FF;color:#1D4ED8;">Imaging</span>
+                </div>
+                <div class="med-row" data-reporttype="prescription" data-member="anant">
+                  <div class="doc-card-ic" style="background:#FFF7ED;color:#C2410C;"><svg class="ic18"><use href="#i-pill"/></svg></div>
+                  <div style="flex:1;min-width:0;">
+                    <div class="med-n">Prescription · Levotiroxina, Salbutamol</div>
+                    <div class="med-s">Clínica Mérida Salud · 04 Nov 2025</div>
+                    <div class="med-s2">Mateo</div>
+                  </div>
+                  <span class="chip" style="flex-shrink:0;background:#FFF7ED;color:#C2410C;">Prescription</span>
+                </div>
+                <div class="med-row" data-reporttype="prescription" data-member="aryan">
+                  <div class="doc-card-ic" style="background:#FFF7ED;color:#C2410C;"><svg class="ic18"><use href="#i-pill"/></svg></div>
+                  <div style="flex:1;min-width:0;">
+                    <div class="med-n">Prescription · Amoxicillin</div>
+                    <div class="med-s">Clínica Roma · 14 Jan 2026</div>
+                    <div class="med-s2">Diego</div>
+                  </div>
+                  <span class="chip" style="flex-shrink:0;background:#FFF7ED;color:#C2410C;">Prescription</span>
+                </div>
+                <div class="med-row" data-reporttype="general" data-member="priya">
+                  <div class="doc-card-ic" style="background:rgba(120,120,128,.12);color:var(--muted);"><svg class="ic18"><use href="#i-clip"/></svg></div>
+                  <div style="flex:1;min-width:0;">
+                    <div class="med-n">Dietary guidance note</div>
+                    <div class="med-s">Dr. Valentina Reyes · 10 May 2026</div>
+                    <div class="med-s2">Sofía</div>
+                  </div>
+                  <span class="chip" style="flex-shrink:0;background:rgba(120,120,128,.12);color:var(--muted);">General</span>
+                </div>
+              </div>
+            </div>
+
+            <div data-healthpane="surgical" style="display:none;margin-top:16px;">
+              <div class="filt-row" data-surgicalfilters>
+                <button class="filt on" data-surgicalfilter="all">All</button>
+                <button class="filt" data-surgicalfilter="surgery">Surgeries</button>
+                <button class="filt" data-surgicalfilter="procedure">Procedures</button>
+                <button class="filt" data-surgicalfilter="hospital">Hospitalisations</button>
+              </div>
+              <div class="tl" style="margin-top:14px;" data-surgical-list>
+                <div class="med-row" data-surgtype="surgery">
+                  <div class="doc-card-ic" style="background:var(--tint);color:var(--brand);"><svg class="ic18"><use href="#i-clip"/></svg></div>
+                  <div style="flex:1;min-width:0;">
+                    <div class="med-n">Appendectomy</div>
+                    <div class="med-s">Hospital Ángeles, Polanco · 12 Aug 2019</div>
+                    <div class="med-s2">Dr. Ignacio Reyes · General surgery</div>
+                  </div>
+                  <span class="chip chip-completed" style="flex-shrink:0;">Completed</span>
+                </div>
+                <div class="med-row" data-surgtype="surgery">
+                  <div class="doc-card-ic" style="background:var(--tint);color:var(--brand);"><svg class="ic18"><use href="#i-clip"/></svg></div>
+                  <div style="flex:1;min-width:0;">
+                    <div class="med-n">Gallbladder removal (laparoscopic)</div>
+                    <div class="med-s">Hospital Español · 03 Mar 2021</div>
+                    <div class="med-s2">Dr. Valentina Reyes · General surgery</div>
+                  </div>
+                  <span class="chip chip-completed" style="flex-shrink:0;">Completed</span>
+                </div>
+                <div class="med-row" data-surgtype="surgery">
+                  <div class="doc-card-ic" style="background:var(--tint);color:var(--brand);"><svg class="ic18"><use href="#i-clip"/></svg></div>
+                  <div style="flex:1;min-width:0;">
+                    <div class="med-n">Inguinal hernia repair</div>
+                    <div class="med-s">Centro Médico Sur · 18 Nov 2016</div>
+                    <div class="med-s2">Dr. Manuel Ortega · General surgery</div>
+                  </div>
+                  <span class="chip chip-completed" style="flex-shrink:0;">Completed</span>
+                </div>
+                <div class="med-row" data-surgtype="procedure">
+                  <div class="doc-card-ic" style="background:#EFF6FF;color:#1D4ED8;"><svg class="ic18"><use href="#i-scan"/></svg></div>
+                  <div style="flex:1;min-width:0;">
+                    <div class="med-n">Upper GI endoscopy</div>
+                    <div class="med-s">Hospital Español · 14 Feb 2024</div>
+                    <div class="med-s2">Dr. Tomás Iglesias · Gastroenterology</div>
+                  </div>
+                  <span class="chip chip-completed" style="flex-shrink:0;">Completed</span>
+                </div>
+                <div class="med-row" data-surgtype="procedure">
+                  <div class="doc-card-ic" style="background:#EFF6FF;color:#1D4ED8;"><svg class="ic18"><use href="#i-scan"/></svg></div>
+                  <div style="flex:1;min-width:0;">
+                    <div class="med-n">Wisdom tooth extraction (x2)</div>
+                    <div class="med-s">Clínica Roma · 09 Sep 2022</div>
+                    <div class="med-s2">Dr. Renata Solís · Oral surgery</div>
+                  </div>
+                  <span class="chip chip-completed" style="flex-shrink:0;">Completed</span>
+                </div>
+                <div class="med-row" data-surgtype="procedure">
+                  <div class="doc-card-ic" style="background:#EFF6FF;color:#1D4ED8;"><svg class="ic18"><use href="#i-scan"/></svg></div>
+                  <div style="flex:1;min-width:0;">
+                    <div class="med-n">Skin lesion biopsy</div>
+                    <div class="med-s">Hospital Ángeles, Polanco · 27 May 2025</div>
+                    <div class="med-s2">Dr. Carmen Iglesias · Dermatology</div>
+                  </div>
+                  <span class="chip chip-completed" style="flex-shrink:0;">Completed</span>
+                </div>
+                <div class="med-row" data-surgtype="hospital">
+                  <div class="doc-card-ic" style="background:#FFF7ED;color:#C2410C;"><svg class="ic18"><use href="#i-clinic"/></svg></div>
+                  <div style="flex:1;min-width:0;">
+                    <div class="med-n">Pneumonia · 4 nights admitted</div>
+                    <div class="med-s">Hospital Español · 02–06 Jan 2020</div>
+                    <div class="med-s2">Dr. Andrés Gómez · Internal medicine</div>
+                  </div>
+                  <span class="chip chip-completed" style="flex-shrink:0;">Discharged</span>
+                </div>
+                <div class="med-row" data-surgtype="hospital">
+                  <div class="doc-card-ic" style="background:#FFF7ED;color:#C2410C;"><svg class="ic18"><use href="#i-clinic"/></svg></div>
+                  <div style="flex:1;min-width:0;">
+                    <div class="med-n">Observation after fall · 1 night</div>
+                    <div class="med-s">Centro Médico Sur · 19 Jul 2023</div>
+                    <div class="med-s2">Dr. Ricardo Morales · Emergency</div>
+                  </div>
+                  <span class="chip chip-completed" style="flex-shrink:0;">Discharged</span>
+                </div>
+              </div>
+            </div>
+
+            <div data-healthpane="medications">
+            <div class="filt-row" data-medtabs style="margin-top:18px;">
+              <button class="filt on" data-medtab="active">Active</button>
+              <button class="filt" data-medtab="instructions">Instructions</button>
+              <button class="filt f-hide" data-medtab="history">History</button>
+              <button class="filt" data-medtab="timeline">Timeline</button>
             </div>
 
             <div data-medpane="active" style="display:flex;flex-direction:column;gap:10px;margin-top:16px;">
@@ -1490,7 +2327,7 @@
                 <div>Similar to Metformin from Dr. Javier Cruz. <a class="tap" data-toast="Review opened" style="color:var(--brand);font-weight:550;text-decoration:none;">Review</a></div>
               </div>
               <div class="tl" style="margin-top:0;">
-                <div class="med-row" data-member="priya">
+                <div class="med-row tap" data-member="priya" data-med-open data-med-name="Metformin 500mg" data-med-dose="Twice daily · 8:00 AM, 8:00 PM" data-med-doc="Sofía · Dr. Valentina Reyes">
                   <span class="med-dot" style="background:var(--m-priya)"></span>
                   <div style="flex:1;min-width:0;">
                     <div class="med-n">Metformin 500mg</div>
@@ -1499,7 +2336,7 @@
                   </div>
                   <button class="iconbtn bell on" data-bell><svg class="ic16" style="stroke:var(--brand)"><use href="#i-bell"/></svg></button>
                 </div>
-                <div class="med-row" data-member="priya">
+                <div class="med-row tap" data-member="priya" data-med-open data-med-name="Glimepiride 1mg" data-med-dose="Once daily · 8:00 AM" data-med-doc="Sofía · Dr. Javier Cruz">
                   <span class="med-dot" style="background:var(--m-priya)"></span>
                   <div style="flex:1;min-width:0;">
                     <div class="med-n">Glimepiride 1mg</div>
@@ -1508,7 +2345,7 @@
                   </div>
                   <button class="iconbtn bell on" data-bell><svg class="ic16" style="stroke:var(--brand)"><use href="#i-bell"/></svg></button>
                 </div>
-                <div class="med-row" data-member="anant">
+                <div class="med-row tap" data-member="anant" data-med-open data-med-name="Amlodipine 5mg" data-med-dose="Once daily · 9:00 AM" data-med-doc="Mateo · Dr. Ricardo Morales">
                   <span class="med-dot" style="background:var(--m-anant)"></span>
                   <div style="flex:1;min-width:0;">
                     <div class="med-n">Amlodipine 5mg</div>
@@ -1517,7 +2354,7 @@
                   </div>
                   <button class="iconbtn bell on" data-bell><svg class="ic16" style="stroke:var(--brand)"><use href="#i-bell"/></svg></button>
                 </div>
-                <div class="med-row" data-member="anant">
+                <div class="med-row tap" data-member="anant" data-med-open data-med-name="Cetirizine 10mg" data-med-dose="Once daily · 10:00 PM" data-med-doc="Mateo · Dr. Carmen Iglesias">
                   <span class="med-dot" style="background:var(--m-anant)"></span>
                   <div style="flex:1;min-width:0;">
                     <div class="med-n">Cetirizine 10mg</div>
@@ -1598,8 +2435,25 @@
               </div>
             </div>
 
-            
+            <div data-medpane="timeline" style="display:none;flex-direction:column;gap:10px;margin-top:16px;">
+              <div class="tl" style="margin-top:0;" data-med-timeline-list></div>
+              <div class="med-status-opt" style="justify-content:center;text-align:center;display:none;" data-med-timeline-empty>
+                <div style="flex:1;"><div class="rem-t">No updates yet</div><div class="rem-s">Actions you take on a medication will show up here</div></div>
+              </div>
+            </div>
+
+            </div>
+
           </div></div>
+          <button class="tap" data-healthpane="reports" data-act="upload-file" style="display:none;position:absolute;right:18px;bottom:96px;z-index:40;height:42px;width:42px;padding:0;border:none;font-family:inherit;border-radius:50%;align-items:center;justify-content:center;gap:0;color:var(--brand);background:rgba(255,255,255,.94);backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%);box-shadow:var(--sh-lift);cursor:pointer;">
+            <svg class="ic18" style="stroke:var(--brand)"><use href="#i-plus"/></svg>
+          </button>
+          <button class="tap" data-healthpane="medications" data-act="add-med" style="position:absolute;right:18px;bottom:96px;z-index:40;height:42px;width:42px;padding:0;border:none;font-family:inherit;border-radius:50%;align-items:center;justify-content:center;gap:0;color:var(--brand);background:rgba(255,255,255,.94);backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%);box-shadow:var(--sh-lift);cursor:pointer;">
+            <svg class="ic18" style="stroke:var(--brand)"><use href="#i-plus"/></svg>
+          </button>
+          <button class="tap" data-healthpane="surgical" data-act="add-surg" style="display:none;position:absolute;right:18px;bottom:96px;z-index:40;height:42px;width:42px;padding:0;border:none;font-family:inherit;border-radius:50%;align-items:center;justify-content:center;gap:0;color:var(--brand);background:rgba(255,255,255,.94);backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%);box-shadow:var(--sh-lift);cursor:pointer;">
+            <svg class="ic18" style="stroke:var(--brand)"><use href="#i-plus"/></svg>
+          </button>
           <nav class="nav"></nav>
         </section>
 
@@ -1644,11 +2498,11 @@
               <button class="iconbtn" data-go="back"><svg class="ic24" style="stroke:var(--text)"><use href="#i-back"/></svg></button>
               <span class="screen-title">Photo check</span>
             </div>
-            <p style="font-size:13px;color:var(--muted);margin:6px 0 0;line-height:1.45;">Our AI checked each photo for clarity. Retake any that are hard to read — clearer photos mean fewer mistakes.</p>
-            <div style="display:flex;flex-direction:column;gap:12px;margin-top:16px;" data-results></div>
+            <p style="font-size:12.5px;color:var(--muted);margin:5px 0 0;line-height:1.45;font-weight:400;">Our AI checked each photo for clarity. Retake any that are hard to read.</p>
+            <div style="margin-top:18px;" data-results></div>
           </div></div>
           <div class="sticky-bar">
-            <button class="btn btn-primary" data-act="to-extract"><svg class="ic18" style="stroke:#fff"><use href="#i-scan"/></svg><span data-extract-label>Extract from photos</span></button>
+            <button class="btn btn-primary" style="height:42px;font-size:14.5px;font-weight:550;border-radius:12px;" data-act="to-extract"><svg class="ic16" style="stroke:#fff"><use href="#i-scan"/></svg><span data-extract-label>Extract from photos</span></button>
           </div>
         </section>
 
@@ -1657,66 +2511,83 @@
           <div class="body"><div class="pad">
             <div style="display:flex;align-items:center;gap:12px;padding-top:6px;">
               <button class="iconbtn" data-go="back"><svg class="ic24" style="stroke:var(--text)"><use href="#i-back"/></svg></button>
-              <span class="screen-title">Review prescription</span>
+              <span class="screen-title">Review</span>
             </div>
-            <p style="font-size:13px;color:var(--muted);margin:6px 0 0;line-height:1.45;">Review what we found. Edit anything that looks off, then confirm.</p>
-            <div class="imgph" style="position:relative;height:180px;border-radius:12px;margin-top:14px;border:1px solid var(--border);">
-              <span>prescription scan</span>
-              <button class="btn-sm" data-toast="Expanding scan…" style="position:absolute;right:10px;bottom:10px;background:rgba(26,31,46,.78);color:#fff;border:none;font-size:12px;height:30px;">Tap to expand</button>
+            <p style="font-size:12.5px;color:var(--muted);margin:5px 0 0;line-height:1.45;font-weight:400;">Pick what to save, then choose who it belongs to.</p>
+
+            <div class="hm-glabel" style="margin-top:20px;">Save to</div>
+            <div class="hm-card">
+              <div class="hm-row" data-scan-patient>
+                <span class="scan-lead"><span class="pdot" style="background:var(--m-priya);width:9px;height:9px;"></span></span>
+                <div style="flex:1;min-width:0;"><div class="hm-row-t">Patient</div></div>
+                <span class="hm-row-v" data-scan-patient-label data-member="priya">Sofía</span>
+                <svg class="hm-chev"><use href="#i-chevron"/></svg>
+              </div>
+              <div class="hm-row" data-scan-appt-pick>
+                <span class="scan-lead"><svg class="ic16" style="stroke:var(--muted)"><use href="#i-cal"/></svg></span>
+                <div style="flex:1;min-width:0;"><div class="hm-row-t">Appointment</div></div>
+                <span class="hm-row-v" data-scan-appt-label data-appt="">Personal files</span>
+                <svg class="hm-chev"><use href="#i-chevron"/></svg>
+              </div>
             </div>
-            <div style="display:flex;flex-direction:column;gap:12px;margin-top:16px;">
-              <div class="card scan-item" data-kind="med" style="position:relative;">
-                <div style="display:flex;justify-content:space-between;align-items:flex-start;">
-                  <span class="tbadge tb-med">Medication</span>
-                  <button class="iconbtn" data-toast="Edit field"><svg class="ic18" style="stroke:var(--muted)"><use href="#i-pencil"/></svg></button>
+
+            <div style="display:flex;align-items:baseline;justify-content:space-between;margin-top:22px;padding:0 2px 8px;">
+              <span class="hm-glabel" style="padding:0;">Found in this upload</span>
+              <button class="scan-selall" data-scan-selall>Deselect all</button>
+            </div>
+            <div class="hm-card">
+                <div class="scan-row scan-item" data-kind="med" data-doccheck-row>
+                  <button class="scan-chk on" data-doccheck><svg viewBox="0 0 24 24"><use href="#i-check"/></svg></button>
+                  <div style="flex:1;min-width:0;">
+                    <div class="scan-t">Metformin 500mg</div>
+                    <div class="scan-sub"><span class="tbadge tb-med">Prescription</span><span class="scan-m">Twice daily · after food</span></div>
+                  </div>
+                  <button class="iconbtn" data-toast="Edit item"><svg class="ic16" style="stroke:var(--muted)"><use href="#i-pencil"/></svg></button>
                 </div>
-                <div style="display:flex;gap:12px;align-items:flex-start;margin-top:10px;">
-                  <div style="flex:1;min-width:0;"><div style="font-size:16px;font-weight:550;">Metformin 500mg</div><div class="meta" style="margin-top:1px;">Twice daily · after food</div></div>
-                  <div class="ar ar-accept" data-ar data-state="accept"><svg class="ic24" style="stroke:#fff"><use href="#i-check"/></svg></div>
+                <div class="scan-row scan-item" data-kind="med" data-doccheck-row>
+                  <button class="scan-chk on" data-doccheck><svg viewBox="0 0 24 24"><use href="#i-check"/></svg></button>
+                  <div style="flex:1;min-width:0;">
+                    <div class="scan-t">Amlodipine 5mg</div>
+                    <div class="scan-sub"><span class="tbadge tb-med">Prescription</span><span class="scan-m">Once daily · morning</span><span class="scan-verify">Verify</span></div>
+                  </div>
+                  <button class="iconbtn" data-toast="Edit item"><svg class="ic16" style="stroke:var(--muted)"><use href="#i-pencil"/></svg></button>
                 </div>
-                <div class="confbar" style="margin-top:12px;"><i style="width:92%;background:var(--success);"></i></div>
-                <div style="font-size:11px;font-weight:600;color:var(--success);margin-top:5px;">High confidence</div>
-              </div>
-              <div class="card scan-item" data-kind="med" style="position:relative;background:#FFFBF0;border-color:#F6E4BE;">
-                <div style="display:flex;justify-content:space-between;align-items:flex-start;">
-                  <span class="tbadge tb-med">Medication</span>
-                  <button class="iconbtn" data-toast="Edit field"><svg class="ic18" style="stroke:var(--muted)"><use href="#i-pencil"/></svg></button>
+                <div class="scan-row scan-item" data-kind="instr" data-doccheck-row>
+                  <button class="scan-chk on" data-doccheck><svg viewBox="0 0 24 24"><use href="#i-check"/></svg></button>
+                  <div style="flex:1;min-width:0;">
+                    <div class="scan-t">Avoid grapefruit juice while on this medication</div>
+                    <div class="scan-sub"><span class="tbadge tb-instr">Instruction</span><span class="scan-verify">Verify</span></div>
+                  </div>
+                  <button class="iconbtn" data-toast="Edit item"><svg class="ic16" style="stroke:var(--muted)"><use href="#i-pencil"/></svg></button>
                 </div>
-                <div style="display:flex;gap:12px;align-items:flex-start;margin-top:10px;">
-                  <div style="flex:1;min-width:0;"><div style="font-size:16px;font-weight:550;">Amlodipine 5mg</div><div class="meta" style="margin-top:1px;">Once daily · morning</div></div>
-                  <div class="ar ar-accept" data-ar data-state="accept"><svg class="ic24" style="stroke:#fff"><use href="#i-check"/></svg></div>
+                <div class="scan-row scan-item" data-kind="lab" data-doccheck-row>
+                  <button class="scan-chk on" data-doccheck><svg viewBox="0 0 24 24"><use href="#i-check"/></svg></button>
+                  <div style="flex:1;min-width:0;">
+                    <div class="scan-t">Fasting glucose · 98 mg/dL</div>
+                    <div class="scan-sub"><span class="tbadge tb-lab">Lab report</span><span class="scan-m">In range · Laboratorio Azteca</span></div>
+                  </div>
+                  <button class="iconbtn" data-toast="Edit item"><svg class="ic16" style="stroke:var(--muted)"><use href="#i-pencil"/></svg></button>
                 </div>
-                <div class="confbar" style="margin-top:12px;background:#F4E6C4;"><i style="width:72%;background:var(--warning);"></i></div>
-                <div style="font-size:11px;font-weight:600;color:#B45309;margin-top:5px;">Please verify</div>
-              </div>
-              <div class="card scan-item" data-kind="instr" style="position:relative;background:#FFF5F5;border-color:#F2CBCB;">
-                <div style="display:flex;justify-content:space-between;align-items:flex-start;">
-                  <span class="tbadge tb-instr">Instruction</span>
-                  <button class="iconbtn" data-toast="Edit field"><svg class="ic18" style="stroke:var(--muted)"><use href="#i-pencil"/></svg></button>
+                <div class="scan-row scan-item" data-kind="imaging" data-doccheck-row>
+                  <button class="scan-chk on" data-doccheck><svg viewBox="0 0 24 24"><use href="#i-check"/></svg></button>
+                  <div style="flex:1;min-width:0;">
+                    <div class="scan-t">Chest X-ray · PA view</div>
+                    <div class="scan-sub"><span class="tbadge tb-imaging">Imaging</span><span class="scan-m">No abnormality detected</span></div>
+                  </div>
+                  <button class="iconbtn" data-toast="Edit item"><svg class="ic16" style="stroke:var(--muted)"><use href="#i-pencil"/></svg></button>
                 </div>
-                <div style="display:flex;gap:12px;align-items:flex-start;margin-top:10px;">
-                  <div style="flex:1;min-width:0;"><div style="font-size:15px;font-weight:600;line-height:1.4;">Avoid grapefruit juice while on this medication</div></div>
-                  <div class="ar ar-reject" data-ar data-state="reject"><svg class="ic24" style="stroke:#fff"><use href="#i-x"/></svg></div>
+                <div class="scan-row scan-item" data-kind="receipt" data-doccheck-row>
+                  <button class="scan-chk" data-doccheck><svg viewBox="0 0 24 24"><use href="#i-check"/></svg></button>
+                  <div style="flex:1;min-width:0;">
+                    <div class="scan-t">Consultation fee · $450.00</div>
+                    <div class="scan-sub"><span class="tbadge tb-receipt">Receipt</span><span class="scan-m">Clínica Roma · 12 Jul 2026</span></div>
+                  </div>
+                  <button class="iconbtn" data-toast="Edit item"><svg class="ic16" style="stroke:var(--muted)"><use href="#i-pencil"/></svg></button>
                 </div>
-                <div class="confbar" style="margin-top:12px;background:#F2D6D6;"><i style="width:42%;background:var(--danger);"></i></div>
-                <div style="font-size:11px;font-weight:600;color:var(--danger);margin-top:5px;">Uncertain — check carefully</div>
-              </div>
             </div>
           </div></div>
           <div class="sticky-bar">
-            <div style="display:flex;align-items:center;gap:8px;">
-              <span class="meta" style="font-weight:600;">For:</span>
-              <div class="pills" data-pick="scanfor" style="overflow:visible;">
-                <button class="pill" data-member="priya" data-mcolor="var(--m-priya)" data-on><span class="pdot"></span>Sofía</button>
-                <button class="pill" data-member="anant" data-mcolor="var(--m-anant)"><span class="pdot"></span>Mateo</button>
-                <button class="pill" data-member="aryan" data-mcolor="var(--m-aryan)"><span class="pdot"></span>Diego</button>
-              </div>
-            </div>
-            <div style="display:flex;align-items:center;gap:8px;margin-top:10px;">
-              <span class="meta" style="font-weight:600;">From appointment:</span>
-              <span class="tap" data-toast="Choose an appointment" style="font-size:13px;color:var(--muted);display:inline-flex;align-items:center;gap:4px;">None selected <svg class="ic16" style="stroke:var(--muted);transform:rotate(90deg)"><use href="#i-chevron"/></svg></span>
-            </div>
-            <button class="btn btn-primary" data-act="confirm-scan" style="margin-top:12px;"><svg class="ic18" style="stroke:#fff"><use href="#i-check"/></svg><span data-confirm-label>Confirm &amp; save 2 items</span></button>
+            <button class="btn btn-primary" data-act="confirm-scan" style="height:42px;font-size:14.5px;font-weight:550;border-radius:12px;"><span data-confirm-label>Save 5 items</span></button>
           </div>
         </section>
 
@@ -1794,9 +2665,9 @@
             <div class="screen-title" style="padding-top:8px;margin-bottom:16px;">Profile</div>
 
             <div class="set-hdr tap" data-go="myprofile">
-              <div class="avatar av js-selfinitial" style="background:var(--m-anant);">A</div>
+              <img class="avatar" src="assets/member-anant.png" alt="" style="width:52px;height:52px;object-fit:cover;flex-shrink:0;" />
               <div style="flex:1;min-width:0;">
-                <div class="nm js-selfname">Mateo</div>
+                <div class="nm">Mateo Alejandro Vega Castillo</div>
                 <div class="meta" style="margin-top:2px;">Personal details · health profile</div>
               </div>
               <svg class="set-chev"><use href="#i-chevron"/></svg>
@@ -1814,6 +2685,12 @@
 
             <div class="set-glabel">Your circle</div>
             <div class="set-group">
+              <div class="set-row" data-go="family">
+                <div class="set-ico" style="background:var(--m-priya)"><svg><use href="#i-users"/></svg></div>
+                <span class="set-label">Family members</span>
+                <span class="set-val">3</span>
+                <svg class="set-chev"><use href="#i-chevron"/></svg>
+              </div>
               <div class="set-row" data-go="doctors">
                 <div class="set-ico" style="background:var(--m-anant)"><svg><use href="#i-user"/></svg></div>
                 <span class="set-label">My doctors</span>
@@ -1873,7 +2750,7 @@
             </div>
 
             <div class="set-group" style="margin-top:18px;">
-              <div class="set-row danger" data-toast="Signed out">
+              <div class="set-row danger" data-act="sign-out">
                 <svg style="width:18px;height:18px;stroke:var(--danger);stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;margin-right:8px;"><use href="#i-logout"/></svg>
                 <span class="set-label">Sign out</span>
               </div>
@@ -1896,8 +2773,8 @@
             </div>
 
             <div class="prof-hero" style="margin-top:16px;">
-              <div class="pav js-selfinitial" style="background:var(--m-anant);">A</div>
-              <div class="pname js-selfname">Mateo</div>
+              <img class="pav" src="assets/member-anant.png" alt="" style="object-fit:cover;" />
+              <div class="pname">Mateo Alejandro Vega Castillo</div>
               <div class="pmeta">Self · Primary account · MRN-2026-04-000312</div>
             </div>
 
@@ -1961,16 +2838,6 @@
             <div style="display:flex;gap:12px;margin-top:16px;">
               <div style="flex:1;"><label class="flabel">Height</label><input class="field" value="1.78 m" /></div>
               <div style="flex:1;"><label class="flabel">Weight</label><input class="field" value="72 kg" /></div>
-            </div>
-
-            <label class="flabel" style="margin-top:18px;">Chronic care</label>
-            <div class="tag-edit" data-tags="chronic">
-              <span class="tag" style="background:rgba(155,111,212,.14);color:#7A4FB5;">Hypertension<button class="tx" data-act="rm-tag"><svg><use href="#i-x"/></svg></button></span>
-              <span class="tag" style="background:rgba(155,111,212,.14);color:#7A4FB5;">Asthma<button class="tx" data-act="rm-tag"><svg><use href="#i-x"/></svg></button></span>
-            </div>
-            <div class="tag-add">
-              <input class="field" placeholder="Add a condition" data-tag-input="chronic" />
-              <button class="btn-add" data-act="add-tag" data-tags="chronic" data-tone="violet">Add</button>
             </div>
 
             <label class="flabel" style="margin-top:18px;">Allergies</label>
@@ -2110,54 +2977,80 @@
         <section class="pane sub" data-screen="book" data-screen-label="Book Appointment">
           <div class="body"><div class="pad">
             <div style="display:flex;align-items:center;gap:12px;padding-top:6px;">
-              <button class="iconbtn" data-go="back"><svg class="ic24" style="stroke:var(--text)"><use href="#i-back"/></svg></button>
-              <span class="screen-title">Book an appointment</span>
+              <button class="iconbtn" data-act="book-back"><svg class="ic24" style="stroke:var(--text)"><use href="#i-back"/></svg></button>
+              <span class="screen-title" data-book-title style="white-space:nowrap;">New appointment</span>
             </div>
 
-            <p class="section-label" style="margin-top:22px;">Where</p>
-            <div class="dropdown" data-dd="clinic">
-              <button class="dd-trigger" data-dd-toggle>
-                <span class="dd-lead dd-lead-ico" data-dd-lead><svg class="ic18" style="stroke:var(--brand)"><use href="#i-clinic"/></svg></span>
-                <span class="dd-text"><span class="dd-label placeholder" data-dd-label>Select a clinic</span><span class="dd-sub" data-dd-sub></span></span>
-                <svg class="dd-chev"><use href="#i-chevron"/></svg>
-              </button>
-              <div class="dd-panel" data-dd-panel></div>
+            <div class="book-progress">
+              <div class="book-progress-bar"><i data-book-progress-fill></i></div>
+              <div class="book-progress-label" data-book-steplabel>Step 1 of 4</div>
             </div>
 
-            <div data-book-doctor style="display:none;">
-            <p class="section-label" style="margin-top:22px;">Doctor</p>
-            <div class="dropdown" data-dd="doctor">
-              <button class="dd-trigger" data-dd-toggle>
-                <span class="dd-lead" data-dd-lead></span>
-                <span class="dd-text"><span class="dd-label placeholder" data-dd-label>Choose a clinic first</span><span class="dd-sub" data-dd-sub></span></span>
-                <svg class="dd-chev"><use href="#i-chevron"/></svg>
-              </button>
-              <div class="dd-panel" data-dd-panel></div>
-            </div>
-            </div>
-
-            <div data-book-when style="display:none;">
-              <p class="section-label" style="margin-top:22px;">Pick a date</p>
-              <div class="datechips" data-book-dates></div>
-              <div data-book-timewrap style="display:none;">
-                <p class="section-label" style="margin-top:22px;">Pick a time</p>
-                <div class="timegrid" data-book-times></div>
+            <div data-book-step="1">
+              <p class="section-label" style="margin-top:18px;">Who is this for?</p>
+              <div class="dropdown" data-dd="patient">
+                <button class="dd-trigger" data-dd-toggle>
+                  <span class="dd-lead" data-dd-lead></span>
+                  <span class="dd-text"><span class="dd-label placeholder" data-dd-label>Select a family member</span><span class="dd-sub" data-dd-sub></span></span>
+                  <span class="dd-trail" data-dd-trail><svg class="dd-chev"><use href="#i-chevron"/></svg></span>
+                </button>
+                <div class="dd-panel" data-dd-panel></div>
               </div>
+
+              <p class="section-label f-hide" style="margin-top:22px;" data-book-purpose-label>What's this visit for?</p>
+              <div class="book-purpose-list f-hide" data-book-purposes></div>
             </div>
 
-            <div data-book-reason style="display:none;">
-            <p class="section-label" style="margin-top:22px;">Reason for visit</p>
-            <div class="dropdown" data-dd="reason">
-              <button class="dd-trigger" data-dd-toggle>
-                <span class="dd-text"><span class="dd-label placeholder" data-dd-label>Select a reason</span></span>
-                <svg class="dd-chev"><use href="#i-chevron"/></svg>
-              </button>
-              <div class="dd-panel" data-dd-panel></div>
+            <div data-book-step="2" style="display:none;">
+              <p class="section-label" style="margin-top:18px;">Department</p>
+              <div class="filt-row" data-book-depts></div>
+              <div class="hm-card" style="margin-top:14px;" data-book-doctors></div>
             </div>
-            <textarea class="field" data-reason-other rows="2" placeholder="Tell us briefly what's going on" style="display:none;margin-top:10px;"></textarea>
+
+            <div data-book-step="3" style="display:none;">
+              <p class="section-label" style="margin-top:18px;">Doctor</p>
+              <div class="hm-card" data-book-doc-summary></div>
+
+              <div class="hm-card" style="margin-top:18px;padding:16px 16px 18px;">
+                <div style="display:flex;align-items:center;justify-content:space-between;">
+                  <span class="section-label" style="margin:0;">Pick a date</span>
+                  <div style="display:flex;align-items:center;gap:2px;">
+                    <button class="iconbtn" data-book-mo-prev style="width:26px;height:26px;"><svg viewBox="0 0 24 24" style="width:15px;height:15px;stroke:var(--muted);stroke-width:2.3;fill:none;stroke-linecap:round;stroke-linejoin:round;"><path d="M15 6l-6 6 6 6"/></svg></button>
+                    <span class="section-label" style="margin:0;min-width:80px;text-align:center;" data-book-mo-label>June 2026</span>
+                    <button class="iconbtn" data-book-mo-next style="width:26px;height:26px;"><svg viewBox="0 0 24 24" style="width:15px;height:15px;stroke:var(--muted);stroke-width:2.3;fill:none;stroke-linecap:round;stroke-linejoin:round;"><path d="M9 6l6 6-6 6"/></svg></button>
+                  </div>
+                </div>
+                <div class="datechips" data-book-dates style="margin-top:12px;"></div>
+                <div data-book-timewrap style="display:none;">
+                  <div style="height:1px;background:var(--hair-2);margin:16px 0 14px;"></div>
+                  <span class="section-label" style="margin:0;">Pick a time</span>
+                  <div class="timegrid" data-book-times style="margin-top:12px;"></div>
+                </div>
+              </div>
+
+              <div class="book-recap f-hide" data-book-recap></div>
+            </div>
+
+            <div data-book-step="4" style="display:none;">
+              <p class="section-label" style="margin-top:18px;">Review &amp; confirm</p>
+              <div class="hm-card" data-book-summary-people></div>
+              <div class="hm-card" style="margin-top:14px;" data-book-summary></div>
             </div>
           </div></div>
-          <div class="sticky-bar"><button class="btn btn-primary" style="height:42px;font-size:14.5px;font-weight:550;border-radius:12px;" data-act="confirm-book"><svg class="ic16" style="stroke:#fff"><use href="#i-cal"/></svg>Confirm booking</button></div>
+          <div class="sticky-bar"><button class="btn btn-primary" style="height:42px;font-size:14.5px;font-weight:550;border-radius:12px;" data-act="book-continue"><span data-book-continue-label>Continue</span></button></div>
+        </section>
+
+        <!-- ============ BOOKING SUCCESS ============ -->
+        <section class="pane sub" data-screen="book-success" data-screen-label="Booking Success">
+          <div class="body"><div class="pad" style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100%;text-align:center;padding-top:40px;padding-bottom:40px;">
+            <img src="assets/mascot-success.png" alt="" style="width:200px;height:200px;object-fit:contain;" />
+            <div style="font-size:20px;font-weight:600;letter-spacing:-.02em;color:var(--text);margin-top:8px;">Appointment booked</div>
+            <p style="font-size:14px;font-weight:400;color:var(--muted);margin:6px 0 0;line-height:1.5;max-width:280px;" data-book-success-sub>Your appointment has been confirmed.</p>
+          </div></div>
+          <div class="sticky-bar" style="display:flex;flex-direction:column;gap:10px;">
+            <button class="btn btn-primary" style="height:42px;font-size:14.5px;font-weight:550;border-radius:12px;" data-act="view-appt">View appointment</button>
+            <button class="btn btn-ghost" style="height:42px;font-size:14.5px;font-weight:550;border-radius:12px;" data-act="add-to-calendar">Add to calendar</button>
+          </div>
         </section>
 
         <!-- ============ MY FILES ============ -->
@@ -2214,7 +3107,7 @@
             </div>
             <div class="tl" style="margin-top:20px;">
               <div class="med-row tap" data-go-doctor="morales">
-                <div class="doc-av" style="background:var(--m-anant)">RM</div>
+                <img class="doc-photo" src="assets/doc-morales.png" alt="Dr. Ricardo Morales" style="width:40px;height:40px;" />
                 <div style="flex:1;min-width:0;">
                   <div class="med-n">Dr. Ricardo Morales</div>
                   <div class="med-s">Cardiology</div>
@@ -2223,7 +3116,7 @@
                 <svg class="hm-chev"><use href="#i-chevron"/></svg>
               </div>
               <div class="med-row tap" data-go-doctor="castillo">
-                <div class="doc-av" style="background:var(--m-aryan)">AC</div>
+                <img class="doc-photo" src="assets/doc-ariel.png" alt="Dr. Ariel Castillo" style="width:40px;height:40px;" />
                 <div style="flex:1;min-width:0;">
                   <div class="med-n">Dr. Ariel Castillo</div>
                   <div class="med-s">Pediatrics</div>
@@ -2232,7 +3125,7 @@
                 <svg class="hm-chev"><use href="#i-chevron"/></svg>
               </div>
               <div class="med-row tap" data-go-doctor="reyes">
-                <div class="doc-av" style="background:var(--m-priya)">VR</div>
+                <img class="doc-photo" src="assets/doc-reyes.png" alt="Dr. Valentina Reyes" style="width:40px;height:40px;" />
                 <div style="flex:1;min-width:0;">
                   <div class="med-n">Dr. Valentina Reyes</div>
                   <div class="med-s">Internal Medicine</div>
@@ -2254,11 +3147,12 @@
             </div>
             <div class="hm-card" style="margin-top:18px;padding:18px 16px;">
               <div style="display:flex;align-items:center;gap:14px;">
-                <div class="doc-av" style="width:56px;height:56px;font-size:18px;" data-doc-av></div>
+                <div class="doc-av" style="width:56px;height:56px;font-size:18px;background:none;" data-doc-av></div>
                 <div style="flex:1;min-width:0;">
                   <div style="font-size:17px;font-weight:600;letter-spacing:-.02em;" data-doc-name></div>
                   <div class="med-s" data-doc-spec></div>
                   <div class="med-s2" data-doc-clinic></div>
+                  <div class="doc-card-rating" style="margin-top:5px;cursor:pointer;" data-doc-rating></div>
                 </div>
               </div>
               <div class="doc-bio" data-doc-bio></div>
@@ -2279,7 +3173,7 @@
             </div>
             <div class="fam-list">
               <div class="fam-row tap" data-member-view="anant" style="--mc:var(--m-anant);">
-                <div class="avatar js-selfinitial" style="width:42px;height:42px;background:var(--m-anant);font-size:16px;">A</div>
+                <img class="avatar" src="assets/member-anant.png" alt="Mateo" style="width:42px;height:42px;object-fit:cover;" />
                 <div style="flex:1;min-width:0;">
                   <div class="fam-name">Mateo Alejandro Vega Castillo</div>
                   <div class="fam-meta">Self · 38 · 2 meds · 1 upcoming</div>
@@ -2287,7 +3181,7 @@
                 <svg class="set-chev"><use href="#i-chevron"/></svg>
               </div>
               <div class="fam-row tap" data-member-view="priya" style="--mc:var(--m-priya);">
-                <div class="avatar" style="width:42px;height:42px;background:var(--m-priya);font-size:16px;">S</div>
+                <img class="avatar" src="assets/member-priya.png" alt="Sofía" style="width:42px;height:42px;object-fit:cover;" />
                 <div style="flex:1;min-width:0;">
                   <div class="fam-name">Sofía Guadalupe Herrera Ríos</div>
                   <div class="fam-meta">Spouse · 35 · 3 meds · 1 upcoming</div>
@@ -2295,7 +3189,7 @@
                 <svg class="set-chev"><use href="#i-chevron"/></svg>
               </div>
               <div class="fam-row tap" data-member-view="aryan" style="--mc:var(--m-aryan);">
-                <div class="avatar" style="width:42px;height:42px;background:var(--m-aryan);font-size:16px;">D</div>
+                <img class="avatar" src="assets/member-aryan.png" alt="Diego" style="width:42px;height:42px;object-fit:cover;" />
                 <div style="flex:1;min-width:0;">
                   <div class="fam-name">Diego Emiliano Vega Herrera</div>
                   <div class="fam-meta">Child · 9 · 2 meds · no upcoming</div>
@@ -2494,8 +3388,6 @@
 
       <div class="home-ind"></div>
 
-      <button class="chatfab tap" data-chat-open-widget><svg class="ic24"><use href="#i-chat"/></svg><span class="chatfab-badge" id="chat-fab-badge">2</span></button>
-
       <div id="chat-overlay">
         <div class="chat-view" id="chat-view-list">
           <div class="chat-head">
@@ -2551,10 +3443,7 @@
     </div>
 
     <div id="splash">
-      <div class="splash-mark"><img src="assets/narzim-logo.png" alt="Narzim"></div>
-      <div class="splash-word">Narzim</div>
-      <div class="splash-tag">Family health, made calm</div>
-      <div class="splash-dots"><i></i><i></i><i></i></div>
+      <div class="splash-mark"><img src="assets/narzim-logo-white.png" alt="Narzim"></div>
     </div>
 
     <div id="overlay"></div>
@@ -2563,115 +3452,5 @@
 </div>
 
 <script src="nfh-app.js"></script>
-
-<!-- PWA install banner -->
-<div class="pwa-banner" id="pwaBanner">
-  <div class="pwa-icon">
-    <svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
-  </div>
-  <div class="pwa-text">
-    <div class="pwa-title">Install Narzim</div>
-    <div class="pwa-sub">Add to home screen for quick access</div>
-  </div>
-  <button class="pwa-install" id="pwaInstall">Install</button>
-  <button class="pwa-close" id="pwaDismiss">✕</button>
-</div>
-
-
-<script>
-  // Service worker
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/sw.js');
-  }
-
-  // Install prompt
-  let deferredPrompt;
-  const banner = document.getElementById('pwaBanner');
-  const installBtn = document.getElementById('pwaInstall');
-  const dismissBtn = document.getElementById('pwaDismiss');
-
-  window.addEventListener('beforeinstallprompt', e => {
-    e.preventDefault();
-    deferredPrompt = e;
-    if (!localStorage.getItem('pwa-dismissed')) {
-      setTimeout(() => banner.classList.add('show'), 2000);
-    }
-  });
-
-  installBtn.addEventListener('click', async () => {
-    banner.classList.remove('show');
-    if (deferredPrompt) {
-      deferredPrompt.prompt();
-      await deferredPrompt.userChoice;
-      deferredPrompt = null;
-    }
-  });
-
-  dismissBtn.addEventListener('click', () => {
-    banner.classList.remove('show');
-    localStorage.setItem('pwa-dismissed', '1');
-  });
-
-  window.addEventListener('appinstalled', () => {
-    banner.classList.remove('show');
-    deferredPrompt = null;
-  });
-</script>
-
-<!-- Sketchfab Viewer API — load male-only from 3-character model -->
-<script src="https://static.sketchfab.com/api/sketchfab-viewer-1.12.1.js"></script>
-<script>
-(function() {
-  var iframe = document.getElementById('body3dFrame');
-  var uid = '0c51abd24b4342c292e891730a907459';
-  var client = new Sketchfab(iframe);
-
-  client.init(uid, {
-    autostart: 1,
-    preload: 1,
-    ui_controls: 0,
-    ui_infos: 0,
-    ui_inspector: 0,
-    ui_settings: 0,
-    ui_ar: 0,
-    ui_fullscreen: 0,
-    ui_annotations: 0,
-    dnt: 1,
-    transparent: 0,
-
-    success: function(api) {
-      api.start();
-      api.addEventListener('viewerready', function() {
-
-        api.getNodeMap(function(err, nodes) {
-          if (err) return;
-
-          // Log all node names so we can identify male vs female vs child
-          console.log('[Sketchfab nodes]');
-          Object.keys(nodes).forEach(function(id) {
-            console.log(id, nodes[id].type, JSON.stringify(nodes[id].name));
-          });
-
-          // Keywords that suggest female or child — hide those nodes
-          var hideWords = ['female','woman','girl','child','kid','boy','enfant','fille','femme'];
-          Object.keys(nodes).forEach(function(id) {
-            var name = (nodes[id].name || '').toLowerCase();
-            var shouldHide = hideWords.some(function(w){ return name.indexOf(w) !== -1; });
-            if (shouldHide) {
-              api.hide(parseInt(id));
-              console.log('[hide]', id, nodes[id].name);
-            }
-          });
-        });
-
-      });
-    },
-
-    error: function() {
-      console.error('Sketchfab viewer failed to init');
-    }
-  });
-})();
-</script>
 </body>
 </html>

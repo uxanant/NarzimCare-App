@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=1500, initial-scale=1" />
+<title>Narzim · Chavitos Clinic EHR</title>
+
+<!-- Code-referenced image assets, lifted for standalone bundling -->
+<meta name="ext-resource-dependency" content="assets/chavitos-logo.png" data-resource-id="chavitosLogo" />
+<meta name="ext-resource-dependency" content="assets/dr-miguel.png" data-resource-id="drMiguel" />
+<meta name="ext-resource-dependency" content="assets/dr-ariel.png" data-resource-id="drAriel" />
+<meta name="ext-resource-dependency" content="assets/user-aminata.png" data-resource-id="userAminata" />
+
+<template id="__bundler_thumbnail" data-bg-color="#0098E4">
+  <svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+    <rect width="1200" height="800" fill="#0098E4"/>
+    <g transform="translate(600 400)">
+      <rect x="-150" y="-150" width="300" height="300" rx="64" fill="#ffffff"/>
+      <path d="M-95 15 h45 l30 75 l45 -165 l30 105 h45" fill="none" stroke="#0098E4" stroke-width="26" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M70 -95 l16 54 l54 16 l-54 16 l-16 54 l-16 -54 l-54 -16 l54 -16 z" fill="#FDE68A"/>
+    </g>
+  </svg>
+</template>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Caveat:wght@500;600&display=swap" rel="stylesheet">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: {
+          sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'SF Pro', 'sans-serif'],
+          mono: ['JetBrains Mono', 'ui-monospace', 'monospace'],
+        },
+        colors: {
+          chavitos: { 50: '#EAF5FF', 100: '#D0ECFF', 500: '#0098E4', 600: '#0086cc', 700: '#006093', 900: '#003E5C' },
+        },
+      },
+    },
+  };
+</script>
+
+<style>
+  html, body, #root { height: 100%; }
+  body {
+    margin: 0;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    background:
+      radial-gradient(1100px 600px at 20% 0%, rgba(160,200,255,0.55), transparent 60%),
+      radial-gradient(900px 500px at 110% 110%, rgba(255,180,200,0.35), transparent 60%),
+      linear-gradient(135deg, #C5DEFF 0%, #E3EAF7 40%, #F5E5F2 100%);
+    overflow: hidden;
+  }
+  *, *::before, *::after { box-sizing: border-box; }
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: rgba(15,23,42,0.18); border-radius: 9999px; border: 2px solid transparent; background-clip: padding-box; }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(15,23,42,0.28); background-clip: padding-box; border: 2px solid transparent; }
+
+  @keyframes fade-in {
+    from { opacity: 0; transform: translate(-50%, 8px); }
+    to   { opacity: 1; transform: translate(-50%, 0); }
+  }
+  .animate-fade-in { animation: fade-in 220ms ease-out; }
+
+  input[type="date"] {
+    color-scheme: light;
+  }
+  /* Mono font for elements marked with font-mono */
+  .font-mono { font-family: 'JetBrains Mono', ui-monospace, monospace; }
+  kbd { font-family: 'JetBrains Mono', ui-monospace, monospace; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<!-- desktop background "wallpaper" content under the macOS window -->
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script src="data.js"></script>
+<script type="text/babel" src="ui.jsx"></script>
+<script type="text/babel" src="chrome.jsx"></script>
+<script type="text/babel" src="screen-dashboard.jsx"></script>
+<script type="text/babel" src="screen-patient-clinical.jsx"></script>
+<script type="text/babel" src="screen-patient.jsx"></script>
+<script type="text/babel" src="screen-patient-360.jsx"></script>
+<script type="text/babel" src="screen-encounter.jsx"></script>
+<script type="text/babel" src="screen-invoices.jsx"></script>
+<script type="text/babel" src="screen-messages.jsx"></script>
+<script type="text/babel" src="screen-notes.jsx"></script>
+<script type="text/babel" src="screen-search-newappt.jsx"></script>
+<script type="text/babel" src="screen-patient-book.jsx"></script>
+<script type="text/babel" src="screen-visits.jsx"></script>
+<script type="text/babel" src="screen-remedy.jsx"></script>
+<script type="text/babel" src="app.jsx"></script>
+</body>
+</html>

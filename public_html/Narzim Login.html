@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Log in · Narzim</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = { theme: { extend: {
+    fontFamily: { sans:['Inter','sans-serif'], display:['"Bricolage Grotesque"','Inter','sans-serif'], hand:['Caveat','cursive'] },
+    colors: { brand:{50:'#EAF5FF',100:'#D0ECFF',200:'#A9DCFF',400:'#33B1F0',500:'#0098E4',600:'#0086cc',700:'#006093',900:'#003E5C'} },
+  }}};
+</script>
+<style>
+  body { font-family:'Inter',sans-serif; -webkit-font-smoothing:antialiased; }
+  .font-display{font-family:'Bricolage Grotesque','Inter',sans-serif;} .font-hand{font-family:'Caveat',cursive;}
+  *,*::before,*::after{box-sizing:border-box;}
+  .mesh { background:
+      radial-gradient(900px 600px at 20% 0%, rgba(160,200,255,0.55), transparent 60%),
+      radial-gradient(700px 500px at 110% 110%, rgba(255,180,200,0.35), transparent 60%),
+      linear-gradient(135deg,#C5DEFF 0%,#E3EAF7 40%,#F5E5F2 100%); }
+  .panel { background:linear-gradient(165deg,#0098E4 0%,#006093 60%,#003E5C 100%); }
+  @keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+  .floaty{animation:floaty 6s ease-in-out infinite;} .floaty-slow{animation:floaty 8s ease-in-out infinite;}
+  @keyframes pop{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+  .pop{animation:pop .35s ease-out;}
+  .logo-mark{width:36px;height:36px;border-radius:11px;display:inline-block;position:relative;background:#fff;box-shadow:0 4px 12px rgba(0,0,0,0.12);}
+  .logo-mark.on-dark{background:rgba(255,255,255,0.15);box-shadow:inset 0 0 0 1px rgba(255,255,255,0.25);}
+  .logo-mark::before{content:"";position:absolute;inset:0;
+    -webkit-mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M3 13h3l2 5 3-11 2 7h3' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/></svg>") center/24px no-repeat;
+    mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M3 13h3l2 5 3-11 2 7h3' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/></svg>") center/24px no-repeat;}
+  .logo-mark.brand::before{background:#0098E4;} .logo-mark.on-dark::before{background:#fff;}
+</style>
+</head>
+<body class="mesh min-h-screen">
+<div class="min-h-screen grid lg:grid-cols-2">
+
+  <!-- LEFT BRAND PANEL -->
+  <div class="panel relative hidden lg:flex flex-col justify-between p-12 overflow-hidden text-white">
+    <div class="pointer-events-none absolute -top-16 -right-10 size-72 rounded-full bg-white/10 blur-2xl floaty-slow"></div>
+    <div class="pointer-events-none absolute bottom-20 -left-10 size-56 rounded-full bg-brand-400/30 blur-2xl floaty"></div>
+    <a href="Narzim.html" class="relative flex items-center gap-2.5">
+      <span class="logo-mark on-dark"></span>
+      <span class="font-display font-700 text-[22px]">Narzim</span>
+    </a>
+    <div class="relative max-w-md">
+      <p class="font-hand text-[30px] text-brand-100 leading-none">welcome back</p>
+      <h1 class="font-display font-800 text-[40px] leading-[1.08] mt-2">The whole clinic day, in one calm place.</h1>
+      <p class="mt-4 text-[16px] text-brand-100/80 leading-relaxed">Sign in to pick up exactly where you left off — your schedule, charts and Narzim AI copilot are ready.</p>
+      <div class="mt-8 rounded-2xl bg-white/10 border border-white/15 backdrop-blur p-5">
+        <div class="flex gap-0.5 text-amber-300 text-[15px]">★★★★★</div>
+        <p class="mt-2 text-[15px] leading-relaxed text-white/90">"I finish my notes before the patient leaves the room."</p>
+        <p class="mt-3 text-[13px] text-brand-100/70">Dr. Ariel Castillo · Pediatrician</p>
+      </div>
+    </div>
+    <p class="relative text-[13px] text-brand-100/60 flex items-center gap-2"><span class="size-1.5 rounded-full bg-emerald-400"></span>HIPAA-ready · SOC 2 Type II</p>
+  </div>
+
+  <!-- RIGHT FORM -->
+  <div class="flex flex-col min-h-screen lg:min-h-0">
+    <!-- mobile header -->
+    <div class="lg:hidden flex items-center justify-between px-6 pt-6">
+      <a href="Narzim.html" class="flex items-center gap-2.5"><span class="logo-mark brand"></span><span class="font-display font-700 text-[20px] text-slate-900">Narzim</span></a>
+      <a href="Narzim.html" class="text-[13px] font-600 text-slate-500">← Home</a>
+    </div>
+
+    <div class="flex-1 flex items-center justify-center p-6 sm:p-10">
+      <div class="w-full max-w-[420px]">
+        <a href="Narzim.html" class="hidden lg:inline-flex items-center gap-1.5 text-[13px] font-600 text-slate-500 hover:text-slate-800 mb-8 transition">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg> Back to home
+        </a>
+
+        <!-- audience tabs -->
+        <div class="grid grid-cols-2 p-1 rounded-xl bg-slate-100 text-[13.5px] font-600">
+          <button id="tabClinic" class="h-10 rounded-lg bg-white text-slate-900 shadow-sm transition">Clinic & staff</button>
+          <button id="tabPatient" class="h-10 rounded-lg text-slate-500 hover:text-slate-800 transition">Patients & families</button>
+        </div>
+
+        <!-- ── CLINIC FORM ── -->
+        <div id="clinicView" class="mt-7">
+          <h2 class="font-display font-800 text-[28px] text-slate-900 leading-tight">Clinic sign in</h2>
+          <p class="mt-1.5 text-[14.5px] text-slate-500">For practitioners, nurses and front-desk staff.</p>
+          <form id="clinicForm" class="mt-6 space-y-4">
+            <label class="block"><span class="text-[13px] font-600 text-slate-700">Work email</span>
+              <input required type="email" value="aminata@chavitos.health" class="mt-1.5 w-full h-12 rounded-xl border border-slate-200 bg-white px-3.5 text-[14px] outline-none focus:border-brand-400 focus:ring-2 focus:ring-brand-200 transition" placeholder="you@clinic.com" /></label>
+            <label class="block"><span class="text-[13px] font-600 text-slate-700">Password</span>
+              <div class="relative mt-1.5">
+                <input required type="password" value="demo1234" id="clinicPw" class="w-full h-12 rounded-xl border border-slate-200 bg-white px-3.5 pr-11 text-[14px] outline-none focus:border-brand-400 focus:ring-2 focus:ring-brand-200 transition" placeholder="••••••••" />
+                <button type="button" data-eye="clinicPw" class="eye absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/></svg></button>
+              </div></label>
+            <div class="flex items-center justify-between text-[13px]">
+              <label class="flex items-center gap-2 text-slate-600 select-none"><input type="checkbox" checked class="size-4 rounded accent-brand-500" />Remember me</label>
+              <a href="#" class="font-600 text-brand-600 hover:text-brand-700">Forgot password?</a>
+            </div>
+            <button type="submit" class="w-full h-12 rounded-xl bg-brand-500 text-white text-[15px] font-600 hover:bg-brand-600 shadow-lg shadow-brand-500/30 transition active:scale-[.99]">Sign in to dashboard</button>
+          </form>
+          <div class="my-5 flex items-center gap-3 text-[12px] text-slate-400"><span class="flex-1 h-px bg-slate-200"></span>or<span class="flex-1 h-px bg-slate-200"></span></div>
+          <button id="ssoBtn" class="w-full h-12 rounded-xl border border-slate-200 bg-white text-[14px] font-600 text-slate-700 hover:bg-slate-50 transition flex items-center justify-center gap-2.5">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="3" y="11" width="18" height="10" rx="2" stroke="currentColor" stroke-width="2"/><path d="M7 11V8a5 5 0 0110 0v3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            Continue with clinic SSO
+          </button>
+          <p class="mt-6 text-[13.5px] text-slate-500 text-center">New clinic? <a href="Narzim.html#demo" class="font-600 text-brand-600 hover:text-brand-700">Book a demo →</a></p>
+        </div>
+
+        <!-- ── PATIENT FORM ── -->
+        <div id="patientView" class="mt-7 hidden">
+          <div class="flex items-center justify-between">
+            <div>
+              <h2 id="patientTitle" class="font-display font-800 text-[28px] text-slate-900 leading-tight">Patient sign in</h2>
+              <p id="patientSub" class="mt-1.5 text-[14.5px] text-slate-500">Manage your child's appointments and messages.</p>
+            </div>
+          </div>
+          <form id="patientForm" class="mt-6 space-y-4">
+            <div id="regAlert" class="hidden rounded-xl border border-rose-200 bg-rose-50 p-3.5 text-[12.5px] leading-relaxed text-rose-700"></div>
+            <div id="regNameWrap" class="hidden space-y-4">
+              <label class="block"><span class="text-[13px] font-600 text-slate-700">Full name</span>
+                <input type="text" class="mt-1.5 w-full h-12 rounded-xl border border-slate-200 bg-white px-3.5 text-[14px] outline-none focus:border-brand-400 focus:ring-2 focus:ring-brand-200 transition" placeholder="Mariana Reyes Castillo" /></label>
+              <div class="grid grid-cols-2 gap-3">
+                <label class="block"><span class="text-[13px] font-600 text-slate-700">Date of birth</span>
+                  <input type="date" class="mt-1.5 w-full h-12 rounded-xl border border-slate-200 bg-white px-3.5 text-[14px] text-slate-600 outline-none focus:border-brand-400 focus:ring-2 focus:ring-brand-200 transition" /></label>
+                <label class="block"><span class="text-[13px] font-600 text-slate-700">Mobile number</span>
+                  <input type="tel" class="mt-1.5 w-full h-12 rounded-xl border border-slate-200 bg-white px-3.5 text-[14px] outline-none focus:border-brand-400 focus:ring-2 focus:ring-brand-200 transition" placeholder="+52 999 000 0000" /></label>
+              </div>
+              <div class="grid grid-cols-[1fr_1.4fr] gap-3">
+                <label class="block"><span class="text-[13px] font-600 text-slate-700">ID type</span>
+                  <select id="regIdType" class="mt-1.5 w-full h-12 rounded-xl border border-slate-200 bg-white px-3 text-[14px] text-slate-700 outline-none focus:border-brand-400 focus:ring-2 focus:ring-brand-200 transition appearance-none">
+                    <option value="curp">CURP · Mexico</option>
+                    <option value="nss">Social security · NSS</option>
+                    <option value="passport">Passport</option>
+                    <option value="other">Other national ID</option>
+                  </select></label>
+                <label class="block"><span id="regIdLabel" class="text-[13px] font-600 text-slate-700">CURP</span>
+                  <input id="regIdNumber" type="text" class="mt-1.5 w-full h-12 rounded-xl border border-slate-200 bg-white px-3.5 text-[14px] font-mono uppercase tracking-wide outline-none focus:border-brand-400 focus:ring-2 focus:ring-brand-200 transition" placeholder="18-character CURP" /></label>
+              </div>
+              <div class="rounded-xl bg-brand-50 border border-brand-100 p-3 flex gap-2.5 text-[12px] text-slate-600 leading-relaxed">
+                <svg class="text-brand-500 shrink-0 mt-0.5" width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="5" y="11" width="14" height="9" rx="2" stroke="currentColor" stroke-width="2"/><path d="M8 11V7a4 4 0 018 0v4" stroke="currentColor" stroke-width="2"/></svg>
+                <span>We use this to give you <b>one medical record (MRN)</b> valid at every Narzim clinic, and to make sure no duplicate profile is created for you. It's verified securely and never shared without your consent.</span>
+              </div>
+            </div>
+            <label class="block"><span class="text-[13px] font-600 text-slate-700">Email</span>
+              <input required type="email" value="mariana.reyes@gmail.com" class="mt-1.5 w-full h-12 rounded-xl border border-slate-200 bg-white px-3.5 text-[14px] outline-none focus:border-brand-400 focus:ring-2 focus:ring-brand-200 transition" placeholder="you@email.com" /></label>
+            <label class="block"><span class="text-[13px] font-600 text-slate-700">Password</span>
+              <div class="relative mt-1.5">
+                <input required type="password" value="demo1234" id="patientPw" class="w-full h-12 rounded-xl border border-slate-200 bg-white px-3.5 pr-11 text-[14px] outline-none focus:border-brand-400 focus:ring-2 focus:ring-brand-200 transition" placeholder="••••••••" />
+                <button type="button" data-eye="patientPw" class="eye absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/></svg></button>
+              </div></label>
+            <div id="regConfirmWrap" class="hidden">
+              <label class="block"><span class="text-[13px] font-600 text-slate-700">Confirm password</span>
+                <input type="password" class="mt-1.5 w-full h-12 rounded-xl border border-slate-200 bg-white px-3.5 text-[14px] outline-none focus:border-brand-400 focus:ring-2 focus:ring-brand-200 transition" placeholder="••••••••" /></label>
+            </div>
+            <label id="loginExtras" class="flex items-center justify-between text-[13px]">
+              <span class="flex items-center gap-2 text-slate-600 select-none"><input type="checkbox" checked class="size-4 rounded accent-brand-500" />Remember me</span>
+              <a href="#" class="font-600 text-brand-600 hover:text-brand-700">Forgot password?</a>
+            </label>
+            <p id="regTerms" class="hidden text-[12.5px] text-slate-500 leading-relaxed">By creating an account you agree to Narzim's <a href="#" class="text-brand-600 font-600">Terms</a> and <a href="#" class="text-brand-600 font-600">Privacy Policy</a>.</p>
+            <button type="submit" id="patientSubmit" class="w-full h-12 rounded-xl bg-brand-500 text-white text-[15px] font-600 hover:bg-brand-600 shadow-lg shadow-brand-500/30 transition active:scale-[.99]">Sign in to portal</button>
+          </form>
+          <p class="mt-6 text-[13.5px] text-slate-500 text-center">
+            <span id="patientSwitchText">Don't have an account?</span>
+            <a href="#" id="patientSwitch" class="font-600 text-brand-600 hover:text-brand-700">Create one →</a>
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // password reveal
+  document.querySelectorAll('.eye').forEach(b => b.addEventListener('click', () => {
+    const inp = document.getElementById(b.dataset.eye);
+    inp.type = inp.type === 'password' ? 'text' : 'password';
+  }));
+
+  // audience tabs
+  const tabClinic = document.getElementById('tabClinic'), tabPatient = document.getElementById('tabPatient');
+  const clinicView = document.getElementById('clinicView'), patientView = document.getElementById('patientView');
+  function selectTab(which) {
+    const clinic = which === 'clinic';
+    clinicView.classList.toggle('hidden', !clinic);
+    patientView.classList.toggle('hidden', clinic);
+    [tabClinic, [clinic]].length;
+    tabClinic.className = 'h-10 rounded-lg transition ' + (clinic ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-800');
+    tabPatient.className = 'h-10 rounded-lg transition ' + (!clinic ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-800');
+    (clinic ? clinicView : patientView).classList.add('pop');
+    setTimeout(() => (clinic ? clinicView : patientView).classList.remove('pop'), 400);
+  }
+  tabClinic.addEventListener('click', () => selectTab('clinic'));
+  tabPatient.addEventListener('click', () => selectTab('patient'));
+
+  // patient login/register mode
+  let patientMode = 'login';
+  const regName = document.getElementById('regNameWrap'), regConfirm = document.getElementById('regConfirmWrap'),
+        loginExtras = document.getElementById('loginExtras'), regTerms = document.getElementById('regTerms'),
+        pTitle = document.getElementById('patientTitle'), pSub = document.getElementById('patientSub'),
+        pSubmit = document.getElementById('patientSubmit'), pSwitch = document.getElementById('patientSwitch'),
+        pSwitchText = document.getElementById('patientSwitchText');
+  function setPatientMode(mode) {
+    patientMode = mode;
+    const reg = mode === 'register';
+    regName.classList.toggle('hidden', !reg);
+    regConfirm.classList.toggle('hidden', !reg);
+    loginExtras.classList.toggle('hidden', reg);
+    regTerms.classList.toggle('hidden', !reg);
+    var alertEl = document.getElementById('regAlert'); if (alertEl) alertEl.classList.add('hidden');
+    pTitle.textContent = reg ? 'Create your account' : 'Patient sign in';
+    pSub.textContent = reg ? 'One profile across every Narzim clinic.' : "Manage your appointments, records and messages.";
+    pSubmit.textContent = reg ? 'Verify & create account' : 'Sign in to portal';
+    pSwitchText.textContent = reg ? 'Already have an account?' : "Don't have an account?";
+    pSwitch.textContent = reg ? 'Sign in →' : 'Create one →';
+  }
+  pSwitch.addEventListener('click', (e) => { e.preventDefault(); setPatientMode(patientMode === 'login' ? 'register' : 'login'); });
+
+  // ── identity field: adapt label + placeholder to ID type ──
+  const idMeta = {
+    curp:     { label: 'CURP', ph: '18-character CURP', mono: true },
+    nss:      { label: 'Social security (NSS)', ph: '11-digit NSS', mono: true },
+    passport: { label: 'Passport number', ph: 'e.g. G12345678', mono: true },
+    other:    { label: 'National ID number', ph: 'Your country ID number', mono: true },
+  };
+  const regIdType = document.getElementById('regIdType');
+  const regIdLabel = document.getElementById('regIdLabel');
+  const regIdNumber = document.getElementById('regIdNumber');
+  regIdType.addEventListener('change', () => {
+    const m = idMeta[regIdType.value] || idMeta.other;
+    regIdLabel.textContent = m.label;
+    regIdNumber.placeholder = m.ph;
+    regIdNumber.value = '';
+  });
+
+  // ── registration: dedupe by national ID, then assign a network-wide MRN ──
+  const TAKEN = { 'RECM910214MYNRSR08': 'NRZ-MX-118903-42' }; // CURP already on the platform
+  function showRegAlert(html, withSignIn) {
+    const el = document.getElementById('regAlert');
+    el.innerHTML = html + (withSignIn ? ' <a href="#" id="regGoLogin" class="font-700 underline">Sign in instead →</a>' : '');
+    el.classList.remove('hidden');
+    const a = document.getElementById('regGoLogin');
+    if (a) a.addEventListener('click', (e) => { e.preventDefault(); setPatientMode('login'); });
+    el.scrollIntoView ? null : null;
+  }
+  function handleRegister() {
+    const type = regIdType.value;
+    const label = (idMeta[type] || idMeta.other).label;
+    const num = (regIdNumber.value || '').trim().toUpperCase().replace(/\s+/g, '');
+    document.getElementById('regAlert').classList.add('hidden');
+    if (!num) { showRegAlert('Please enter your <b>' + label + '</b> so we can create your record.'); return; }
+    if (type === 'curp' && num.length < 18) { showRegAlert('That CURP looks too short — a valid CURP has <b>18 characters</b>.'); return; }
+    if (TAKEN[num]) { showRegAlert('A Narzim profile already exists for this ' + label + ' (<b>MRN ' + TAKEN[num] + '</b>). We don\'t create duplicates.', true); return; }
+    const mrn = 'NRZ-MX-' + (Math.floor(Math.random() * 900000) + 100000) + '-' + (Math.floor(Math.random() * 89) + 10);
+    showRegSuccess(mrn);
+  }
+  function showRegSuccess(mrn) {
+    const ov = document.createElement('div');
+    ov.className = 'fixed inset-0 z-[120] grid place-items-center p-6';
+    ov.style.background = 'rgba(15,23,42,.55)';
+    ov.style.backdropFilter = 'blur(8px)';
+    ov.innerHTML = '<div class="pop bg-white rounded-2xl shadow-2xl w-full max-w-[400px] p-7 text-center">' +
+      '<div class="mx-auto size-14 rounded-full grid place-items-center" style="background:#DCFCE7;color:#16A34A"><svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>' +
+      '<h3 class="mt-4 font-display font-800 text-[22px] text-slate-900">Identity verified</h3>' +
+      '<p class="mt-1.5 text-[13.5px] text-slate-500 leading-relaxed">No existing record found — we\'ve created your account and assigned a Narzim medical record number, valid at every clinic on the network.</p>' +
+      '<div class="mt-4 rounded-xl bg-brand-50 border border-brand-100 py-3"><div class="text-[10.5px] uppercase tracking-wide text-brand-700 font-700">Your Narzim MRN</div><div class="font-mono font-800 text-[18px] text-slate-900 mt-0.5">' + mrn + '</div></div>' +
+      '<button id="regContinue" class="mt-5 w-full h-12 rounded-xl bg-brand-500 text-white text-[15px] font-600 hover:bg-brand-600 shadow-lg shadow-brand-500/30 transition">Continue to my portal</button></div>';
+    document.body.appendChild(ov);
+    document.getElementById('regContinue').addEventListener('click', () => { window.location.href = 'Narzim Patient Portal.html'; });
+  }
+
+  // submits → route to product
+  document.getElementById('clinicForm').addEventListener('submit', (e) => { e.preventDefault(); go('Chavitos EHR.html'); });
+  document.getElementById('ssoBtn').addEventListener('click', () => go('Chavitos EHR.html'));
+  document.getElementById('patientForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    if (patientMode === 'register') { handleRegister(); return; }
+    go('Narzim Patient Portal.html');
+  });
+
+  function go(url) {
+    const btn = event?.submitter || document.activeElement;
+    if (btn && btn.tagName === 'BUTTON') { btn.disabled = true; btn.textContent = 'Signing in…'; }
+    setTimeout(() => { window.location.href = url; }, 500);
+  }
+
+  // deep-link: ?tab=patient&mode=register
+  const params = new URLSearchParams(location.search);
+  if (params.get('tab') === 'patient') selectTab('patient');
+  if (params.get('mode') === 'register') { selectTab('patient'); setPatientMode('register'); }
+
+  // Patients arriving from the marketplace shouldn't see the clinic option —
+  // hide the audience switcher entirely and lock to the patient form.
+  if (params.get('tab') === 'patient' || params.get('mode') === 'register') {
+    const tabs = tabClinic.closest('.grid');
+    if (tabs) tabs.classList.add('hidden');
+  }
+</script>
+</body>
+</html>
