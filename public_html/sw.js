@@ -1,4 +1,4 @@
-const CACHE = 'narzim-v5';
+const CACHE = 'narzim-v6';
 const SHELL = ['/', '/index.html', '/nfh-app.js', '/manifest.json', '/icon-192.png', '/icon-512.png'];
 
 self.addEventListener('install', e => {

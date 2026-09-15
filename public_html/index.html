@@ -1315,7 +1315,9 @@
     .device { width: 100%; height: 100vh; height: 100dvh; border-radius: 0; box-shadow: none; max-height: none; }
     .island { display: none; }
     .statusbar { display: none; }
-    .app { padding-top: env(safe-area-inset-top, 0px); }
+    .app { padding-top: env(safe-area-inset-top, 0px); background: var(--surface); }
+    /* Brand-color safe-area cap so status bar blends with content */
+    .stage::before { content: ''; position: fixed; top: 0; left: 0; right: 0; height: env(safe-area-inset-top, 0px); background: var(--surface); z-index: 200; }
     .nav { height: calc(64px + env(safe-area-inset-bottom, 0px)); padding-bottom: calc(8px + env(safe-area-inset-bottom, 0px)); }
     .home-ind { display: none; }
   }
